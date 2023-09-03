@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { dateCompare, dateFormatter } from "@/lib/utils/date";
-import { allPosts, Post } from "@/lib/utils/post";
+import { allPosts, type Post } from "@/lib/utils/post";
 function PostCard(post: Post) {
   return (
     <div className="mb-8">
@@ -15,10 +15,6 @@ function PostCard(post: Post) {
       <time dateTime={post.date} className="mb-2 block text-xs text-gray-600">
         {dateFormatter(post.date, "MM D, YYYY")}
       </time>
-      <div
-        className="text-sm [&>*]:mb-3 [&>*:last-child]:mb-0"
-        dangerouslySetInnerHTML={{ __html: post.body.html }}
-      />
     </div>
   );
 }

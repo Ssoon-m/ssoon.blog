@@ -1,0 +1,223 @@
+---
+title: 리액트 키 제대로 다루기
+date: 2023-04-21
+---
+
+react에서 `key props` 란 뭘까?
+[react docs](https://react.dev/learn/rendering-lists#where-to-get-your-key)에서는 react 컴포넌트가 렌더링 되는 동안 형제 간에 항목을 고유하게 식별할 수 있게 도와준다고 나와있다.
+
+아래 예시들을 통해 항목을 고유하게 식별할 때의 이점과 리액트에서 `key` 를 잘 활용하는 방법을 알아보자
+
+## 배열 랜더링 예시
+
+다음과 같은 배열이 있을 때 map을 이용해서 랜더링을 한다고 생각해보자
+
+```tsx
+export default function App() {
+  const [list, setList] = useState(["a", "b", "c", "d"]);
+  return (
+    <ul>
+      {list.map((item) => (
+        <li>{item}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+a,b,c,d 순서대로 화면에 랜더링이 될 것이다.
+
+그런데 위와 같이 배열을 랜더링하면 문제가 생긴다.
+
+> ❗ **Warning: Each child in a list should have a unique “key” prop.**
+
+이 짜증나는 에러를 누구나 한 번쯤은 본 적이 있을것이다. (저 에러 없애려고 배열 index를 key로 넣은 사람 🤚)
+
+리액트팀에서 저 에러를 보여주는 이유는 컴포넌트의 효율적인 랜더링을 위해서다.
+
+## key는 왜 존재할까?
+
+리액트의 효율적인 랜더링을 위해서 존재한다.
+
+> 철수와 짱구가 공용으로 사용하는 컴퓨터에 파일이 있다고 생각해보자.
+> 각 파일명은 **맹구**,**유리** 이다.
+> 어느날 철수가 두 파일 사이에 **훈이**를 추가 하면 짱구는 어떻게 생각을 할까?
+> 다음날 짱구가 해당 컴퓨터 파일을 볼 때 **유리**자리에 **훈이**가 추가된 걸 순식간에 알 수 있을 것이다.
+> 그런데 만약 컴퓨터 파일에 파일명이 존재하지 않는다면? 폴더 아이콘만 있다고 생각해보자.
+> **맹구,유리** 사이에 **훈이**가 추가 됐다면 어떤게 추가된 파일이 뭔지 바로 알 수 있을까?
+> 일일이 파일을 들어가봐야 **유리** 자리에 **훈이**가 추가 된 것을 알 수 있을것이다.
+
+이러한 비효율적인 일을 하지 않기 위해 react팀에서는 `key`(파일명)를 만들었다.
+
+`key`가 없다면 react 입장에서는 어떤게 새롭게 추가된 요소고 어떤게 기존에 존재하던 요소인지 효율적으로 알 수가 없다. ( 자세한 내용은 [상태 유지 및 재설정](https://react.dev/learn/preserving-and-resetting-state) 문서에 나와있다. )
+
+리액트는 형제요소 간에 항목을 고유하게 식별하기 위해 `key` 가 필요하다.`key` 가 변하면 항목이 변했다고 간주한다.
+
+이런 리액트의 효율적인 알고리즘을 위해 리액트로 개발하는 개발자 분들이 `key`를 꼭 넣어주는 수고스러움을 견뎌야 한다.
+
+> 💡 중요 : key는 전역적으로 유지되지 않고 부모 요소의 내부에서만 유효하다!
+
+## 배열에서의 key 활용법
+
+이제 `key`를 왜 추가해야 하는지 알겠는데 다음 코드처럼 배열의 `index`를 `key props`로 활용하면 쉽게 해결 되겠네? 라고 생각한다면, 맞기도하고 틀리기도 하다.
+
+콘솔 창의 에러만 없앤 것이지 `key`를 쓰기 전 동작과 동일하다.
+
+```tsx
+export default function App() {
+  const [list, setList] = useState(["a", "b", "c", "d"]);
+  return (
+    <ul>
+      {list.map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+### 배열의 index를 key로 활용할 경우
+
+`key`를 배열의 `index`로 사용하는 경우는 두 가지 조건을 모두 만족해야 한다.
+
+- 리스트에 수정, 삭제, 삽입을 할 일이 없을 때
+- 리스트의 순서가 변하지 않을 때
+
+이유는 list가 변할 때 컴포넌트가 리렌더링 되면서 배열의 0번 째 `index` 에 새로운 요소가 추가 됐다면 리액트는 기존의 `key` 가 0인 컴포넌트가 변하지 않았다고 생각한다.
+
+그래서 변경이 있을거 같은 리스트인 경우 `key` 를 배열의 `index` 로 적어주는건 매우 위험하다.
+
+### 변하는 리스트에서 key를 배열의 index로 사용한다면?
+
+다음 코드 예시로 위험성을 알아보자.
+
+```tsx
+import { useState } from "react";
+
+const Input = (props) => {
+  const { placeholder } = props;
+  const [value, setValue] = useState("");
+  const handleInputChange = (e) => {
+    setValue(e.currentTarget.value);
+  };
+
+  return (
+    <input
+      placeholder={placeholder}
+      value={value}
+      onChange={handleInputChange}
+    />
+  );
+};
+
+export default function App() {
+  const [list, setList] = useState(["aaa", "bbb", "ccc", "ddd"]);
+  const handleListInsertClick = () => {
+    setList((prevList) => ["eee"].concat(prevList));
+  };
+  return (
+    <div>
+      <div>
+        {list.map((item, index) => (
+          <Input key={index} placeholder={item} />
+        ))}
+      </div>
+      <div>
+        <button onClick={handleListInsertClick}>요소 삽입</button>
+      </div>
+    </div>
+  );
+}
+```
+
+요소 삽입 버튼 클릭시 배열의 맨 앞에 리스트를 추가하는 상황이다.
+
+그리고 input값은 각각 다음과 같다.![input-value.png](https://velog.velcdn.com/images/ssoon-m/post/b6454d1e-0bc7-45c0-8e2d-d5f57b7ce74e/image.png)
+
+위 상황에서 요소 삽입 버튼을 누른다면 eee를 `placeholder`로 보여주는 `input` 창이 맨 앞에 나오고 aaa입니다. bbb입니다. 순으로 화면에 보여지는게 기대하는 자연스러운 동작일 것이다.
+
+하지만, 기대와 다르게 요소 삽입 버튼을 누르면 다음과 같이 컴포넌트가 랜더링이 된다.
+![input-value.png](https://velog.velcdn.com/images/ssoon-m/post/2a65132f-b790-4af7-8172-eba0febbaf0d/image.png)
+
+eee를 0번 째 `index` 에 삽입을 했으니 eee를 기존의 `key` 값이 0이였던 컴포넌트로 인식을 해서 상태가 그대로 유지가 된 상황이다.
+
+리액트는 `key`값을 기준으로 요소가 변경되었는지 판단하기 때문에 당연한 결과이다.
+
+`key` 값을 리스트 각 하위 항목별로 고유한 id로 적어준다면 예상한대로 동작을 한다.
+
+코드를 다음과 같이 바꿔 보자!
+
+```tsx
+const [list, setList] = useState([
+  { id: 0, text: "aaa" },
+  { id: 1, text: "bbb" },
+  { id: 2, text: "ccc" },
+  { id: 3, text: "ddd" },
+]);
+const handleListInsertClick = () => {
+  setList((prevList) => [{ id: 4, text: "eee" }].concat(prevList));
+};
+
+//...
+{
+  list.map((item, index) => <Input key={item.id} placeholder={item.text} />);
+}
+//...
+```
+
+![input-value.png](https://velog.velcdn.com/images/ssoon-m/post/28896b80-3a85-41f6-bd69-555702f8a291/image.png)
+
+eee를 삽입시 새로운 항목이 추가됐다고 올바르게 인식을 하고 추가가 정상적으로 잘 됐다.
+
+혹시나 고유한 id를 적어야 하므로 `key` 에 다음 형태로 넣는건 제발 하지 말자.
+
+```tsx
+<Input key={Math.random()} />
+```
+
+리스트가 변하고 컴포넌트가 리렌더링되면 기존의 `key`가 다른값으로 바뀌기 때문에 전체 리스트가 새로운 컴포넌트로 인식이 된다.
+
+### 그렇다면 변하는 리스트의 key에는 교유한 값을 어떻게 넣어줘야 할까?
+
+- 서버에서 리스트를 내려줄 때의 id
+- 로컬에서 데이터를 생성했다면 **항목을 생성할 때 id를 미리 추가**. (incrementing counter , uuid , crypto.randomUUID() 등.. )
+
+리스트의 `key`에는 컴포넌트가 랜더링 될 때마다 리스트 항목의 `key`가 바뀌는 값을 넣어주면 안된다.
+
+한 번 생성된 리스트의 `key`는 다시 렌더링 되더라도 바뀌면 안된다.
+
+## 컴포넌트 상태 초기화시 key 활용법
+
+`key`는 배열을 렌더링 할때만 사용하는것이 아니다.`key` 는 컴포넌트의 식별자라고 생각하면 된다.
+
+`key` 가 바뀌면 리액트는 새로운 컴포넌트로 인식을 한다는 점을 이용하면 아주 간편하게 컴포넌트의 상태를 초기화 시킬 수 있다.
+
+예시 상황을 보자
+
+`ProfilePage` 컴포넌트는 `useId` 를 props로 받는다.
+
+페이지에는 댓글이 포함되어 있으며 `comment` 상태값을 이용하여 해당 값을 보유한다.
+
+한 프로필에서 다른 프로필로 이동할 때 `comment` 의 상태가 재설정되지 않는 오류가 있을 때 어떻게 해결을 할 것인가?
+
+다음 코드와 같이 작성하면 된다.
+
+```tsx
+export default function ProfilePage({ userId }) {
+  return <Profile userId={userId} key={userId} />;
+}
+
+function Profile({ userId }) {
+  // ✅ This and any other state below will reset on key change automatically
+  const [comment, setComment] = useState("");
+  // ...
+}
+```
+
+key를 사용해서 `useEffect` 사용을 없애고 아주 우아하게 컴포넌트의 상태값을 초기화 하는 방법을 공식문서에서 확인할 수 있다.([useEffect가 필요하지 않을수도 있다!](https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes))
+
+## 요약
+
+1. 리스트가 변할 가능성이 없다면 배열의 index를 key로 적어도 된다.
+2. 리스트가 변할 가능성이 있다면 배열의 index를 key로 쓰는 행동은 절대 하지 말자.
+3. 컴포넌트의 상태를 초기화 시키고 싶다면 key를 이용해보자!

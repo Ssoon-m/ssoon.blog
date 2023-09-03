@@ -1,18 +1,24 @@
 import { dateFormatter } from "@/lib/utils/date";
+import { notFound } from "next/navigation";
 import { allPosts } from "@/lib/utils/post";
+import { useMDXComponent } from "next-contentlayer/hooks";
 
 export const generateStaticParams = async () =>
   allPosts.map((post) => ({ slug: post._raw.flattenedPath }));
 
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
   const post = allPosts.find((post) => post._raw.flattenedPath === params.slug);
-  if (!post) throw new Error(`Post not found for slug: ${params.slug}`);
+  if (!post) {
+    // throw new Error(`Post not found for slug: ${params.slug}`);
+    notFound();
+  }
   return { title: post.title };
 };
 
 const PostLayout = ({ params }: { params: { slug: string } }) => {
   const post = allPosts.find((post) => post._raw.flattenedPath === params.slug);
-  if (!post) throw new Error(`Post not found for slug: ${params.slug}`);
+  if (!post) notFound();
+  const MDXContent = useMDXComponent(post.body.code);
 
   return (
     <article className="mx-auto max-w-xl py-8">
@@ -22,10 +28,11 @@ const PostLayout = ({ params }: { params: { slug: string } }) => {
         </time>
         <h1 className="text-3xl font-bold">{post.title}</h1>
       </div>
-      <div
+      <MDXContent />
+      {/* <div
         className="[&>*]:mb-3 [&>*:last-child]:mb-0"
         dangerouslySetInnerHTML={{ __html: post.body.html }}
-      />
+      /> */}
     </article>
   );
 };
