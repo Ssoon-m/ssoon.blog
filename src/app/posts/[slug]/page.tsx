@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import { allPosts } from "@/lib/utils/post";
 import { useMDXComponent } from "next-contentlayer/hooks";
 
+const BlankLink = (props: any) => {
+  return <a target="_blank" rel="noopener noreferrer" {...props} />;
+};
+
 export const generateStaticParams = async () =>
   allPosts.map((post) => ({ slug: post._raw.flattenedPath }));
 
@@ -28,7 +32,7 @@ const PostLayout = ({ params }: { params: { slug: string } }) => {
         </time>
         <h1 className="text-3xl font-bold">{post.title}</h1>
       </div>
-      <MDXContent />
+      <MDXContent components={{ a: BlankLink }} />
       {/* <div
         className="[&>*]:mb-3 [&>*:last-child]:mb-0"
         dangerouslySetInnerHTML={{ __html: post.body.html }}

@@ -42,6 +42,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:ddccc941eb8b35cd4b898a64351d8bba4ecc85eb47e8f1b36dce7852d6c3635665e0fc5464861f723d175edb2248ce0fa54dfefb9b5e4d2fdaef4b2353c4aa82#npm:18.2.0"],\
             ["rehype-autolink-headings", "npm:6.1.1"],\
+            ["rehype-prism-plus", "npm:1.6.3"],\
             ["rehype-slug", "npm:6.0.0"],\
             ["remark-gfm", "npm:3.0.1"],\
             ["tailwindcss", "npm:3.3.3"],\
@@ -1648,6 +1649,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-parse5-npm-6.0.3-a0bee0f9b4-ddb59ee414.zip/node_modules/@types/parse5/",\
           "packageDependencies": [\
             ["@types/parse5", "npm:6.0.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/prismjs", [\
+        ["npm:1.26.0", {\
+          "packageLocation": "./.yarn/cache/@types-prismjs-npm-1.26.0-e89ec94ae4-cd5e7a6214.zip/node_modules/@types/prismjs/",\
+          "packageDependencies": [\
+            ["@types/prismjs", "npm:1.26.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -4264,6 +4274,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["hast-util-to-string", [\
+        ["npm:2.0.0", {\
+          "packageLocation": "./.yarn/cache/hast-util-to-string-npm-2.0.0-c6108aa2b8-0c087f8dee.zip/node_modules/hast-util-to-string/",\
+          "packageDependencies": [\
+            ["hast-util-to-string", "npm:2.0.0"],\
+            ["@types/hast", "npm:2.3.5"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
         ["npm:3.0.0", {\
           "packageLocation": "./.yarn/cache/hast-util-to-string-npm-3.0.0-a75a0c1e27-64f7f4f2b7.zip/node_modules/hast-util-to-string/",\
           "packageDependencies": [\
@@ -6118,6 +6136,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:ddccc941eb8b35cd4b898a64351d8bba4ecc85eb47e8f1b36dce7852d6c3635665e0fc5464861f723d175edb2248ce0fa54dfefb9b5e4d2fdaef4b2353c4aa82#npm:18.2.0"],\
             ["rehype-autolink-headings", "npm:6.1.1"],\
+            ["rehype-prism-plus", "npm:1.6.3"],\
             ["rehype-slug", "npm:6.0.0"],\
             ["remark-gfm", "npm:3.0.1"],\
             ["tailwindcss", "npm:3.3.3"],\
@@ -6550,6 +6569,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["is-alphanumerical", "npm:2.0.1"],\
             ["is-decimal", "npm:2.0.1"],\
             ["is-hexadecimal", "npm:2.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["parse-numeric-range", [\
+        ["npm:1.3.0", {\
+          "packageLocation": "./.yarn/cache/parse-numeric-range-npm-1.3.0-71baf377a4-289ca126d5.zip/node_modules/parse-numeric-range/",\
+          "packageDependencies": [\
+            ["parse-numeric-range", "npm:1.3.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -6989,6 +7017,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["refractor", [\
+        ["npm:4.8.1", {\
+          "packageLocation": "./.yarn/cache/refractor-npm-4.8.1-82a44bf019-51762ed1d6.zip/node_modules/refractor/",\
+          "packageDependencies": [\
+            ["refractor", "npm:4.8.1"],\
+            ["@types/hast", "npm:2.3.5"],\
+            ["@types/prismjs", "npm:1.26.0"],\
+            ["hastscript", "npm:7.2.0"],\
+            ["parse-entities", "npm:4.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["regenerator-runtime", [\
         ["npm:0.14.0", {\
           "packageLocation": "./.yarn/cache/regenerator-runtime-npm-0.14.0-e060897cf7-1c977ad82a.zip/node_modules/regenerator-runtime/",\
@@ -7021,6 +7062,34 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["hast-util-heading-rank", "npm:2.1.1"],\
             ["hast-util-is-element", "npm:2.1.3"],\
             ["unified", "npm:10.1.2"],\
+            ["unist-util-visit", "npm:4.1.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["rehype-parse", [\
+        ["npm:8.0.5", {\
+          "packageLocation": "./.yarn/cache/rehype-parse-npm-8.0.5-915f0a8b17-ca41df7ac2.zip/node_modules/rehype-parse/",\
+          "packageDependencies": [\
+            ["rehype-parse", "npm:8.0.5"],\
+            ["@types/hast", "npm:2.3.5"],\
+            ["hast-util-from-parse5", "npm:7.1.2"],\
+            ["parse5", "npm:6.0.1"],\
+            ["unified", "npm:10.1.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["rehype-prism-plus", [\
+        ["npm:1.6.3", {\
+          "packageLocation": "./.yarn/cache/rehype-prism-plus-npm-1.6.3-74cb76df81-418b31bce0.zip/node_modules/rehype-prism-plus/",\
+          "packageDependencies": [\
+            ["rehype-prism-plus", "npm:1.6.3"],\
+            ["hast-util-to-string", "npm:2.0.0"],\
+            ["parse-numeric-range", "npm:1.3.0"],\
+            ["refractor", "npm:4.8.1"],\
+            ["rehype-parse", "npm:8.0.5"],\
+            ["unist-util-filter", "npm:4.0.1"],\
             ["unist-util-visit", "npm:4.1.2"]\
           ],\
           "linkType": "HARD"\
@@ -8024,6 +8093,18 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["unique-slug", "npm:4.0.0"],\
             ["imurmurhash", "npm:0.1.4"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["unist-util-filter", [\
+        ["npm:4.0.1", {\
+          "packageLocation": "./.yarn/cache/unist-util-filter-npm-4.0.1-d9bab71608-0e7a24db8e.zip/node_modules/unist-util-filter/",\
+          "packageDependencies": [\
+            ["unist-util-filter", "npm:4.0.1"],\
+            ["@types/unist", "npm:2.0.8"],\
+            ["unist-util-is", "npm:5.2.1"],\
+            ["unist-util-visit-parents", "npm:5.1.3"]\
           ],\
           "linkType": "HARD"\
         }]\
