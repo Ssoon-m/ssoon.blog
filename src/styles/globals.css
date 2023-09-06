@@ -3,3 +3,20 @@
 @tailwind utilities;
 
 @import "one-dark-theme.css";
+
+.prose .anchor {
+  @apply invisible absolute no-underline;
+  margin-left: -1em;
+  padding-right: 0.5em;
+  cursor: pointer;
+}
+
+.prose .anchor:after {
+  @apply text-gray-300 dark:text-gray-700;
+  content: "#";
+}
+
+.anchor:hover,
+.prose *:hover > .anchor {
+  @apply visible;
+}

@@ -4,7 +4,18 @@ import { allPosts } from "@/lib/utils/post";
 import { useMDXComponent } from "next-contentlayer/hooks";
 
 const BlankLink = (props: any) => {
-  return <a target="_blank" rel="noopener noreferrer" {...props} />;
+  if (props.className === "anchor") {
+    return <a {...props} />;
+  } else {
+    return (
+      <a
+        className="text-indigo-500 no-underline"
+        target="_blank"
+        rel="noopener noreferrer"
+        {...props}
+      />
+    );
+  }
 };
 
 export const generateStaticParams = async () =>
@@ -32,7 +43,9 @@ const PostLayout = ({ params }: { params: { slug: string } }) => {
         </time>
         <h1 className="text-3xl font-bold">{post.title}</h1>
       </div>
-      <MDXContent components={{ a: BlankLink }} />
+      <div className="prose dark:prose-dark">
+        <MDXContent components={{ a: BlankLink }} />
+      </div>
       {/* <div
         className="[&>*]:mb-3 [&>*:last-child]:mb-0"
         dangerouslySetInnerHTML={{ __html: post.body.html }}
