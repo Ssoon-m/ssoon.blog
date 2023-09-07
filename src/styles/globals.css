@@ -12,8 +12,12 @@
 }
 
 .prose .anchor:after {
-  @apply text-gray-300 dark:text-gray-700;
+  @apply text-indigo-500;
   content: "#";
+}
+
+.prose .anchor:after:hover {
+  @apply underline;
 }
 
 .anchor:hover,
