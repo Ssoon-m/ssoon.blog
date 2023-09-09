@@ -41,10 +41,10 @@ export default function Home() {
           </div>
         ))}
       </div>
-      <div className="hover:-translate-y-[1.5px] transform duration-200 inline-block mb-5">
+      <div className="w-full flex justify-end hover:-translate-y-[1.5px] transform duration-200 mb-5">
         <Link
           href="/blog"
-          className="text-gray-500 hover:text-gray-700 align-middle"
+          className="text-gray-500 hover:text-gray-700 hover:underline align-middle"
         >
           Read More →
         </Link>

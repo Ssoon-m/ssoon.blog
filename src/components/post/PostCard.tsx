@@ -21,7 +21,7 @@ const PostCard = ({ post }: Props) => {
             <div className="flex flex-start items-center flex-wrap gap-2">
               {post.tags.map((tag, i) => (
                 <div
-                  className="rounded-lg px-2 py-[2px] bg-gray-100 text-sm text-gray-500 shrink-0 hover:bg-gray-200"
+                  className="rounded-lg px-2 py-[2px] bg-gray-100 text-sm text-indigo-500 shrink-0 hover:bg-gray-200"
                   key={i}
                 >
                   {tag}
