@@ -1,10 +1,8 @@
 import Header from '@/components/Header';
 import '../styles/globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import Footer from '@/components/Footer';
-
-const inter = Inter({ subsets: ['latin'] });
+import { pretendard } from '@/lib/fonts';
 
 export const metadata: Metadata = {
   title: 'Ssoon blog',
@@ -17,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={pretendard.className}>
       <body>
         <section className="pt-20 w-full h-full flex flex-col min-h-screen">
           <Header />
