@@ -1,6 +1,12 @@
 ---
-title: 리액트 키 제대로 다루기
-date: 2023-04-21
+title: [react] key 제대로 다루기
+date: 2023-04-21 21:03:16
+description: 리액트 애플리케이션에서의 `key`를 올바르게 잘 사용하는 방법을 알아보고자 합니다!
+thumbnailUrl: https://velog.velcdn.com/images/ssoon-m/post/113c3d72-75cc-4d51-91bd-9cfc03bcf16a/image.png
+tags:
+  - react
+  - typescript
+  - react key
 ---
 
 react에서 `key props` 란 뭘까?
@@ -14,7 +20,7 @@ react에서 `key props` 란 뭘까?
 
 ```tsx
 export default function App() {
-  const [list, setList] = useState(["a", "b", "c", "d"]);
+  const [list, setList] = useState(['a', 'b', 'c', 'd']);
   return (
     <ul>
       {list.map((item) => (
@@ -65,7 +71,7 @@ a,b,c,d 순서대로 화면에 랜더링이 될 것이다.
 
 ```tsx
 export default function App() {
-  const [list, setList] = useState(["a", "b", "c", "d"]);
+  const [list, setList] = useState(['a', 'b', 'c', 'd']);
   return (
     <ul>
       {list.map((item, index) => (
@@ -92,11 +98,11 @@ export default function App() {
 다음 코드 예시로 위험성을 알아보자.
 
 ```tsx
-import { useState } from "react";
+import { useState } from 'react';
 
 const Input = (props) => {
   const { placeholder } = props;
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState('');
   const handleInputChange = (e) => {
     setValue(e.currentTarget.value);
   };
@@ -111,9 +117,9 @@ const Input = (props) => {
 };
 
 export default function App() {
-  const [list, setList] = useState(["aaa", "bbb", "ccc", "ddd"]);
+  const [list, setList] = useState(['aaa', 'bbb', 'ccc', 'ddd']);
   const handleListInsertClick = () => {
-    setList((prevList) => ["eee"].concat(prevList));
+    setList((prevList) => ['eee'].concat(prevList));
   };
   return (
     <div>
@@ -149,13 +155,13 @@ eee를 0번 째 `index` 에 삽입을 했으니 eee를 기존의 `key` 값이 0�
 
 ```tsx
 const [list, setList] = useState([
-  { id: 0, text: "aaa" },
-  { id: 1, text: "bbb" },
-  { id: 2, text: "ccc" },
-  { id: 3, text: "ddd" },
+  { id: 0, text: 'aaa' },
+  { id: 1, text: 'bbb' },
+  { id: 2, text: 'ccc' },
+  { id: 3, text: 'ddd' },
 ]);
 const handleListInsertClick = () => {
-  setList((prevList) => [{ id: 4, text: "eee" }].concat(prevList));
+  setList((prevList) => [{ id: 4, text: 'eee' }].concat(prevList));
 };
 
 //...
@@ -209,7 +215,7 @@ export default function ProfilePage({ userId }) {
 
 function Profile({ userId }) {
   // ✅ This and any other state below will reset on key change automatically
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState('');
   // ...
 }
 ```
