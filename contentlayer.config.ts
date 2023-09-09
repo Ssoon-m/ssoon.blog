@@ -32,7 +32,8 @@ const computedFields: ComputedFields<'Post'> = {
   },
   readingTime: {
     type: 'string',
-    resolve: (post) => Math.ceil(readingTime(post.body.raw).minutes),
+    // resolve: (post) => Math.ceil(readingTime(post.body.raw).minutes),
+    resolve: (post) => Math.ceil(10),
   },
 };
 
