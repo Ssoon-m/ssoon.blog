@@ -31,10 +31,17 @@ export default function Home() {
         <h1 className="text-3xl fong-bold">Latest Posts</h1>
       </div>
       <div className="h-[30px]" />
-      {posts.map((post, idx) => (
-        <PostCard key={idx} post={post} />
-      ))}
-      <div className="hover:-translate-y-[1.5px] transform duration-200 inline-block">
+      <div className="flex flex-col gap-16 sm:gap-6 mb-7">
+        {posts.map((post, idx) => (
+          <div
+            key={idx}
+            className="hover:-translate-y-1 transform duration-200"
+          >
+            <PostCard post={post} />
+          </div>
+        ))}
+      </div>
+      <div className="hover:-translate-y-[1.5px] transform duration-200 inline-block mb-5">
         <Link
           href="/blog"
           className="text-gray-500 hover:text-gray-700 align-middle"
