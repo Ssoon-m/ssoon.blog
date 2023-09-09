@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import "../styles/globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,13 +17,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full">
-      <body className="h-full">
-        <section className="pt-16 w-full h-full flex flex-col">
+    <html lang="en">
+      <body>
+        <section className="pt-16 w-full h-full flex flex-col min-h-screen">
           <Header />
-          <div className="w-full flex-1 mx-auto max-w-3xl lg:max-w-6xl min-h-full px-5">
-            <main>{children}</main>
+          <div className="flex-1 w-full mx-auto max-w-3xl lg:max-w-6xl min-h-full px-5">
+            <main className="h-full">{children}</main>
           </div>
+          <Footer />
         </section>
       </body>
     </html>
