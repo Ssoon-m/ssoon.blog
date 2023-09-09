@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
 const VelogIcon = ({
   className,
   width = 20,
   height = 20,
   ...props
-}: React.ComponentProps<"svg">) => {
+}: React.ComponentProps<'svg'>) => {
   return (
     <svg
       className={className}

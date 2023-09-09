@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
 const EmailIcon = ({
   className,
   width = 24,
   height = 24,
   ...props
-}: React.ComponentProps<"svg">) => {
+}: React.ComponentProps<'svg'>) => {
   return (
     <svg
       className={className}

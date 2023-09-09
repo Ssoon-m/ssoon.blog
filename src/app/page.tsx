@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { dateCompare, dateFormatter } from "@/lib/utils/date";
-import { allPosts, type Post } from "@/lib/utils/post";
-import Image from "next/image";
+import Link from 'next/link';
+import { dateCompare, dateFormatter } from '@/lib/utils/date';
+import { allPosts, type Post } from '@/lib/utils/post';
+import Image from 'next/image';
 
 function PostCard(post: Post) {
   return (
@@ -15,7 +15,7 @@ function PostCard(post: Post) {
         </Link>
       </h2>
       <time dateTime={post.date} className="mb-2 block text-xs text-gray-600">
-        {dateFormatter(post.date, "MM D, YYYY")}
+        {dateFormatter(post.date, 'MM D, YYYY')}
       </time>
     </div>
   );
@@ -36,7 +36,7 @@ export default function Home() {
         </div>
         <div className="relative order-1 sm:order-2">
           <Image
-            src={"/my-profile.webp"}
+            src={'/my-profile.webp'}
             alt="profile"
             width={120}
             height={120}
@@ -52,7 +52,7 @@ export default function Home() {
       {posts.map((post, idx) => (
         <PostCard key={idx} {...post} />
       ))}
-      <div className="hover:-translate-y-[1px] transform duration-200 inline-block">
+      <div className="hover:-translate-y-[1.5px] transform duration-200 inline-block">
         <Link
           href="/blog"
           className="text-gray-500 hover:text-gray-700 align-middle"

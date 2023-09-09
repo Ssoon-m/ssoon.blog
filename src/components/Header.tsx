@@ -1,10 +1,10 @@
-import Link from "next/link";
-import React from "react";
+import Link from 'next/link';
+import React from 'react';
 
 const headerNavLinks = [
-  { page: "blog", title: "Blog" },
-  { page: "archives", title: "Archives" },
-  { page: "about", title: "About" },
+  { page: 'blog', title: 'Blog' },
+  { page: 'archives', title: 'Archives' },
+  { page: 'about', title: 'About' },
 ];
 
 const Header = () => {
