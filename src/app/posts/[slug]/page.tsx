@@ -1,6 +1,6 @@
 import { dateFormatter } from '@/lib/utils/date';
 import { notFound } from 'next/navigation';
-import { allPosts } from '@/lib/utils/post';
+import { getPost, getPosts } from '@/datasets/post';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 
 const BlankLink = (props: any) => {
@@ -19,19 +19,18 @@ const BlankLink = (props: any) => {
 };
 
 export const generateStaticParams = async () =>
-  allPosts.map((post) => ({ slug: post._raw.flattenedPath }));
+  getPosts().map((post) => ({ slug: post._raw.flattenedPath }));
 
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
-  const post = allPosts.find((post) => post._raw.flattenedPath === params.slug);
+  const post = getPost(params.slug);
   if (!post) {
-    // throw new Error(`Post not found for slug: ${params.slug}`);
     notFound();
   }
   return { title: post.title };
 };
 
 const PostLayout = ({ params }: { params: { slug: string } }) => {
-  const post = allPosts.find((post) => post._raw.flattenedPath === params.slug);
+  const post = getPost(params.slug);
   if (!post) notFound();
   const MDXContent = useMDXComponent(post.body.code);
 

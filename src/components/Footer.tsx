@@ -1,4 +1,3 @@
-import React from 'react';
 import { dateFormatter } from '@/lib/utils/date';
 import Link from 'next/link';
 import GithubIcon from './icons/GithubIcon';

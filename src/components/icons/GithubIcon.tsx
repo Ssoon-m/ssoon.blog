@@ -1,5 +1,3 @@
-import React from 'react';
-
 const GithubIcon = ({
   className,
   width = 24,

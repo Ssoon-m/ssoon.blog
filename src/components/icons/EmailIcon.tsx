@@ -1,5 +1,3 @@
-import React from 'react';
-
 const EmailIcon = ({
   className,
   width = 24,

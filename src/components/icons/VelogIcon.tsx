@@ -1,5 +1,3 @@
-import React from 'react';
-
 const VelogIcon = ({
   className,
   width = 20,
