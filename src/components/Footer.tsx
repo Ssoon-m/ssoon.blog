@@ -8,7 +8,7 @@ const year = dateFormatter(new Date(), "YYYY");
 
 const Footer = () => {
   return (
-    <footer className="w-full px-8 py-8 text-sm text-neutral-800 flex flex-col items-center gap-1 border-t border-gray-100">
+    <footer className="w-full px-8 py-8 text-sm text-gray-600 flex flex-col items-center gap-1 border-t border-gray-100">
       <div className="flex gap-2 items-center">
         <span className="text-gray-400 hover:text-gray-500 transform">
           <span className="sr-only">Github</span>
@@ -44,7 +44,7 @@ const Footer = () => {
         </span>
       </div>
       <div className="flex flex-col sm:inline-block">
-        <span>© {year} Soon blog</span>
+        <span>© {year} Ssoon blog</span>
         <span>
           {" "}
           Powered by{" "}
