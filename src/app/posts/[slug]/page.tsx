@@ -46,10 +46,6 @@ const PostLayout = ({ params }: { params: { slug: string } }) => {
       <div className="prose dark:prose-dark">
         <MDXContent components={{ a: BlankLink }} />
       </div>
-      {/* <div
-        className="[&>*]:mb-3 [&>*:last-child]:mb-0"
-        dangerouslySetInnerHTML={{ __html: post.body.html }}
-      /> */}
     </article>
   );
 };
