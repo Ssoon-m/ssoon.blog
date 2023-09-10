@@ -5035,6 +5035,7 @@ __metadata:
     eslint-config-next: 13.4.19
     next: 13.4.19
     next-contentlayer: ^0.3.4
+    next-themes: ^0.2.1
     postcss: 8.4.28
     react: 18.2.0
     react-dom: 18.2.0
@@ -5094,6 +5095,17 @@ __metadata:
     react: "*"
     react-dom: "*"
   checksum: fd741aa5fcefe545dedbe34780e05a18fd2ce7b3620e5d528358dfe3152fa9d795fbc68738ffa6d001db1c7de9e0500f06bc6600dfdd37b4f831158f9c6f0832
+  languageName: node
+  linkType: hard
+
+"next-themes@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "next-themes@npm:0.2.1"
+  peerDependencies:
+    next: "*"
+    react: "*"
+    react-dom: "*"
+  checksum: ebc248b956138e73436c4ed0a0f0a877a0a48a33156db577029b8b8469e48b5c777d61abf2baeb75953378febea74e067a4869ff90b4a3e94fce123289b862ba
   languageName: node
   linkType: hard
 
