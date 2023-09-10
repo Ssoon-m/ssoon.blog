@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import ToggleTheme from './ToggleTheme';
 
 const headerNavLinks = [
   { page: 'blog', title: 'Blog' },
@@ -19,19 +20,22 @@ const Header = () => {
             </div>
           </Link>
         </div>
-        <nav>
-          <div>
-            {headerNavLinks.map((link) => (
-              <Link
-                key={link.title}
-                href={`/${link.page}`}
-                className="rounded-lg px-3 py-2 text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition select-none"
-              >
-                {link.title}
-              </Link>
-            ))}
-          </div>
-        </nav>
+        <div className="flex items-center">
+          <nav>
+            <div>
+              {headerNavLinks.map((link) => (
+                <Link
+                  key={link.title}
+                  href={`/${link.page}`}
+                  className="rounded-lg px-3 py-2 text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition select-none"
+                >
+                  {link.title}
+                </Link>
+              ))}
+            </div>
+          </nav>
+          <ToggleTheme />
+        </div>
       </div>
     </header>
   );
