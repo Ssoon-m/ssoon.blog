@@ -33,10 +33,7 @@ export default function Home() {
       <div className="h-[30px]" />
       <div className="flex flex-col gap-16 sm:gap-6 mb-7">
         {posts.map((post, idx) => (
-          <div
-            key={idx}
-            className="hover:-translate-y-1 transform duration-200"
-          >
+          <div key={idx}>
             <PostCard post={post} />
           </div>
         ))}
