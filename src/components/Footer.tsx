@@ -7,7 +7,7 @@ const year = dateFormatter(new Date(), 'YYYY');
 
 const Footer = () => {
   return (
-    <footer className="w-full px-8 py-8 text-sm text-gray-600 flex flex-col items-center gap-1 border-t border-gray-100">
+    <footer className="w-full px-8 py-8 flex flex-col items-center gap-1 border-t border-gray-100 dark:border-gray-700">
       <div className="flex gap-2 items-center">
         <span className="text-gray-400 hover:text-gray-500 transform">
           <span className="sr-only">Github</span>
@@ -42,12 +42,23 @@ const Footer = () => {
           </Link>
         </span>
       </div>
-      <div className="flex flex-col sm:inline-block">
-        <span>© {year} Ssoon blog</span>
+      <div className="flex flex-col sm:inline-block text-sm text-gray-600 dark:text-gray-400">
+        <span>
+          © {year}{' '}
+          <Link
+            className="hover:underline text-gray-800 dark:text-gray-300"
+            href="https://github.com/Ssoon-m/ssoon.blog"
+          >
+            Ssoon blog
+          </Link>
+        </span>
         <span>
           {' '}
           Powered by{' '}
-          <Link className="hover:underline" href="https://nextjs.org/">
+          <Link
+            className="hover:underline text-gray-800 dark:text-gray-300"
+            href="https://nextjs.org/"
+          >
             Next.js
           </Link>
         </span>

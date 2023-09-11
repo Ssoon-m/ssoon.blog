@@ -9,7 +9,7 @@ const headerNavLinks = [
 
 const Header = () => {
   return (
-    <header className="w-full py-3 fixed top-0 z-10 bg-white dark:bg-black backdrop-filter backdrop-blur-lg bg-opacity-80 border-b border-gray-100 dark:border-gray-800 px-4">
+    <header className="w-full py-3 fixed top-0 z-10 bg-white dark:bg-black backdrop-filter backdrop-blur-lg bg-opacity-80 border-b border-gray-100 dark:border-gray-700 px-4">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         <div>
           <Link href="/">

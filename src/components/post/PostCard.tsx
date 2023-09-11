@@ -16,12 +16,14 @@ const PostCard = ({ post }: Props) => {
         </div>
         <div className="w-full">
           <h2 className="text-2xl font-medium">{post.title}</h2>
-          <h4 className="text-l mb-2 text-gray-600">{post.description}</h4>
+          <h4 className="text-l mb-2 text-gray-600 dark:text-gray-300">
+            {post.description}
+          </h4>
           <div className="flex flex-col sm:flex-row justify-start sm:justify-between items-start sm:items-center flex-wrap gap-2">
             <div className="flex flex-start items-center flex-wrap gap-2">
               {post.tags.map((tag, i) => (
                 <div
-                  className="rounded-lg px-2 py-[2px] bg-gray-100 text-sm text-indigo-500 shrink-0 hover:bg-gray-200"
+                  className="rounded-lg px-2 py-[2px] bg-gray-100 dark:bg-gray-800 dark:text-indigo-400 text-sm text-indigo-500 shrink-0 hover:bg-gray-200 dark:hover:bg-gray-700"
                   key={i}
                 >
                   {tag}
@@ -29,7 +31,8 @@ const PostCard = ({ post }: Props) => {
               ))}
             </div>
             <p className="text-xs text-gray-400">
-              {dateFormatter(post.date, 'YYYY-MM-DD')} · {post.readingTime} min
+              {dateFormatter(post.date, 'YYYY-MM-DD')}
+              <span className="select-none"> · </span> {post.readingTime} min
               read
             </p>
           </div>
