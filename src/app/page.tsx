@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import { getPosts } from '@/datasets/post';
+import { getMainPosts } from '@/datasets/post';
 import Image from 'next/image';
 import PostCard from '@/components/post/PostCard';
 
 export default function Home() {
-  const posts = getPosts();
+  const posts = getMainPosts();
 
   return (
     <div>

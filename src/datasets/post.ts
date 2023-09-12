@@ -14,6 +14,10 @@ export const getPosts = (sort: 'desc' | 'asc' = 'desc') => {
   return _allPosts;
 };
 
+export const getMainPosts = () => {
+  return _allPosts.slice(0, 5).sort((a, b) => dateCompare(b.date, a.date));
+};
+
 export const getPost = (slug: string) => {
   return getPosts().find((post) => post._raw.flattenedPath === slug);
 };

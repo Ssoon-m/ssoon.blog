@@ -1,9 +1,12 @@
+'use client';
 import SearchInput from '@/components/common/SearchInput';
 import PostCard from '@/components/post/PostCard';
 import { getPosts } from '@/datasets/post';
+import usePostsSearch from './hooks/usePostsSearch';
 
 const BlogPage = () => {
   const posts = getPosts();
+  const { searchResults, handleSearch } = usePostsSearch(posts);
 
   return (
     <div>
@@ -12,10 +15,14 @@ const BlogPage = () => {
         학습한 내용들을 공유합니다.
       </div>
       <div className="py-8">
-        <SearchInput type="text" placeholder="검색 내용을 입력해주세요" />
+        <SearchInput
+          type="text"
+          placeholder="검색 내용을 입력해주세요"
+          onChange={(e) => handleSearch(e.currentTarget.value)}
+        />
       </div>
       <div className="flex flex-col gap-16 sm:gap-6 mb-7">
-        {posts.map((post, idx) => (
+        {searchResults.map((post, idx) => (
           <div key={idx}>
             <PostCard post={post} />
           </div>
