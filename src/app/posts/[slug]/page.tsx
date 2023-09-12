@@ -42,7 +42,7 @@ const PostLayout = ({ params }: { params: { slug: string } }) => {
         </time>
         <h1 className="text-3xl font-bold">{post.title}</h1>
       </div>
-      <div className="prose dark:prose-dark">
+      <div className="prose dark:prose-invert">
         <MDXContent components={{ a: BlankLink }} />
       </div>
     </article>

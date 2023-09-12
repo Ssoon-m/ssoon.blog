@@ -9,12 +9,12 @@ const headerNavLinks = [
 
 const Header = () => {
   return (
-    <header className="w-full py-3 fixed top-0 z-10 bg-white dark:bg-black backdrop-filter backdrop-blur-lg bg-opacity-80 border-b border-gray-100 dark:border-gray-700 px-4">
+    <header className="bg-transparent w-full py-3 fixed top-0 z-10 backdrop-filter backdrop-blur-lg bg-opacity-80 border-b border-gray-100 dark:border-gray-700 px-4">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         <div>
           <Link href="/">
             <div className="flex items-center justify-between">
-              <div className="text-xl font-semibold rounded-lg sm:block text-gray-800  transition">
+              <div className="text-xl font-semibold rounded-lg sm:block text-gray-800  dark:text-white transition">
                 SSoon
               </div>
             </div>
