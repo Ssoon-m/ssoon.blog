@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={pretendard.className} suppressHydrationWarning>
-      <body className="bg-white dark:bg-slate-900 transition-[background]">
+      <body className="bg-white dark:bg-zinc-950 transition-[background]">
         <AppProviders>
           <section className="pt-20 w-full h-full flex flex-col min-h-screen">
             <Header />
