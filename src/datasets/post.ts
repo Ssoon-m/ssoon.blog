@@ -22,4 +22,15 @@ export const getPost = (slug: string) => {
   return getPosts().find((post) => post._raw.flattenedPath === slug);
 };
 
+export const getTagsOfPosts = () => {
+  return Array.from(
+    _allPosts.reduce((acc, post) => {
+      post.tags.forEach((tag) =>
+        acc.has(tag) ? acc.set(tag, acc.get(tag)! + 1) : acc.set(tag, 1),
+      );
+      return acc;
+    }, new Map<string, number>()),
+  );
+};
+
 export type Post = _Post;
