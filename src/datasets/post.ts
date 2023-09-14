@@ -33,4 +33,8 @@ export const getTagsOfPosts = () => {
   );
 };
 
+export const getPostByTag = (tag: string) => {
+  return _allPosts.filter((post) => post.tags.some((_tag) => _tag === tag));
+};
+
 export type Post = _Post;

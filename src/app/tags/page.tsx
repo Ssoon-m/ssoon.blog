@@ -1,4 +1,5 @@
 import { getTagsOfPosts } from '@/datasets/post';
+import Link from 'next/link';
 
 const TagsPage = () => {
   const tags = getTagsOfPosts();
@@ -13,13 +14,14 @@ const TagsPage = () => {
 
       <div className="py-4 flex gap-2 flex-wrap">
         {tags.map(([key, value]) => (
-          <button
+          <Link
             key={key}
+            href={`/tags/${key}`}
             className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-indigo-500 dark:text-indigo-400 hover:bg-gray-200 dark:hover:bg-gray-700"
           >
             <span>{key}&nbsp;</span>
             <span>({value})</span>
-          </button>
+          </Link>
         ))}
       </div>
     </div>

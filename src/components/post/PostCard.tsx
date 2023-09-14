@@ -10,15 +10,7 @@ interface Props {
 const PostCard = ({ post }: Props) => {
   return (
     <Link href={post.url} className="group">
-      <div className="flex flex-col sm:flex-row gap-6 justify-start items-center h-full">
-        <div className="h-full w-full sm:w-3/12 aspect-[5/3] relative shrink-0 rounded overflow-hidden">
-          <Image
-            className="group-hover:scale-110  transition duration-300"
-            src={'/temp.png'}
-            fill
-            alt="tumbnail-image"
-          />
-        </div>
+      <div className="py-2 flex flex-col sm:flex-row gap-6 justify-start items-center h-full">
         <div className="w-full">
           <h2 className="group-hover:underline text-2xl font-medium">
             {post.title}
