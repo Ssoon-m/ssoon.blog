@@ -8,7 +8,7 @@ const TagsPage = () => {
   return (
     <div>
       <h1 className="text-4xl font-bold">Tags ({tagsCount})</h1>
-      <div className="text-gray-700 dark:text-gray-300">
+      <div className="py-2 text-gray-700 dark:text-gray-300">
         전체 태그를 모아서 봅니다.
       </div>
 
