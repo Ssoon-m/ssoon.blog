@@ -3,7 +3,7 @@ import ToggleTheme from './ToggleTheme';
 
 const headerNavLinks = [
   { page: 'blog', title: 'Blog' },
-  { page: 'archives', title: 'Archives' },
+  { page: 'tags', title: 'Tags' },
   { page: 'about', title: 'About' },
 ];
 
