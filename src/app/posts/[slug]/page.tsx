@@ -9,7 +9,7 @@ const BlankLink = (props: any) => {
   } else {
     return (
       <a
-        className="text-indigo-500 no-underline"
+        className="text-indigo-500 underline hover:text-indigo-400"
         target="_blank"
         rel="noopener noreferrer"
         {...props}
@@ -42,7 +42,7 @@ const PostLayout = ({ params }: { params: { slug: string } }) => {
         </time>
         <h1 className="text-3xl font-bold">{post.title}</h1>
       </div>
-      <div className="prose dark:prose-invert">
+      <div className="prose dark:prose-invert w-full max-w-none">
         <MDXContent components={{ a: BlankLink }} />
       </div>
     </article>
