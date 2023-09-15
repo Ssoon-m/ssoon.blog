@@ -2190,8 +2190,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["autoprefixer", "virtual:ddccc941eb8b35cd4b898a64351d8bba4ecc85eb47e8f1b36dce7852d6c3635665e0fc5464861f723d175edb2248ce0fa54dfefb9b5e4d2fdaef4b2353c4aa82#npm:10.4.15"],\
             ["@types/postcss", null],\
             ["browserslist", "npm:4.21.10"],\
-            ["caniuse-lite", "npm:1.0.30001522"],\
-            ["fraction.js", "npm:4.2.1"],\
+            ["caniuse-lite", "npm:1.0.30001534"],\
+            ["fraction.js", "npm:4.3.6"],\
             ["normalize-range", "npm:0.1.2"],\
             ["picocolors", "npm:1.0.0"],\
             ["postcss", "npm:8.4.29"],\
@@ -2293,8 +2293,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/browserslist-npm-4.21.10-e2170a875b-1e27c0f111.zip/node_modules/browserslist/",\
           "packageDependencies": [\
             ["browserslist", "npm:4.21.10"],\
-            ["caniuse-lite", "npm:1.0.30001522"],\
-            ["electron-to-chromium", "npm:1.4.499"],\
+            ["caniuse-lite", "npm:1.0.30001534"],\
+            ["electron-to-chromium", "npm:1.4.522"],\
             ["node-releases", "npm:2.0.13"],\
             ["update-browserslist-db", "virtual:e2170a875bba2f8fa9e93e47c65f2f250097e101a59d95ea6fd852f32965e8cd6cef3b5662aa7295279d5bc60c9a612ddb8515c7dd1b7e8fb9984dee1823e7d6#npm:1.0.11"]\
           ],\
@@ -2386,6 +2386,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/caniuse-lite-npm-1.0.30001522-bcb2894ed5-56e3551c02.zip/node_modules/caniuse-lite/",\
           "packageDependencies": [\
             ["caniuse-lite", "npm:1.0.30001522"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:1.0.30001534", {\
+          "packageLocation": "./.yarn/cache/caniuse-lite-npm-1.0.30001534-bababd8437-8e8b63c1ce.zip/node_modules/caniuse-lite/",\
+          "packageDependencies": [\
+            ["caniuse-lite", "npm:1.0.30001534"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -2863,10 +2870,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["electron-to-chromium", [\
-        ["npm:1.4.499", {\
-          "packageLocation": "./.yarn/cache/electron-to-chromium-npm-1.4.499-606c54460f-9002f3bcd9.zip/node_modules/electron-to-chromium/",\
+        ["npm:1.4.522", {\
+          "packageLocation": "./.yarn/cache/electron-to-chromium-npm-1.4.522-7bb4bea145-c1e2c7b4d0.zip/node_modules/electron-to-chromium/",\
           "packageDependencies": [\
-            ["electron-to-chromium", "npm:1.4.499"]\
+            ["electron-to-chromium", "npm:1.4.522"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -3776,10 +3783,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["fraction.js", [\
-        ["npm:4.2.1", {\
-          "packageLocation": "./.yarn/cache/fraction.js-npm-4.2.1-c697afb8d6-94cc9844bf.zip/node_modules/fraction.js/",\
+        ["npm:4.3.6", {\
+          "packageLocation": "./.yarn/cache/fraction.js-npm-4.3.6-233f81170c-e96ae77e64.zip/node_modules/fraction.js/",\
           "packageDependencies": [\
-            ["fraction.js", "npm:4.2.1"]\
+            ["fraction.js", "npm:4.3.6"]\
           ],\
           "linkType": "HARD"\
         }]\

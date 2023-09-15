@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "autoprefixer": "10.4.15",
     "dayjs": "^1.11.9",
     "next": "13.4.19",
     "next-themes": "^0.2.1",
@@ -21,6 +20,7 @@
     "@types/node": "^20.6.1",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
+    "autoprefixer": "^10.4.15",
     "contentlayer": "^0.3.4",
     "eslint": "^8.49.0",
     "eslint-config-next": "^13.4.19",
