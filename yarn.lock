@@ -4336,6 +4336,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mdast-util-newline-to-break@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "mdast-util-newline-to-break@npm:1.0.0"
+  dependencies:
+    "@types/mdast": ^3.0.0
+    mdast-util-find-and-replace: ^2.0.0
+  checksum: af6524ed28eaf5634a8ef1d89388fefecddea7687b0837d0781e9aaca191c5615b226120778b392d04f903ae0903f31292830143908910e5d39c80151d1e6130
+  languageName: node
+  linkType: hard
+
 "mdast-util-phrasing@npm:^3.0.0":
   version: 3.0.1
   resolution: "mdast-util-phrasing@npm:3.0.1"
@@ -5043,6 +5053,7 @@ __metadata:
     rehype-autolink-headings: ^6.1.1
     rehype-prism-plus: ^1.6.3
     rehype-slug: ^6.0.0
+    remark-breaks: ^3.0.3
     remark-gfm: ^3.0.1
     tailwindcss: 3.3.3
     typescript: 5.1.6
@@ -5884,6 +5895,17 @@ __metadata:
     hast-util-to-html: ^8.0.0
     unified: ^10.0.0
   checksum: 7da6f07a8b31e544c3dcf648ddc831e3ea72d5d417f95471cd6f3ec172e4dfbf5615cbd5b53aebe8a36febce604a95fb23f83d650d476c3cd79bc0834d577359
+  languageName: node
+  linkType: hard
+
+"remark-breaks@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "remark-breaks@npm:3.0.3"
+  dependencies:
+    "@types/mdast": ^3.0.0
+    mdast-util-newline-to-break: ^1.0.0
+    unified: ^10.0.0
+  checksum: 054a123aaa1d53e233ef06528e46a986da3180cbd1ac08a192531dc7651b9a329f0ac41ef9dd189f69c05674698e51dc64d69cd97435f1ec64ed0998fec3b3d5
   languageName: node
   linkType: hard
 

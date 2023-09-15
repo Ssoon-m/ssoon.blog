@@ -33,6 +33,7 @@
   },
   "packageManager": "yarn@3.6.2",
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.10"
+    "@tailwindcss/typography": "^0.5.10",
+    "remark-breaks": "^3.0.3"
   }
 }

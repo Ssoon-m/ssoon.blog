@@ -47,6 +47,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["rehype-autolink-headings", "npm:6.1.1"],\
             ["rehype-prism-plus", "npm:1.6.3"],\
             ["rehype-slug", "npm:6.0.0"],\
+            ["remark-breaks", "npm:3.0.3"],\
             ["remark-gfm", "npm:3.0.1"],\
             ["tailwindcss", "npm:3.3.3"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"]\
@@ -5410,6 +5411,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["mdast-util-newline-to-break", [\
+        ["npm:1.0.0", {\
+          "packageLocation": "./.yarn/cache/mdast-util-newline-to-break-npm-1.0.0-20ff06715f-af6524ed28.zip/node_modules/mdast-util-newline-to-break/",\
+          "packageDependencies": [\
+            ["mdast-util-newline-to-break", "npm:1.0.0"],\
+            ["@types/mdast", "npm:3.0.12"],\
+            ["mdast-util-find-and-replace", "npm:2.2.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["mdast-util-phrasing", [\
         ["npm:3.0.1", {\
           "packageLocation": "./.yarn/cache/mdast-util-phrasing-npm-3.0.1-1da1e5bff8-c5b616d9b1.zip/node_modules/mdast-util-phrasing/",\
@@ -6188,6 +6200,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["rehype-autolink-headings", "npm:6.1.1"],\
             ["rehype-prism-plus", "npm:1.6.3"],\
             ["rehype-slug", "npm:6.0.0"],\
+            ["remark-breaks", "npm:3.0.3"],\
             ["remark-gfm", "npm:3.0.1"],\
             ["tailwindcss", "npm:3.3.3"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"]\
@@ -7214,6 +7227,18 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["rehype-stringify", "npm:9.0.4"],\
             ["@types/hast", "npm:2.3.5"],\
             ["hast-util-to-html", "npm:8.0.4"],\
+            ["unified", "npm:10.1.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["remark-breaks", [\
+        ["npm:3.0.3", {\
+          "packageLocation": "./.yarn/cache/remark-breaks-npm-3.0.3-872865cb8f-054a123aaa.zip/node_modules/remark-breaks/",\
+          "packageDependencies": [\
+            ["remark-breaks", "npm:3.0.3"],\
+            ["@types/mdast", "npm:3.0.12"],\
+            ["mdast-util-newline-to-break", "npm:1.0.0"],\
             ["unified", "npm:10.1.2"]\
           ],\
           "linkType": "HARD"\

@@ -8,6 +8,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypePrismPlus from 'rehype-prism-plus';
+import remarkBreaks from 'remark-breaks';
 import readingTime from 'reading-time';
 
 const fields: FieldDefs = {
@@ -32,8 +33,7 @@ const computedFields: ComputedFields<'Post'> = {
   },
   readingTime: {
     type: 'string',
-    // resolve: (post) => Math.ceil(readingTime(post.body.raw).minutes),
-    resolve: (post) => Math.ceil(10),
+    resolve: (post) => Math.ceil(readingTime(post.body.raw).minutes),
   },
 };
 
@@ -49,7 +49,7 @@ export default makeSource({
   contentDirPath: 'posts',
   documentTypes: [Post],
   mdx: {
-    remarkPlugins: [remarkGfm],
+    remarkPlugins: [remarkGfm, remarkBreaks],
     rehypePlugins: [
       rehypeSlug,
       rehypePrismPlus,
