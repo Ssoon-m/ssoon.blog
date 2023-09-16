@@ -1,8 +1,8 @@
 import { dateFormatter } from '@/lib/utils/date';
 import Link from 'next/link';
-import GithubIcon from './icons/GithubIcon';
-import VelogIcon from './icons/VelogIcon';
-import EmailIcon from './icons/EmailIcon';
+import GithubIcon from '../icons/GithubIcon';
+import VelogIcon from '../icons/VelogIcon';
+import EmailIcon from '../icons/EmailIcon';
 const year = dateFormatter(new Date(), 'YYYY');
 
 const Footer = () => {

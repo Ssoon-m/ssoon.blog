@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import ToggleTheme from './ToggleTheme';
+import ToggleTheme from '../ToggleTheme';
 
 const headerNavLinks = [
   { page: 'blog', title: 'Blog' },

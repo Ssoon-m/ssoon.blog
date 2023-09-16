@@ -1,7 +1,7 @@
-import Header from '@/components/Header';
+import Header from '@/components/layout/Header';
 import '../styles/globals.css';
 import type { Metadata } from 'next';
-import Footer from '@/components/Footer';
+import Footer from '@/components/layout/Footer';
 import { pretendard } from '@/lib/fonts';
 import AppProviders from './AppProviders';
 
