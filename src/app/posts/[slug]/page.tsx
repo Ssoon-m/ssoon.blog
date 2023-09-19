@@ -35,7 +35,7 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
         date={post.date}
         readingTime={post.readingTime}
       />
-      <div className="flex-1">
+      <div className="flex-1 pb-8">
         <PostContent
           postBodyCode={post.body.code}
           postBodyRaw={post.body.raw}
