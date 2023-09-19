@@ -18,8 +18,19 @@ export const getMainPosts = () => {
   return _allPosts.slice(0, 5).sort((a, b) => dateCompare(b.date, a.date));
 };
 
-export const getPost = (slug: string) => {
+export const getPostBySlug = (slug: string) => {
   return getPosts().find((post) => post._raw.flattenedPath === slug);
+};
+
+export const getPostIndexBySlug = (slug: string) => {
+  return getPosts().findIndex((post) => post._raw.flattenedPath === slug);
+};
+
+export const getPrevPost = (index: number): _Post | null => {
+  return getPosts()[index + 1] ?? null;
+};
+export const getNextPost = (index: number): _Post | null => {
+  return getPosts()[index - 1] ?? null;
 };
 
 export const getTagsOfPosts = () => {

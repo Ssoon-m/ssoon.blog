@@ -31,7 +31,9 @@ const PostCard = ({ post }: Props) => {
             ))}
           </div>
           <p className="text-xs text-gray-400">
-            {dateFormatter(post.date, 'YYYY-MM-DD')}
+            <time dateTime={post.date}>
+              {dateFormatter(post.date, 'YYYY-MM-DD')}
+            </time>
             <span className="select-none"> · </span> {post.readingTime} min read
           </p>
         </div>
