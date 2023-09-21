@@ -35,8 +35,8 @@ const Giscus = () => {
     script.dataset.inputPosition = 'bottom';
     script.dataset.theme = theme;
     script.dataset.lang = 'en';
-    script.dataset.crossorigin = 'anonymous';
-    script.dataset.async = 'true';
+    script.crossOrigin = 'anonymous';
+    script.async = true;
     ref.current.appendChild(script);
   }, []);
 
