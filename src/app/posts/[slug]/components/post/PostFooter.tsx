@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
-import ChevronLeftIcon from '../../../../components/icons/ChevronLeftIcon';
-import ChevronRightIcon from '../../../../components/icons/ChevronRightIcon';
+import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon';
+import ChevronRightIcon from '@/components/icons/ChevronRightIcon';
 import { Post } from '@/datasets/post';
 
 interface PostFooterProps {

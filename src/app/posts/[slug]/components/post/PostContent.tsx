@@ -1,6 +1,6 @@
 import { parseHeadersForTOC } from '@/lib/utils/markdown';
 import { useMDXComponent } from 'next-contentlayer/hooks';
-import TocSide from '../../../../components/toc/TocSide';
+import TocSide from '../toc/TocSide';
 
 const BlankLink = (props: any) => {
   if (props.className === 'anchor') {

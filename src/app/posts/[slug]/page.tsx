@@ -6,9 +6,9 @@ import {
   getPostIndexBySlug,
   getPosts,
 } from '@/datasets/post';
-import PostContent from '@/app/posts/[slug]/components/PostContent';
-import PostHeader from '@/app/posts/[slug]/components/PostHeader';
-import PostFooter from '@/app/posts/[slug]/components/PostFooter';
+import PostContent from '@/app/posts/[slug]/components/post/PostContent';
+import PostHeader from '@/app/posts/[slug]/components/post/PostHeader';
+import PostFooter from '@/app/posts/[slug]/components/post/PostFooter';
 import Giscus from '@/components/Giscus';
 
 export const generateStaticParams = async () =>
