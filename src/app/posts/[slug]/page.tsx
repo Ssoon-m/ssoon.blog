@@ -9,6 +9,7 @@ import {
 import PostContent from '@/components/post/PostContent';
 import PostHeader from '@/components/post/PostHeader';
 import PostFooter from '@/components/post/PostFooter';
+import Giscus from '@/components/Giscus';
 
 export const generateStaticParams = async () =>
   getPosts().map((post) => ({ slug: post._raw.flattenedPath }));
@@ -41,7 +42,10 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
           postBodyRaw={post.body.raw}
         />
       </div>
-      <PostFooter prevPost={prevPost} nextPost={nextPost} />
+      <div className="py-4">
+        <PostFooter prevPost={prevPost} nextPost={nextPost} />
+      </div>
+      <Giscus />
     </div>
   );
 };
