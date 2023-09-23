@@ -9,7 +9,7 @@
     "prepare": "husky install",
     "lint-fix:prettier": "prettier --write \"./**/*.{js,ts,tsx}\" --ignore-path .gitignore --ignore-path .prettierignore ",
     "lint-fix": "next lint --fix",
-    "ts-check" : "tsc --noEmit",
+    "ts-check": "tsc --noEmit",
     "lint": "next lint",
     "run-lint-staged": "lint-staged"
   },

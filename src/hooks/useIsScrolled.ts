@@ -11,7 +11,7 @@ const useIsScrolled = () => {
     scrollY > scrollOffset ? setIsScroll(true) : setIsScroll(false);
   };
 
-  const handleWheel = useThrottle(updateScroll , 10);
+  const handleWheel = useThrottle(updateScroll, 10);
 
   useEffect(() => {
     window.addEventListener('scroll', handleWheel);
