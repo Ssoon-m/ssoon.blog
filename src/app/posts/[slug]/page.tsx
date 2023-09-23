@@ -10,6 +10,7 @@ import PostContent from '@/app/posts/[slug]/components/post/PostContent';
 import PostHeader from '@/app/posts/[slug]/components/post/PostHeader';
 import PostFooter from '@/app/posts/[slug]/components/post/PostFooter';
 import Giscus from '@/components/Giscus';
+import ScrollTopButton from '@/components/ScrollTopButton';
 
 export const generateStaticParams = async () =>
   getPosts().map((post) => ({ slug: post._raw.flattenedPath }));
@@ -46,6 +47,9 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
         <PostFooter prevPost={prevPost} nextPost={nextPost} />
       </div>
       <Giscus />
+      <div className="fixed bottom-4 right-4">
+        <ScrollTopButton />
+      </div>
     </div>
   );
 };
