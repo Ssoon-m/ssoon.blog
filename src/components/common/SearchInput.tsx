@@ -8,7 +8,7 @@ const SearchInput = ({
     <div className={`relative w-full ${className}`}>
       <input
         type={props.type}
-        className="w-full pl-3 pr-8 py-2 border rounded border-zinc-300 dark:border-zinc-800 focus:border-zinc-500 dark:focus:border-zinc-300 focus:outline-none dark:bg-zinc-800"
+        className="w-full pl-3 pr-8 py-2 rounded  bg-zinc-100 border border-zinc-100 dark:border-zinc-800 focus:border-zinc-200 dark:focus:border-zinc-700 focus:outline-none dark:bg-zinc-800"
         {...props}
       />
       <SearchIcon
