@@ -11,7 +11,7 @@ const Footer = () => {
       <div className="flex gap-2 items-center">
         <GithubLink />
         <VelogLink />
-        <MailLink/>
+        <MailLink />
       </div>
       <div className="flex flex-col sm:inline-block text-sm text-gray-600 dark:text-gray-400">
         <span>

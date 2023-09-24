@@ -10,7 +10,7 @@ const PostCard = ({ post }: Props) => {
   return (
     <div className="py-2 flex flex-col sm:flex-row gap-6 justify-start items-center h-full">
       <div className="w-full">
-        <Link href={post.url} className="group">
+        <Link href={`/${post.postUrl}`} className="group">
           <h2 className="group-hover:underline text-2xl font-medium">
             {post.title}
           </h2>

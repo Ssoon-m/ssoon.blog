@@ -14,7 +14,7 @@ const PostFooter = ({ prevPost, nextPost }: PostFooterProps) => {
     <footer className="flex justify-between">
       {prevPost ? (
         <Link
-          href={prevPost.url}
+          href={`/${prevPost.postUrl}`}
           aria-label="previous post"
           className="flex gap-1 rounded-lg pr-2 py-2 text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition select-none"
         >
@@ -26,7 +26,7 @@ const PostFooter = ({ prevPost, nextPost }: PostFooterProps) => {
       )}
       {nextPost ? (
         <Link
-          href={nextPost.url}
+          href={`/${nextPost.postUrl}`}
           aria-label="next post"
           className="flex gap-1 rounded-lg pl-2 py-2 text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition select-none"
         >

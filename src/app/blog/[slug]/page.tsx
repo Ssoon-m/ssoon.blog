@@ -6,9 +6,9 @@ import {
   getPostIndexBySlug,
   getPosts,
 } from '@/datasets/post';
-import PostContent from '@/app/posts/[slug]/components/post/PostContent';
-import PostHeader from '@/app/posts/[slug]/components/post/PostHeader';
-import PostFooter from '@/app/posts/[slug]/components/post/PostFooter';
+import PostContent from './components/post/PostContent';
+import PostHeader from './components/post/PostHeader';
+import PostFooter from './components/post/PostFooter';
 import Giscus from '@/components/Giscus';
 import ScrollTopButton from '@/components/ScrollTopButton';
 
@@ -16,7 +16,7 @@ export const generateStaticParams = async () =>
   getPosts().map((post) => ({ slug: post._raw.flattenedPath }));
 
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
-  const post = getPostBySlug(params.slug);
+  const post = getPostBySlug(`blog/${params.slug}`);
   if (!post) {
     notFound();
   }
@@ -24,9 +24,9 @@ export const generateMetadata = ({ params }: { params: { slug: string } }) => {
 };
 
 const PostPage = ({ params }: { params: { slug: string } }) => {
-  const post = getPostBySlug(params.slug);
+  const post = getPostBySlug(`blog/${params.slug}`);
   if (!post) notFound();
-  const postIndex = getPostIndexBySlug(params.slug);
+  const postIndex = getPostIndexBySlug(`blog/${params.slug}`);
   const prevPost = getPrevPost(postIndex);
   const nextPost = getNextPost(postIndex);
 

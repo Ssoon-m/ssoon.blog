@@ -11,7 +11,7 @@ import rehypePrismPlus from 'rehype-prism-plus';
 import remarkBreaks from 'remark-breaks';
 import readingTime from 'reading-time';
 
-const fields: FieldDefs = {
+const PostFields: FieldDefs = {
   title: { type: 'string', required: true },
   date: { type: 'date', required: true },
   description: { type: 'string', required: true },
@@ -26,10 +26,10 @@ const fields: FieldDefs = {
   },
 };
 
-const computedFields: ComputedFields<'Post'> = {
-  url: {
+const PostComputedFields: ComputedFields<'Post'> = {
+  postUrl: {
     type: 'string',
-    resolve: (post) => `/posts/${post._raw.flattenedPath}`,
+    resolve: (post) => `${post._raw.flattenedPath}`,
   },
   readingTime: {
     type: 'string',
@@ -39,10 +39,10 @@ const computedFields: ComputedFields<'Post'> = {
 
 export const Post = defineDocumentType(() => ({
   name: 'Post',
-  filePathPattern: `**/*.mdx`,
+  filePathPattern: `blog/*.mdx`,
   contentType: 'mdx',
-  fields,
-  computedFields,
+  fields: PostFields,
+  computedFields: PostComputedFields,
 }));
 
 export default makeSource({
