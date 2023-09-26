@@ -1,5 +1,7 @@
+import { siteSEO } from '@/lib/seo';
 import SearchBoxList from './components/SearchBoxList';
 import { getPosts } from '@/datasets/post';
+import { Metadata } from 'next';
 
 const BlogPage = () => {
   const posts = getPosts();
@@ -15,3 +17,9 @@ const BlogPage = () => {
 };
 
 export default BlogPage;
+
+export const metadata: Metadata = siteSEO({
+  title: 'Blog',
+  description: '학습한 내용들을 공유합니다.',
+  pathname: 'blog',
+});

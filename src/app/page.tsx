@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getMainPosts } from '@/datasets/post';
 import Image from 'next/image';
 import PostCard from '@/components/post/PostCard';
+import { siteData } from '@/constants/my-site';
 
 export default function Home() {
   const posts = getMainPosts();
@@ -10,7 +11,7 @@ export default function Home() {
     <div>
       <div className="flex items-center sm:justify-between flex-wrap flex-col sm:flex-row">
         <div className="order-2 sm:order-1 text-center sm:text-start mt-2 sm:mt-0">
-          <h1 className="text-2xl font-bold">권순민</h1>
+          <h1 className="text-2xl font-bold">{siteData.auhtor.name}</h1>
           <h3 className="text-lg text-gray-400">프론트엔드 개발자</h3>
           <p className="text-gray-600 dark:text-gray-300">
             좋은 사용자 경험을 위해 학습하고 기록합니다.😄

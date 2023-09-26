@@ -1,11 +1,6 @@
 import Link from 'next/link';
 import ToggleTheme from '../ToggleTheme';
-
-const headerNavLinks = [
-  { page: 'blog', title: 'Blog' },
-  { page: 'tags', title: 'Tags' },
-  { page: 'about', title: 'About' },
-];
+import { headerNavLinks } from '@/constants/header-menu';
 
 const Header = () => {
   return (

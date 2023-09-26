@@ -1,8 +1,9 @@
+import { siteData } from '@/constants/my-site';
 import { dateFormatter } from '@/lib/utils/date';
 import Link from 'next/link';
 import GithubLink from '../common/GithubLink';
-import VelogLink from '../common/VelogLink';
 import MailLink from '../common/MailLink';
+import VelogLink from '../common/VelogLink';
 const year = dateFormatter(new Date(), 'YYYY');
 
 const Footer = () => {
@@ -18,7 +19,7 @@ const Footer = () => {
           © {year}{' '}
           <Link
             className="hover:underline text-gray-800 dark:text-gray-300"
-            href="https://github.com/Ssoon-m/ssoon.blog"
+            href={siteData.auhtor.projectRepo}
           >
             Ssoon blog
           </Link>

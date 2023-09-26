@@ -1,4 +1,6 @@
 import { getTagsOfPosts } from '@/datasets/post';
+import { siteSEO } from '@/lib/seo';
+import { Metadata } from 'next';
 import Link from 'next/link';
 
 const TagsPage = () => {
@@ -9,7 +11,7 @@ const TagsPage = () => {
     <div>
       <h1 className="text-4xl font-bold">Tags ({tagsCount})</h1>
       <div className="py-2 text-gray-700 dark:text-gray-300">
-        전체 태그를 모아서 봅니다.
+        모든 게시글에 사용된 태그들을 모아서 보여줍니다.
       </div>
 
       <div className="py-4 flex gap-2 flex-wrap">
@@ -29,3 +31,9 @@ const TagsPage = () => {
 };
 
 export default TagsPage;
+
+export const metadata: Metadata = siteSEO({
+  title: 'Tag',
+  description: '모든 게시글에 사용된 태그들을 모아서 보여줍니다.',
+  pathname: 'tag',
+});

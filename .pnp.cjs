@@ -53,6 +53,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["rehype-slug", "npm:6.0.0"],\
             ["remark-breaks", "npm:3.0.3"],\
             ["remark-gfm", "npm:3.0.1"],\
+            ["schema-dts", "virtual:ddccc941eb8b35cd4b898a64351d8bba4ecc85eb47e8f1b36dce7852d6c3635665e0fc5464861f723d175edb2248ce0fa54dfefb9b5e4d2fdaef4b2353c4aa82#npm:1.1.2"],\
             ["tailwindcss", "npm:3.3.3"],\
             ["typescript", "patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"]\
           ],\
@@ -6447,6 +6448,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["rehype-slug", "npm:6.0.0"],\
             ["remark-breaks", "npm:3.0.3"],\
             ["remark-gfm", "npm:3.0.1"],\
+            ["schema-dts", "virtual:ddccc941eb8b35cd4b898a64351d8bba4ecc85eb47e8f1b36dce7852d6c3635665e0fc5464861f723d175edb2248ce0fa54dfefb9b5e4d2fdaef4b2353c4aa82#npm:1.1.2"],\
             ["tailwindcss", "npm:3.3.3"],\
             ["typescript", "patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"]\
           ],\
@@ -7791,6 +7793,28 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["scheduler", "npm:0.23.0"],\
             ["loose-envify", "npm:1.4.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["schema-dts", [\
+        ["npm:1.1.2", {\
+          "packageLocation": "./.yarn/cache/schema-dts-npm-1.1.2-f3fefe2569-29703363b2.zip/node_modules/schema-dts/",\
+          "packageDependencies": [\
+            ["schema-dts", "npm:1.1.2"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:ddccc941eb8b35cd4b898a64351d8bba4ecc85eb47e8f1b36dce7852d6c3635665e0fc5464861f723d175edb2248ce0fa54dfefb9b5e4d2fdaef4b2353c4aa82#npm:1.1.2", {\
+          "packageLocation": "./.yarn/__virtual__/schema-dts-virtual-44fe3ab7b4/0/cache/schema-dts-npm-1.1.2-f3fefe2569-29703363b2.zip/node_modules/schema-dts/",\
+          "packageDependencies": [\
+            ["schema-dts", "virtual:ddccc941eb8b35cd4b898a64351d8bba4ecc85eb47e8f1b36dce7852d6c3635665e0fc5464861f723d175edb2248ce0fa54dfefb9b5e4d2fdaef4b2353c4aa82#npm:1.1.2"],\
+            ["@types/typescript", null],\
+            ["typescript", "patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"]\
+          ],\
+          "packagePeers": [\
+            "@types/typescript",\
+            "typescript"\
           ],\
           "linkType": "HARD"\
         }]\
