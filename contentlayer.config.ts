@@ -11,9 +11,13 @@ import rehypePrismPlus from 'rehype-prism-plus';
 import remarkBreaks from 'remark-breaks';
 import readingTime from 'reading-time';
 
-const PostFields: FieldDefs = {
+const fields: FieldDefs = {
   title: { type: 'string', required: true },
   date: { type: 'date', required: true },
+};
+
+const PostFields: FieldDefs = {
+  ...fields,
   description: { type: 'string', required: true },
   thumbnailUrl: { type: 'string', required: true },
   tags: {
@@ -29,11 +33,18 @@ const PostFields: FieldDefs = {
 const PostComputedFields: ComputedFields<'Post'> = {
   postUrl: {
     type: 'string',
-    resolve: (post) => `${post._raw.flattenedPath}`,
+    resolve: (post) => post._raw.flattenedPath,
   },
   readingTime: {
     type: 'string',
     resolve: (post) => Math.ceil(readingTime(post.body.raw).minutes),
+  },
+};
+
+const NoteComputedFields: ComputedFields<'Note'> = {
+  noteUrl: {
+    type: 'string',
+    resolve: (note) => note._raw.flattenedPath,
   },
 };
 
@@ -45,9 +56,17 @@ export const Post = defineDocumentType(() => ({
   computedFields: PostComputedFields,
 }));
 
+export const Note = defineDocumentType(() => ({
+  name: 'Note',
+  filePathPattern: `note/**/*.mdx`,
+  contentType: 'mdx',
+  fields,
+  computedFields: NoteComputedFields,
+}));
+
 export default makeSource({
   contentDirPath: 'posts',
-  documentTypes: [Post],
+  documentTypes: [Post, Note],
   mdx: {
     remarkPlugins: [remarkGfm, remarkBreaks],
     rehypePlugins: [

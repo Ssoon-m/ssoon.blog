@@ -1,10 +1,10 @@
-import Header from '@/components/layout/Header';
-import '../styles/globals.css';
-import type { Metadata } from 'next';
 import Footer from '@/components/layout/Footer';
+import Header from '@/components/layout/Header';
 import { pretendard } from '@/lib/fonts';
-import AppProviders from './AppProviders';
 import { siteSEO } from '@/lib/seo';
+import type { Metadata } from 'next';
+import '../styles/globals.css';
+import AppProviders from './AppProviders';
 
 export default function RootLayout({
   children,

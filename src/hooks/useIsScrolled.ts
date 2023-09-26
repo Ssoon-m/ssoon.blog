@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
-import { throttle } from '@/lib/utils/throttle';
+import { useEffect, useState } from 'react';
 import useThrottle from './useThrottle';
 const scrollOffset = 15;
 

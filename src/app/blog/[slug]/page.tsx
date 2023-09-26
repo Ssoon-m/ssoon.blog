@@ -4,7 +4,7 @@ import {
   getPrevPost,
   getPostBySlug,
   getPostIndexBySlug,
-  getPosts,
+  getAllPosts,
 } from '@/datasets/post';
 import PostContent from './components/post/PostContent';
 import PostHeader from './components/post/PostHeader';
@@ -15,7 +15,7 @@ import { articleSEO } from '@/lib/seo';
 import ArticleJsonLd from '@/components/ArticleJsonLd';
 
 export const generateStaticParams = async () =>
-  getPosts().map((post) => ({ slug: post._raw.flattenedPath }));
+  getAllPosts().map((post) => ({ slug: post._raw.flattenedPath }));
 
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
   const post = getPostBySlug(`blog/${params.slug}`);
