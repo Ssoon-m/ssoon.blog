@@ -6,7 +6,7 @@ const TagsPage = ({ params }: { params: { slug: string } }) => {
   const tag = decodeURIComponent(params.slug);
   const posts = getPostByTag(tag);
   return (
-    <div>
+    <div className="pt-6">
       <h1 className="text-4xl font-bold"># {tag}</h1>
       <div className="pt-8">
         <div className="flex flex-col gap-16 sm:gap-6 mb-7">

@@ -1,5 +1,4 @@
 import { dateFormatter } from '@/lib/utils/date';
-import React from 'react';
 
 interface PostHeaderProps {
   title: string;

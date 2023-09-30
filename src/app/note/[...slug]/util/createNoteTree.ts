@@ -1,39 +1,24 @@
 import type { Note } from 'contentlayer/generated';
-
-type TreeView = {
-  title: string;
-  date: string;
-  url: string;
-  children: TreeView[];
-};
+import type { TreeView } from '../types/aside-type';
+import { dateCompare } from '@/lib/utils/date';
 
 export const createTreeView = (
   notes: Note[],
   parentUrl: string,
 ): TreeView[] => {
-  const treeViewNodes: TreeView[] = [];
+  const depth = parentUrl.split('/').length;
 
-  notes.forEach((note) => {
-    if (note.noteUrl.startsWith(parentUrl)) {
-      const remainingUrl = note.noteUrl.slice(parentUrl.length + 1);
-      const nextSlashIndex = remainingUrl.indexOf('/');
+  const filteredNotes = notes.filter(
+    (note) =>
+      note.noteUrl.split('/').length === depth + 1 &&
+      note.noteUrl.startsWith(parentUrl),
+  );
 
-      const currentUrlSegment =
-        nextSlashIndex !== -1
-          ? remainingUrl.slice(0, nextSlashIndex)
-          : remainingUrl;
-
-      if (!treeViewNodes.find((node) => node.title === currentUrlSegment)) {
-        const newNode: TreeView = {
-          title: note.title,
-          date: note.date,
-          url: `/${parentUrl}/${currentUrlSegment}`,
-          children: createTreeView(notes, `${parentUrl}/${currentUrlSegment}`),
-        };
-        treeViewNodes.push(newNode);
-      }
-    }
-  });
-
-  return treeViewNodes;
+  const treeView = filteredNotes.map((note) => ({
+    title: note.title,
+    date: note.date,
+    url: note.noteUrl,
+    children: createTreeView(notes, note.noteUrl),
+  }));
+  return treeView;
 };

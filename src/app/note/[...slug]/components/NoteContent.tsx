@@ -1,6 +1,6 @@
 import { parseHeadersForTOC } from '@/lib/utils/markdown';
 import { useMDXComponent } from 'next-contentlayer/hooks';
-import TocSide from '../../../../../components/post/TocSide';
+import TocSide from '@/components/post/TocSide';
 
 const BlankLink = (props: any) => {
   if (props.className === 'anchor') {
@@ -17,12 +17,12 @@ const BlankLink = (props: any) => {
   }
 };
 
-interface PostContentProps {
+interface NoteContentProps {
   postBodyCode: string;
   postBodyRaw: string;
 }
 
-const PostContent = ({ postBodyCode, postBodyRaw }: PostContentProps) => {
+const NoteContent = ({ postBodyCode, postBodyRaw }: NoteContentProps) => {
   const MDXContent = useMDXComponent(postBodyCode);
   const toc = parseHeadersForTOC(postBodyRaw);
 
@@ -44,4 +44,4 @@ const PostContent = ({ postBodyCode, postBodyRaw }: PostContentProps) => {
   );
 };
 
-export default PostContent;
+export default NoteContent;

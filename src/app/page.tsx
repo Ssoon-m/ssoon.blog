@@ -8,7 +8,7 @@ export default function Home() {
   const posts = getMainPosts();
 
   return (
-    <div>
+    <div className="pt-6">
       <div className="flex items-center sm:justify-between flex-wrap flex-col sm:flex-row">
         <div className="order-2 sm:order-1 text-center sm:text-start mt-2 sm:mt-0">
           <h1 className="text-2xl font-bold">{siteData.auhtor.name}</h1>

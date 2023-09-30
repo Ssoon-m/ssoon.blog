@@ -8,7 +8,7 @@ const TagsPage = () => {
   const tagsCount = tags.reduce((acc, [_, count]) => acc + count, 0);
 
   return (
-    <div>
+    <div className="pt-6">
       <h1 className="text-4xl font-bold">Tags ({tagsCount})</h1>
       <div className="py-2 text-gray-700 dark:text-gray-300">
         게시글에 사용된 태그들을 모아서 보여줍니다.
