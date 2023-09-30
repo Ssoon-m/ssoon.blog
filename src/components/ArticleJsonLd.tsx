@@ -4,9 +4,9 @@ import { Article } from 'schema-dts';
 interface ArticleJsonLdProps {
   headline: string;
   datePublished: string;
-  description: string;
+  description?: string;
   pathname: string;
-  image: string;
+  image?: string;
 }
 
 const ArticleJsonLd = ({
