@@ -54,7 +54,7 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
           date={post.date}
           readingTime={post.readingTime}
         />
-        <div className="flex-1 pb-8">
+        <div className="flex-1 p-4 pb-8">
           <PostContent
             postBodyCode={post.body.code}
             postBodyRaw={post.body.raw}
@@ -64,10 +64,8 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
           <PostFooter prevPost={prevPost} nextPost={nextPost} />
         </div>
         <Giscus />
-        <div className="fixed bottom-4 right-4">
-          <ScrollTopButton />
-        </div>
       </div>
+      <ScrollTopButton />
     </>
   );
 };

@@ -1,11 +1,13 @@
-import { getAllNotes, getNotebySlug } from '@/datasets/note';
-import { notFound } from 'next/navigation';
-import { createTreeView } from './util/createNoteTree';
-import AsideCategory from './components/AsideCategory';
-import PostContent from '@/app/blog/[slug]/components/post/PostContent';
-import NoteHeader from './components/NoteHeader';
-import { articleSEO } from '@/lib/seo';
 import ArticleJsonLd from '@/components/ArticleJsonLd';
+import ScrollTopButton from '@/components/ScrollTopButton';
+import { getAllNotes, getNotebySlug } from '@/datasets/note';
+import { articleSEO } from '@/lib/seo';
+import { notFound } from 'next/navigation';
+import AsideCategory from './components/AsideCategory';
+import NoteContent from './components/NoteContent';
+import NoteHeader from './components/NoteHeader';
+import TopNavCategory from './components/TopNavCategory';
+import { createTreeView } from './util/createNoteTree';
 
 export const generateStaticParams = async () =>
   getAllNotes().map((note) => ({ slug: note._raw.flattenedPath.split('/') }));
@@ -39,23 +41,28 @@ const NotePage = ({ params }: { params: { slug: string[] } }) => {
         datePublished={note.date}
         pathname={note.noteUrl}
       />
-      <div className="flex-1 flex flex-col">
-        <div className="flex-1 flex justify-between">
-          <div className="shrink-0 h-full sticky top-14 p-2 w-[300px]">
-            <AsideCategory
-              categories={treeView}
-              currentPath={`note/${noteSlug}`}
-            />
-          </div>
-          <div className="w-full p-12 border-l border-gray-100 dark:border-gray-700">
-            <NoteHeader title={note.title} date={note.date} />
-            <PostContent
-              postBodyCode={note.body.code}
-              postBodyRaw={note.body.raw}
-            />
-          </div>
+      <div className="flex-1 flex flex-col md:flex-row">
+        <div className="hidden md:block shrink-0 h-full sticky top-14 p-2 w-[300px]">
+          <AsideCategory
+            categories={treeView}
+            currentPath={`note/${noteSlug}`}
+          />
+        </div>
+        <div className="block md:hidden">
+          <TopNavCategory
+            categories={treeView}
+            currentPath={`note/${noteSlug}`}
+          />
+        </div>
+        <div className="w-full p-8 md:pt-12 pt-20 md:border-l md:border-gray-100 md:dark:border-gray-700">
+          <NoteHeader title={note.title} date={note.date} />
+          <NoteContent
+            postBodyCode={note.body.code}
+            postBodyRaw={note.body.raw}
+          />
         </div>
       </div>
+      <ScrollTopButton />
     </>
   );
 };

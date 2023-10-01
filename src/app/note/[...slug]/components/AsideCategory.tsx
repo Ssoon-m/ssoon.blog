@@ -1,6 +1,6 @@
 'use client';
 import type { TreeView } from '../types/aside-type';
-import AsideCategoryItem from './AsideCategoryItem';
+import CategoryItem from './CategoryItem';
 
 interface AsideCategoryProps {
   categories: TreeView[];
@@ -12,7 +12,7 @@ const AsideCategory = ({ categories, currentPath }: AsideCategoryProps) => {
     <aside className="w-full">
       <ul>
         {categories.map((category, i) => (
-          <AsideCategoryItem
+          <CategoryItem
             key={i}
             category={category}
             isExpanded={currentPath.startsWith(category.url)}

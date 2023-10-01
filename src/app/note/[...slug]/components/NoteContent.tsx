@@ -27,17 +27,15 @@ const NoteContent = ({ postBodyCode, postBodyRaw }: NoteContentProps) => {
   const toc = parseHeadersForTOC(postBodyRaw);
 
   return (
-    <article>
-      <div className="h-8 relative">
-        <div className="absolute right-0">
-          <div className="pl-12 fixed hidden lg:block max-w-[250px]">
-            <TocSide tableOfContents={toc} />
-          </div>
-        </div>
-      </div>
-      <div className="ralative">
+    <article className="pt-7">
+      <div className="flex justify-between relative">
         <div className="flex-1 prose dark:prose-invert w-full max-w-none relative">
           <MDXContent components={{ a: BlankLink }} />
+        </div>
+        <div className="pl-6 hidden lg:block min-w-[200px] max-w-[200px]">
+          <div className="sticky top-[80px] mt-[_-50px] h-fit">
+            <TocSide tableOfContents={toc} />
+          </div>
         </div>
       </div>
     </article>

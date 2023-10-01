@@ -28,16 +28,14 @@ const PostContent = ({ postBodyCode, postBodyRaw }: PostContentProps) => {
 
   return (
     <article>
-      <div className="h-8 relative">
-        <div className="absolute right-0">
-          <div className="pl-12 fixed hidden lg:block max-w-[250px]">
+      <div className="flex relative">
+        <div className="prose dark:prose-invert w-full max-w-none relative">
+          <MDXContent components={{ a: BlankLink }} />
+        </div>
+        <div className="pl-12 hidden lg:block min-w-[200px] max-w-[250px]">
+          <div className="sticky top-[80px] h-fit">
             <TocSide tableOfContents={toc} />
           </div>
-        </div>
-      </div>
-      <div className="ralative">
-        <div className="flex-1 prose dark:prose-invert w-full max-w-none relative">
-          <MDXContent components={{ a: BlankLink }} />
         </div>
       </div>
     </article>

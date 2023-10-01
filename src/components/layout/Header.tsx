@@ -4,7 +4,7 @@ import { headerNavLinks } from '@/constants/header-menu';
 
 const Header = () => {
   return (
-    <header className="bg-transparent w-full py-3 fixed top-0 z-10 backdrop-filter backdrop-blur-lg bg-opacity-80 border-b border-gray-100 dark:border-gray-700 px-4">
+    <header className="w-full px-4 py-3 fixed top-0 z-10 bg-white/80 backdrop-blur-sm backdrop-saturate-200 dark:bg-black/50 border-b border-gray-100 dark:border-gray-700">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         <div>
           <Link href="/">

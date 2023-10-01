@@ -15,8 +15,13 @@ const AsideCategoryItem = ({
   currentPath,
 }: AsideCategoryProps) => {
   const [isOpen, setIsOpen] = useState(isExpanded);
+
+  const handleLinkClick = () => {
+    document.body.classList.remove('overflow-hidden', 'md:overflow-auto');
+  };
+
   return (
-    <li className="block text-gray-800 dark:text-gray-400">
+    <li className="w-fullblock text-gray-800 dark:text-gray-400">
       <div
         className="font-medium p-1 flex gap-1 items-center hover:bg-gray-100 dark:hover:bg-gray-900 rounded-md select-none"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -45,10 +50,11 @@ const AsideCategoryItem = ({
               {category.children.map((childCategory, i) => (
                 <li className="block" key={i}>
                   <Link
+                    onClick={handleLinkClick}
                     href={`/${childCategory.url}`}
                     className={`${
                       currentPath.startsWith(childCategory.url)
-                        ? 'before:bg-indigo-500 text-indigo-500'
+                        ? 'before:bg-indigo-500 text-indigo-500 font-medium'
                         : 'before:bg-gray-200 dark:before:bg-gray-800'
                     } hover:bg-gray-100 dark:hover:bg-gray-900 rounded-md relative p-1 pl-9 flex items-center before:content-[''] before:block before:absolute before:left-[13px] before:w-[1px] before:h-full before:z-[1] select-none`}
                   >
