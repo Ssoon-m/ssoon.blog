@@ -55,11 +55,13 @@ const Header = () => {
         </div>
       </header>
       {isOpen && (
-        <MobileMenu
-          menuList={headerNavLinks}
-          onClickLink={onClickLink}
-          currentPathName={pathname}
-        />
+        <div className="block md:hidden">
+          <MobileMenu
+            menuList={headerNavLinks}
+            onClickLink={onClickLink}
+            currentPathName={pathname}
+          />
+        </div>
       )}
     </>
   );

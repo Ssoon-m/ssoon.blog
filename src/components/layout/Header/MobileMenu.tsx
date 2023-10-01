@@ -19,15 +19,17 @@ const MobileMenu = ({
     return path.startsWith(currentPathName);
   };
   return (
-    <nav className="z-50 w-full h-full fixed top-[61px] left-0 right-0 bottom-0 bg-white">
+    <nav className="z-50 w-full h-full fixed top-[61px] left-0 right-0 bottom-0 bg-white dark:bg-zinc-950">
       <div className="p-4">
         <div className="flex flex-col gap-2" onClick={handleLinkClick}>
           {menuList.map((menu) => (
             <Link
               key={menu.title}
               href={menu.path}
-              className={`w-full text-xl rounded-lg px-3 py-2 text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition select-none ${
-                isActiveMenu(menu.path) ? 'text-indigo-500' : ''
+              className={`w-full text-xl rounded-lg px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 transition select-none ${
+                isActiveMenu(menu.path)
+                  ? 'text-indigo-500'
+                  : 'text-gray-500 dark:text-gray-300'
               }`}
             >
               {menu.title}

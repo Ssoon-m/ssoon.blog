@@ -17,8 +17,10 @@ const DesktopMenu = ({ menuList, currentPathName }: DesktopHeaderMenuProps) => {
           <Link
             key={menu.title}
             href={menu.path}
-            className={`rounded-lg px-3 py-2 text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition select-none ${
-              isActiveMenu(menu.path) ? 'text-indigo-500' : ''
+            className={`rounded-lg px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 transition select-none ${
+              isActiveMenu(menu.path)
+                ? 'text-indigo-500'
+                : 'text-gray-500 dark:text-gray-300'
             }`}
           >
             {menu.title}
