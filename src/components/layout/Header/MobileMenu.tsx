@@ -14,6 +14,10 @@ const MobileMenu = ({
   const handleLinkClick = () => {
     onClickLink(false);
   };
+  const isActiveMenu = (path: string) => {
+    if (currentPathName === '/') return false;
+    return path.startsWith(currentPathName);
+  };
   return (
     <nav className="z-50 w-full h-full fixed top-[61px] left-0 right-0 bottom-0 bg-white">
       <div className="p-4">
@@ -23,7 +27,7 @@ const MobileMenu = ({
               key={menu.title}
               href={menu.path}
               className={`w-full text-xl rounded-lg px-3 py-2 text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition select-none ${
-                menu.path.startsWith(currentPathName) ? 'text-indigo-500' : ''
+                isActiveMenu(menu.path) ? 'text-indigo-500' : ''
               }`}
             >
               {menu.title}
