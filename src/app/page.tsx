@@ -32,7 +32,7 @@ export default function Home() {
         <h1 className="text-3xl fong-bold">Latest Posts</h1>
       </div>
       <div className="h-[30px]" />
-      <div className="flex flex-col gap-16 sm:gap-6 mb-7">
+      <div className="flex flex-col gap-6 mb-7">
         {posts.map((post, idx) => (
           <div key={idx}>
             <PostCard post={post} />

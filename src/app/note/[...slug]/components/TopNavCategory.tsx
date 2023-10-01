@@ -27,7 +27,7 @@ const TopNavCategory = ({ categories, currentPath }: TopNavCategoryProps) => {
 
   return (
     <div
-      className={`z-10 w-full fixed top-[57px] left-0 right-0 backdrop-blur-sm backdrop-saturate-200 dark:bg-black/50 ${
+      className={`z-10 w-full fixed top-[61px] left-0 right-0 backdrop-blur-sm backdrop-saturate-200 dark:bg-black/50 ${
         isOpen
           ? 'bg-white dark:bg-zinc-950 bottom-0 overflow-y-auto'
           : 'bg-white/80'

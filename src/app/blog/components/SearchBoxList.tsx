@@ -19,7 +19,7 @@ const SearchBoxList = ({ posts }: SearchProps) => {
           onChange={(e) => handleSearch(e.currentTarget.value)}
         />
       </div>
-      <div className="flex flex-col gap-16 sm:gap-6 mb-7">
+      <div className="flex flex-col gap-6 mb-7">
         {searchResults.map((post, idx) => (
           <div key={idx}>
             <PostCard post={post} />
