@@ -26,9 +26,44 @@ export const siteSEO = ({
     authors: { name: siteData.auhtor.name },
     description: description && siteData.description,
     creator: siteData.auhtor.name,
-    icons: null,
-    manifest: null,
-    robots: null,
+    icons: {
+      icon: [
+        {
+          url: 'public/favicons/favicon_16.png',
+          type: 'image/png',
+          sizes: '16x16',
+        },
+        {
+          url: 'public/favicons/favicon_32.png',
+          type: 'image/png',
+          sizes: '32x32',
+        },
+        {
+          rel: 'icon',
+          url: 'public/favicons/favicon_16.png',
+          type: 'image/png',
+          sizes: '32x32',
+        },
+      ],
+      apple: {
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        url: 'public/favicons/favicon_180.png',
+        type: 'image/png',
+      },
+    },
+    manifest: 'public/favicons/manifest.json',
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
     openGraph: openGraph({ description, pathname }),
   };
 };
@@ -69,7 +104,11 @@ const generateOpenGraph =
       description: description,
       url: pathname ? `${siteData.url}/${pathname}` : siteData.url,
       locale: 'ko-KR',
-      images: '',
+      images: {
+        url: siteData.siteImage,
+        width: 1248,
+        height: 630,
+      },
     };
 
     if (type === 'website') {
