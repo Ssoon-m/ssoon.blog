@@ -10,7 +10,9 @@ import TopNavCategory from './components/TopNavCategory';
 import { createTreeView } from './util/createNoteTree';
 
 export const generateStaticParams = async () =>
-  getAllNotes().map((note) => ({ slug: note._raw.flattenedPath.split('/') }));
+  getAllNotes().map((note) => ({
+    slug: note._raw.flattenedPath.replace(/note\//i, '').split('/'),
+  }));
 
 export const generateMetadata = ({
   params,

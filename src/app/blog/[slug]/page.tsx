@@ -15,7 +15,9 @@ import { articleSEO } from '@/lib/seo';
 import ArticleJsonLd from '@/components/ArticleJsonLd';
 
 export const generateStaticParams = async () =>
-  getAllPosts().map((post) => ({ slug: post._raw.flattenedPath }));
+  getAllPosts().map((post) => ({
+    slug: post._raw.flattenedPath.replace(/blog\//i, ''),
+  }));
 
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
   const post = getPostBySlug(`blog/${params.slug}`);

@@ -1,6 +1,9 @@
 import PostCard from '@/components/post/PostCard';
-import { getPostByTag, getTagsOfPosts } from '@/datasets/post';
+import { getAllTags, getPostByTag } from '@/datasets/post';
 import React from 'react';
+
+export const generateStaticParams = async () =>
+  getAllTags().map((tag) => ({ slug: decodeURIComponent(tag) }));
 
 const TagsPage = ({ params }: { params: { slug: string } }) => {
   const tag = decodeURIComponent(params.slug);

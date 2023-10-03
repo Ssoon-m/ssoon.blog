@@ -30,6 +30,15 @@ export const getNextPost = (index: number): _Post | null => {
   return getAllPosts()[index - 1] ?? null;
 };
 
+export const getAllTags = () => {
+  return Array.from(
+    allPosts.reduce((acc, post) => {
+      post.tags.forEach((tag) => acc.add(tag));
+      return acc;
+    }, new Set<string>([])),
+  );
+};
+
 export const getTagsOfPosts = () => {
   return Array.from(
     allPosts.reduce((acc, post) => {
