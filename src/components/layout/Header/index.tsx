@@ -7,9 +7,14 @@ import { useState } from 'react';
 import ToggleTheme from '../../ToggleTheme';
 import DesktopHeaderMenu from './DesktopMenu';
 import MobileMenu from './MobileMenu';
+import Image from 'next/image';
+import { useGetCurrentTheme } from '@/hooks/useGetCurrentTheme';
+import { useIsMounted } from '@/hooks/useIsMounted';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const theme = useGetCurrentTheme();
+  const isMounted = useIsMounted();
   const pathname = usePathname();
   const onClickMenuButton = () => {
     if (isOpen) {
@@ -23,20 +28,38 @@ const Header = () => {
       return;
     }
   };
+
+  const onClickGoHome = () => {
+    setIsOpen(false);
+    document.body.classList.remove('overflow-hidden', 'md:overflow-auto');
+  };
+
   const onClickLink = (closeMenu: boolean) => {
     setIsOpen(closeMenu);
     document.body.classList.remove('overflow-hidden', 'md:overflow-auto');
   };
   return (
     <>
-      <header className="w-full px-4 py-3 fixed top-0 z-10 bg-white/80 backdrop-blur-sm backdrop-saturate-200 dark:bg-black/50 border-b border-gray-100 dark:border-gray-700">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+      <header className="w-full h-[61px] px-4 py-3 fixed top-0 z-10 bg-white/80 backdrop-blur-sm backdrop-saturate-200 dark:bg-black/50 border-b border-gray-100 dark:border-gray-700">
+        <div className="relative max-w-6xl mx-auto flex items-center justify-between">
           <div>
-            <Link href="/">
-              <div className="flex items-center justify-between">
-                <div className="text-xl font-semibold rounded-lg sm:block text-gray-800  dark:text-white transition">
-                  SSoon
-                </div>
+            <Link href="/" onClick={onClickGoHome}>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2">
+                {isMounted() && theme === 'dark' ? (
+                  <Image
+                    src="/logo/white-logo.png"
+                    width={80}
+                    height={40}
+                    alt="site logo"
+                  />
+                ) : (
+                  <Image
+                    src="/logo/black-logo.png"
+                    width={80}
+                    height={40}
+                    alt="site logo"
+                  />
+                )}
               </div>
             </Link>
           </div>

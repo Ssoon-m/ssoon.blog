@@ -1,5 +1,5 @@
 'use client';
-import { useTheme } from 'next-themes';
+import { useGetCurrentTheme } from '@/hooks/useGetCurrentTheme';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useRef } from 'react';
 
@@ -14,11 +14,10 @@ function sendMessage<T>(option: T) {
   );
 }
 const Giscus = () => {
-  const { resolvedTheme } = useTheme();
+  const theme = useGetCurrentTheme();
   const ref = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
-  const theme = resolvedTheme === 'light' ? 'light' : 'dark';
 
   useEffect(() => {
     if (!ref.current) return;
