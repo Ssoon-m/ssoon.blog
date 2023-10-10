@@ -16,7 +16,7 @@ const MobileMenu = ({
   };
   const isActiveMenu = (path: string) => {
     if (currentPathName === '/') return false;
-    return path.startsWith(currentPathName);
+    return currentPathName.startsWith(path);
   };
   return (
     <nav className="z-50 w-full h-full fixed top-[61px] left-0 right-0 bottom-0 bg-white dark:bg-zinc-950">

@@ -1,9 +1,22 @@
+import React from 'react';
 import PostCard from '@/components/post/PostCard';
 import { getAllTags, getPostByTag } from '@/datasets/post';
-import React from 'react';
+import { siteSEO } from '@/lib/seo';
+import { notFound } from 'next/navigation';
 
 export const generateStaticParams = async () =>
   getAllTags().map((tag) => ({ slug: decodeURIComponent(tag) }));
+
+export const generateMetadata = ({ params }: { params: { slug: string } }) => {
+  const tag = decodeURIComponent(params.slug);
+  const note = getPostByTag(tag);
+  if (!note) notFound();
+
+  return siteSEO({
+    title: `#${tag}`,
+    pathname: `tags/${tag}`,
+  });
+};
 
 const TagsPage = ({ params }: { params: { slug: string } }) => {
   const tag = decodeURIComponent(params.slug);

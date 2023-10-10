@@ -8,7 +8,7 @@ interface DesktopHeaderMenuProps {
 const DesktopMenu = ({ menuList, currentPathName }: DesktopHeaderMenuProps) => {
   const isActiveMenu = (path: string) => {
     if (currentPathName === '/') return false;
-    return path.startsWith(currentPathName);
+    return currentPathName.startsWith(path);
   };
   return (
     <nav>

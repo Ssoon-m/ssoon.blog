@@ -7,6 +7,7 @@ interface seoProps {
 }
 
 interface OpenGraphProps {
+  title?: string;
   description?: string;
   pathname?: string;
   publishedTime?: string;
@@ -93,16 +94,17 @@ export const siteSEO = ({
   pathname,
 }: seoProps & OpenGraphProps = {}): SEO => {
   const openGraph = generateOpenGraph('website');
+  const _title = title ? `${title} | ${siteData.title}` : siteData.title;
   return {
     alternates: { canonical: siteData.url },
-    title: title ? `${title} | ${siteData.title}` : siteData.title,
-    description: description && siteData.description,
+    title: _title,
+    description: description,
     authors: { name: siteData.auhtor.name },
     creator: siteData.auhtor.name,
-    openGraph: openGraph({ description, pathname }),
+    openGraph: openGraph({ title: _title, description, pathname }),
     twitter: {
       ...openGraphTwitter,
-      title: title,
+      title: _title,
       description,
     },
   };
@@ -121,6 +123,7 @@ export const articleSEO = ({
     title: title,
     description: description,
     openGraph: openGraph({
+      title,
       description,
       pathname,
       publishedTime,
@@ -139,6 +142,7 @@ export const articleSEO = ({
 const generateOpenGraph =
   (type: OpenGraphType) =>
   ({
+    title,
     description,
     pathname,
     publishedTime,
@@ -148,6 +152,7 @@ const generateOpenGraph =
     if (type === 'website') {
       return {
         ...defaultOpenGraph,
+        title,
         url: `${siteData.url}/${pathname}`,
         description,
         siteName: siteData.title,
@@ -159,6 +164,7 @@ const generateOpenGraph =
     if (type === 'article') {
       return {
         ...defaultOpenGraph,
+        title,
         url: `${siteData.url}/${pathname}`,
         description,
         publishedTime,
