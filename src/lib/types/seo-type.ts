@@ -11,6 +11,7 @@ export type SEO = Pick<
   | 'openGraph'
   | 'manifest'
   | 'robots'
+  | 'twitter'
   | 'openGraph'
 >;
 

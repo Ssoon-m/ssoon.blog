@@ -1,5 +1,6 @@
 import ArticleJsonLd from '@/components/ArticleJsonLd';
 import ScrollTopButton from '@/components/ScrollTopButton';
+import { siteData } from '@/constants/my-site';
 import { getAllNotes, getNotebySlug } from '@/datasets/note';
 import { articleSEO } from '@/lib/seo';
 import { notFound } from 'next/navigation';
@@ -25,8 +26,11 @@ export const generateMetadata = ({
 
   return articleSEO({
     title: note.title,
+    description: siteData.notePageDescription,
     pathname: note.noteUrl,
     publishedTime: note.date,
+    images: [siteData.siteImage],
+    tags: [],
   });
 };
 
@@ -41,6 +45,7 @@ const NotePage = ({ params }: { params: { slug: string[] } }) => {
       <ArticleJsonLd
         headline={note.title}
         datePublished={note.date}
+        description={siteData.notePageDescription}
         pathname={note.noteUrl}
       />
       <div className="flex-1 flex flex-col md:flex-row">

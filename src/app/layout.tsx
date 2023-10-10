@@ -1,7 +1,7 @@
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
 import { pretendard } from '@/lib/fonts';
-import { siteSEO } from '@/lib/seo';
+import { defaultSEO } from '@/lib/seo';
 import type { Metadata } from 'next';
 import '../styles/globals.css';
 import AppProviders from './AppProviders';
@@ -28,4 +28,4 @@ export default function RootLayout({
   );
 }
 
-export const metadata: Metadata = siteSEO();
+export const metadata: Metadata = defaultSEO();

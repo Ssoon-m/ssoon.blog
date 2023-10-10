@@ -14,33 +14,51 @@ interface OpenGraphProps {
   tags?: Array<string>;
 }
 
-export const siteSEO = ({
-  title,
-  description,
-  pathname,
-}: seoProps & OpenGraphProps = {}): SEO => {
-  const openGraph = generateOpenGraph('website');
+export const defaultOpenGraph = {
+  type: 'website',
+  title: siteData.title,
+  description: siteData.description,
+  // url: siteData.url,
+  siteName: siteData.title,
+  locale: siteData.locale,
+  images: [siteData.siteImage],
+};
+
+export const openGraphTwitter = {
+  title: siteData.title,
+  description: siteData.description,
+  images: {
+    url: siteData.siteImage,
+    width: 1200,
+    height: 630,
+  },
+
+  creator: siteData.auhtor.name,
+  site: '',
+};
+
+export const defaultSEO = (): SEO => {
   return {
     alternates: { canonical: siteData.url },
-    title: title ? `${title} | ${siteData.title}` : siteData.title,
+    title: siteData.title,
     authors: { name: siteData.auhtor.name },
-    description: description && siteData.description,
+    description: siteData.description,
     creator: siteData.auhtor.name,
     icons: {
       icon: [
         {
-          url: 'public/favicons/favicon_16.png',
+          url: '/favicons/favicon_16.png',
           type: 'image/png',
           sizes: '16x16',
         },
         {
-          url: 'public/favicons/favicon_32.png',
+          url: '/favicons/favicon_32.png',
           type: 'image/png',
           sizes: '32x32',
         },
         {
           rel: 'icon',
-          url: 'public/favicons/favicon_16.png',
+          url: '/favicons/favicon_16.png',
           type: 'image/png',
           sizes: '32x32',
         },
@@ -48,11 +66,11 @@ export const siteSEO = ({
       apple: {
         rel: 'apple-touch-icon',
         sizes: '180x180',
-        url: 'public/favicons/favicon_180.png',
+        url: '/favicons/favicon_180.png',
         type: 'image/png',
       },
     },
-    manifest: 'public/favicons/manifest.json',
+    manifest: '/favicons/manifest.json',
     robots: {
       index: true,
       follow: true,
@@ -64,7 +82,29 @@ export const siteSEO = ({
         'max-snippet': -1,
       },
     },
+    twitter: openGraphTwitter,
+    openGraph: defaultOpenGraph,
+  };
+};
+
+export const siteSEO = ({
+  title,
+  description,
+  pathname,
+}: seoProps & OpenGraphProps = {}): SEO => {
+  const openGraph = generateOpenGraph('website');
+  return {
+    alternates: { canonical: siteData.url },
+    title: title ? `${title} | ${siteData.title}` : siteData.title,
+    description: description && siteData.description,
+    authors: { name: siteData.auhtor.name },
+    creator: siteData.auhtor.name,
     openGraph: openGraph({ description, pathname }),
+    twitter: {
+      ...openGraphTwitter,
+      title: title,
+      description,
+    },
   };
 };
 
@@ -83,10 +123,16 @@ export const articleSEO = ({
     openGraph: openGraph({
       description,
       pathname,
-      images,
       publishedTime,
+      images,
       tags,
     }),
+    twitter: {
+      ...openGraphTwitter,
+      title: title,
+      description,
+      images: images ?? openGraphTwitter.images,
+    },
   };
 };
 
@@ -99,21 +145,11 @@ const generateOpenGraph =
     images,
     tags,
   }: OpenGraphProps): OpenGraph => {
-    const defaultOpenGraph = {
-      title: siteData.title,
-      description: description,
-      url: pathname ? `${siteData.url}/${pathname}` : siteData.url,
-      locale: 'ko-KR',
-      images: {
-        url: siteData.siteImage,
-        width: 1248,
-        height: 630,
-      },
-    };
-
     if (type === 'website') {
       return {
         ...defaultOpenGraph,
+        url: `${siteData.url}/${pathname}`,
+        description,
         siteName: siteData.title,
         emails: siteData.auhtor.email,
         type,
@@ -123,6 +159,8 @@ const generateOpenGraph =
     if (type === 'article') {
       return {
         ...defaultOpenGraph,
+        url: `${siteData.url}/${pathname}`,
+        description,
         publishedTime,
         authors: siteData.auhtor.github,
         images,

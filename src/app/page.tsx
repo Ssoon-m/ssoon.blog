@@ -19,7 +19,7 @@ export default function Home() {
         </div>
         <div className="relative order-1 sm:order-2">
           <Image
-            src={'/my-profile.webp'}
+            src={siteData.auhtor.profile}
             alt="profile"
             width={120}
             height={120}
