@@ -1,0 +1,61 @@
+---
+title: 'esm으로 번들링한 모듈을 ssr프레임워크에서 사용시 import 에러 해결법'
+description: 'esm모듈을 직접 수정이 가능할 때에 대한 에러 해결법 (SyntaxError: Cannot use import statement outside a module)'
+date: 2022-09-23 21:05:20
+thumbnailUrl: https://velog.velcdn.com/images/ssoon-m/post/f7919b3f-a0ab-4440-b06c-961c578f5a08/image.png
+tags:
+  - ESM
+  - SSR
+  - Rollup
+---
+
+## ❗️library maintainer 일 경우에 대한 에러 해결법 입니다.
+만약 maintainer가 아니고 `next`를 사용하고 있다면 `next-transpile-modules` 를 사용하시면 됩니다.
+`next`에서 사용이 가능하게 `transfile`을 도와줍니다.
+
+
+
+
+
+## 1️⃣ 사용하는 프레임워크의 esm 모듈 지원 여부를 확인 해준다.
+
+Next.js 11.1 부터 **ES Modules** (e.g. "type": "module" in their package.json) 사용이 가능하다.
+`config.js`에 아래 속성을 꼭 적어줘야 한다.
+
+```js
+// next.config.js
+module.exports = {
+  // Prefer loading of ES Modules over CommonJS
+  experimental: { esmExternals: true },
+};
+```
+https://nextjs.org/blog/next-11-1#es-modules-support
+
+
+>ESM 라이브러리의 `package.json`에 `{"type": "module"}`이 있는 한 **Next.js 12**부터는 **ES Module**에 대한 지원이 기본적으로 활성화됩니다. (esmExternals이 기본적으로 true)
+https://stackoverflow.com/questions/65974337/import-es-module-in-next-js-err-require-esm
+
+
+
+
+## 2️⃣ 사용한 모듈의 package.json 확인
+
+> `package.json` 에 `"type"` 필드가 없거나 `"type:commonjs"` 인 경우 `.js` 파일은 **CommonJS**로 처리된다.
+`"type" : "module"` 인 경우엔 **ES Module** 으로 인식한다. <br/> `"type"` 필드 값에 관계없이 `.mjs` 확장자를 가진 파일은 항상 **ES Module**로 처리되고 `.cjs` 파일은 항상 **CommonJS**로 처리된다. <br/>https://nodejs.org/dist/latest-v18.x/docs/api/packages.html#type
+
+위 글을 보면 알 수 있듯이 esm으로 번들링후 해당 모듈을 코드베이스에서 사용할 때 **ES Module**의 `package.json` 이나 파일의 확장자에 *이 모듈은 **ES Module**입니다. 라는 명시를 해주지 않으면 사용하는 쪽에서 해당 모듈을 해석할 때 **ES Module**로 인식을 하지 않고 **CommonJS**로 인식 함* 
+
+## 🔥 그래서 import 에러는 왜 나는건데?
+`node` 에서 **ECMAScript 모듈 로더**를 사용해야 **ES Module** 사용이 가능한데 **ES Module**에서 **ECMAScript 모듈 로더**를 사용하기 위한 설정을 하지 않아서 생긴 에러이다.
+요약하자면, `node`가 **ES Module**을 **CommonJS 모듈 로더**를 사용해서 생긴 문제이다.
+https://nodejs.org/dist/latest-v16.x/docs/api/esm.html
+
+
+## 🚀 결론
+csr 에서 사용이 잘 되는 **ES Module** 인데 ssr에서 동작이 안된다면?
+ssr쪽에서 **ES Module**로 인식을 못 하고 있는 것이다.(**ES Module** 지원을 안 하는 프레임워크거나...)
+`package.json` 에 `{"type" : "module"}`를 적어주거나 확장자를 변경하도록 하자!
+
+잘못된 정보가 있다면 댓글로 지적 부탁드립니다!🙇‍♂️
+
+

@@ -1,0 +1,12 @@
+---
+title: 부모요소가 flex일 경우 width 문제점
+date: 2023-10-11 11:05:31
+---
+
+
+부모 요소가 `display: flex`인 경우에 자식 요소의 너비가 width:500px로 설정이 되어 있더라도 기본적으로 내용물에 맞게 조정된다. (flex-wrap이 nowrap인 경우에만)
+
+자식 요소의 너비를 원하는 픽셀로 고정하고 싶다면 `flex-shrink:0` 을 사용하거나 `min-width` , `max-width` 를 함께 사용하여 자식 요소의 최소 및 최대 너비를 제한하는 방법이 있다.
+
+[코드예시](https://codesandbox.io/s/flex-item-example-1l4ck6?file=/src/styles.css)로  볼 수 있듯이 flex container의 너비가 500px이고 자식 요소인 box1의 너비가 200px box2는 350px일 때 box1과 box2는 flex container 너비인 500px안에 들어가게 된다.
+box1의 너비는 178px, box2의 너비는 311px 정도로 줄어들게 되는데 이때 자식 요소의 너비를 아예 고정시키고 싶으면 위에서 설명했듯이 `flex-shrink:0` 옵션이나 `min-width` , `max-width` 를 함께 사용해서 고정시키면 된다.

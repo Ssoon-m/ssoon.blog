@@ -1,0 +1,302 @@
+---
+title: 'js 모듈 캐싱에 대해 알고 계신가요?'
+date: 2023-08-20 21:05:20
+description: 예시 코드와 함께 이해하는 js 모듈 캐싱
+thumbnailUrl: https://velog.velcdn.com/images/ssoon-m/post/52d5fdd6-519f-4d19-8ef7-4b84aef3b7e4/image.png
+tags:
+  - JavaScript
+  - JavaScript Module
+  - js 모듈 스코프
+---
+
+## 시작하며
+
+여러분들은 혹시 **모듈 캐싱**에 대해 알고 계신가요?
+모던 웹 개발을 하면서 자연스럽게 활용되는 **모듈 시스템**의 빠질 수 없는 개념인 **모듈 캐싱**에 대해 함께 알아보고자 합니다.
+**모듈 캐싱**의 동작 원리와 함께 주의해야 할 사항들을 예시 코드들을 통해 자세히 살펴보도록 하겠습니다. 
+
+
+
+
+## 예시1) js 모듈 스코프
+
+```jsx
+// moduleA.js
+let counter = 0;
+
+export function incrementCounter() {
+  counter++;
+}
+
+export function getCounterValue() {
+  return counter;
+}
+
+```
+
+```jsx
+// moduleB.js
+import { incrementCounter, getCounterValue } from './moduleA';
+
+console.log(getCounterValue()); // 출력: 0
+
+incrementCounter(); // counter 값 증가
+
+console.log(getCounterValue()); // 출력: 1
+
+```
+
+```jsx
+// moduleC.js
+import {getCounterValue} from './moduleA'
+
+console.log(getCounterValue()); // 출력: 1
+
+```
+
+`moduleC` 파일을 살펴보면, `counter` 변수가 1로 출력되는걸 알 수 있습니다.
+마치 `moduleB`와 `moduleC`가 **한 모듈 스코프 내에 있는것 처럼** 결과가 나타났습니다.
+
+왜 이런 결과가 나왔을까요?
+
+### 모듈 캐싱에 대하여
+
+모듈 시스템에서의 중요한 개념 중 하나는 **모듈은 기본적으로 한 번만 로드되고 실행된다는 것**입니다.
+이는 여러 번 모듈을 불러와 사용하더라도 해당 모듈은 **최초 호출 시에만 로드되고 실행된다는 것을 의미합니다.**
+만약 매번 호출할 때마다 모듈을 실행시키는 방식이라면 `moduleC` 에서 0이 출력이 됬겠지만, 메모리 사용이 불필요하게 늘어날 수 있습니다. 
+최초 호출 시에만 모듈을 로드하여 캐싱하는 것은 메모리 사용을 최적화하는 데 도움을 줍니다.
+이후 요청 시 해당 모듈이 캐시에 존재하면 재로딩하지 않고, 캐싱된 인스턴스를 활용합니다.
+
+### 예시1 코드 단계별 동작 과정
+
+1. `moduleA` 파일에 `counter` 변수와 `getCounterValue` 함수를 정의합니다.
+2. `moduleB`에서 `moduleA`의 함수를 import하고 호출합니다. 이때 `moduleA`가 로드됩니다.
+3. `moduleB`의 코드 실행 후, `moduleC`가 실행됩니다. 이때 이미 로드된 `moduleA`를 다시 로드하지 않고, 이전에 캐싱된 `moduleA`의 항목들을 그대로 사용합니다.
+4. 따라서 `moduleC`에서 `getCounterValue` 함수를 호출하면, 이미 증가된 `counter` 변수의 값인 1이 출력됩니다.
+
+이렇게 `moduleB`와 `moduleC`에서 공유하는 `moduleA`의 모듈 스코프를 통해 변수와 함수가 상태를 유지하며 공유되는 것을 볼 수 있습니다.
+
+## 예시2) 리액트 함수형 컴포넌트의 바깥 변수 문제
+
+> 리액트에서 함수형 컴포넌트를 사용할 때, 컴포넌트 바깥에 선언된 변수를 사용하는 경우가 종종 있습니다.
+이때 문제가 발생할 수 있는데, 변경 가능한 변수를 컴포넌트 바깥에 선언을 하고 함수형 컴포넌트 내에서 바깥의 변수를 사용할 경우 입니다. 해당 문제도 모듈 스코프의 캐싱 동작 문제입니다.
+> 
+
+`Counter` 라는 함수형 컴포넌트의 바깥에 count 변수를 선언하고 `handleCountIncrease` 함수를 통해 count 변수를 증가시키는 코드입니다.
+
+```jsx
+// Counter.jsx
+import React, { useState } from "react";
+
+let count = 1;
+
+const Counter = () => {
+  const [_, setCount] = useState(0);
+  const handleCountIncrease = () => {
+    setCount(count++);
+  };
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+      <div>{count}</div>
+      <button onClick={handleCountIncrease}>+</button>
+    </div>
+  );
+};
+
+export default Counter;
+
+```
+
+`Counter` 컴포넌트를 사용하는 부분에서 `Counter` 컴포넌트를 중복 호출을 했습니다.
+
+```jsx
+import React from "react";
+import Counter from "./components/Counter";
+
+function App() {
+  return (
+    <div className="App">
+      <Counter /> {/* 1번 Counter */}
+      <hr />
+      <Counter /> {/* 2번 Counter */}
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+1번의 컴포넌트의 counter 값을 5까지 올리고 2번 컴포넌트의 counter 값을 올리면 결과가 어떻게 나올까요?
+리액트 컴포넌트를 활용해서 개발을 해온 입장에서는 counter값이 2가 나오는걸 기대하는게 일반적이겠지만, 정답은 6 입니다.
+6이라는 값이 나온 이유는 위에서 설명한 **모듈 캐싱** 동작과 관련이 있습니다.
+
+동작 과정을 살펴 보자면, 예시1의 단계별 동작 과정과 유사한 과정을 거치게 됩니다.
+
+1. `App` 컴포넌트에서 `Counter` 컴포넌트를 import하고 호출합니다. 이때 `Counter` 컴포넌트의 모듈이 로드 됩니다.
+2. `1번 Counter` 컴포넌트 실행 후 `2번 Counter` 컴포넌트가 실행이 됩니다. 이때 이미 로드된 `Counter` 컴포넌트의 모듈은 실행되지 않습니다.
+3. `1번 Counter` 컴포넌트에서 count 변수를 5까지 올린 후 `2번 Counter` 컴포넌트에서 `handleCountIncrease` 함수를 실행 시키면 이미 메모리에 올라가있는 count 변수에 1이 더해져서 6이 출력이 됩니다.
+
+![](https://velog.velcdn.com/images/ssoon-m/post/3e3094c3-fd68-405f-b95d-11de01fb53b2/image.png)
+
+> [함수형 컴포넌트 외부 변수 예시](https://codesandbox.io/p/sandbox/sad-kilby-x32tgv?file=%2Fsrc%2FApp.tsx%3A13%2C1)에서 상세 코드 확인이 가능합니다.
+
+리액트에서 모듈 스코프의 캐싱 동작에 대해 알아봤습니다.
+그렇다면, 컴포넌트가 언마운트(unmount) 일때 모듈 캐싱은 어떻게 동작을 할까요?
+
+### 컴포넌트 언마운트시 모듈 캐싱 동작
+
+리액트에서 컴포넌트가 언마운트되면 해당 컴포넌트와 관련된 리소스 및 상태 등이 정리됩니다. 하지만, 모듈의 캐싱은 모듈 시스템 자체의 동작 방식에 의해 처리되므로, 컴포넌트의 언마운트와 직접적인 연관이 없습니다.
+![](https://velog.velcdn.com/images/ssoon-m/post/a5088465-fc4c-461e-96d1-52e2a1d5fa5f/image.png)
+
+>[컴포넌트 언마운트 예시](https://codesandbox.io/p/sandbox/outer-let-forked-8gsg4x?file=/src/App.tsx:10,26)에서 상세 코드 확인이 가능합니다.
+
+
+## 예시3) 리액트에서 debounce 사용시 예제
+
+### 즉시실행 함수와 클로저를 조합한 util 함수 문제점
+
+react프로젝트에서 util 함수로 IIFE를 이용하여 debounce를 구현했습니다.
+
+```tsx
+// /utils/debounce.ts
+export const debounce = (() => {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return (callback: () => void, delay: number) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(callback, delay);
+  };
+})();
+
+```
+
+input에서 util의 debounce함수를 이용하는 예시 입니다.
+
+onChange이벤트가 발생하고 1초 동안 onChange 이벤트가 없으면 입력한 값이 보이게 됩니다.
+
+자세한 동작 과정은 이렇습니다.
+
+1. `debounce` 함수는 모듈 스코프에서 생성되고 실행됩니다.
+2. 이 함수는 클로저로서 `timeoutId` 변수에 접근이 가능합니다.
+3. debounce 함수를 import시 모듈이 로드가 되고 `timeoutId` 변수가 `debounce` 함수의 렉시컬 스코프 내에 선언되었습니다.
+4. InputField가 리렌더링 되어도 `timeoutId` 는 모듈 스코프 내에서 선언되어 있기 때문에 값이 유지가 됩니다.
+5. 따라서 `InputField` 컴포넌트는 원하는 대로 동작을 하게 됩니다.
+
+```tsx
+// /components/InputField
+
+import { useState } from "react";
+import { debounce } from "../utils/debounce";
+
+interface Props {
+  type: string;
+}
+
+const InputField = ({ type }: Props) => {
+  const [value, setValue] = useState("");
+  const [debounceValue, setDebounceValue] = useState("");
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    setValue(value);
+    debounce(() => setDebounceValue(value), 1000);
+  };
+
+  return (
+    <>
+      <input value={value} onChange={handleInputChange} />
+      <div>
+        {type}값 : {debounceValue}
+      </div>
+    </>
+  );
+};
+
+export default InputField;
+
+```
+
+debounce 함수를 따로 hook으로 작성을 안 하고 IIFE 로 작성한 결과 컴포넌트에서 바로 import 후 사용하는 형태여서 매우 편하게 사용이 가능한 모습입니다.
+
+그런데 만약 InputField컴포넌트를 사용하는 곳에서 컴포넌트를 두 번 호출을 했다면 정상적으로 동작을 할까요?
+
+```tsx
+import InputField from "./components/InputField";
+
+function App() {
+  return (
+    <div className="App">
+      <InputField type="A" />
+      <hr />
+      <InputField type="B" />
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+
+위의 예시에서 `InputField` 컴포넌트 내부에서 같은 모듈에서 가져온 `debounce` 함수를 사용하는 경우, 두 컴포넌트 간에 같은 `timeoutId` 변수를 공유하게 됩니다. 이로 인해 `type A`인 `InputField`에 값을 입력하다가 1초 이내에 `type B`인 `InputField`에 값을 입력하면, 두 컴포넌트에서 동일한 `debounce` 함수를 동시에 조작하게 됩니다.
+
+`timeoutId` 변수를 공유하기 때문에 `type A` 컴포넌트의 입력이 `type B` 컴포넌트의 입력에 영향을 줄 수 있습니다. 즉, `type A` 입력에서의 디바운싱(delay) 동작이 `type B` 입력에 영향을 미칠 수 있게 되는 것입니다.
+
+![](https://velog.velcdn.com/images/ssoon-m/post/87f52290-2aee-4077-bdd3-b3e4ba713f96/image.png)
+
+> [util IIFE deboune](https://codesandbox.io/p/sandbox/react-debounce-util-r2ttrs) 에서 상세 코드 확인이 가능합니다.
+> 
+
+### 개선 방향
+
+이러한 문제를 방지하기 위해서는 `InputField` 컴포넌트 내부에서 `debounce` 함수를 사용할 때 즉시 실행 함수(IIFE)를 활용하여 `timeoutId`를 모듈 스코프에서 캐싱하지 않도록 해야 합니다.
+
+해결 방법은 다음과 같이 `debounce` 함수 사용 시, 컴포넌트마다 독립적인 `timeoutId` 변수를 활용하는 것입니다. 이를 통해 각 `InputField` 컴포넌트는 자신만의 타이머를 유지하며 디바운싱을 수행하게 됩니다.
+
+```tsx
+export const debounce = <T extends unknown[]>(
+  callback: (...args: T) => void,
+  delay: number
+) => {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return (...args: T) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback(...args), delay);
+  };
+};
+
+```
+
+컴포넌트 리렌더링시 `timeoutId` 가 초기화 되는 문제도 고려해야 하기 때문에 커스텀 훅에서 `useCallback` 을 이용하는 방법으로 개선시킬 수 있습니다.
+
+```tsx
+import { useCallback } from "react";
+import { debounce } from "../utils/debounce";
+
+export const useDebounce = <T extends unknown[]>(
+  callback: (...args: T) => void,
+  delay: number,
+  deps: unknown[]
+) => {
+  const debounceCallback = useCallback(
+    debounce((...args: T) => callback(...args), delay),
+    [...deps]
+  );
+  return debounceCallback;
+};
+
+```
+
+![](https://velog.velcdn.com/images/ssoon-m/post/e3239d20-29db-4888-bb12-468a7c284d13/image.png)
+
+> 
+[debounce hooks](https://codesandbox.io/p/sandbox/react-debounce-hooks-vxyr28) 에서 상세 코드 확인이 가능합니다.
+
+## 마치며
+
+모듈을 import하여 사용하는 과정에서 발생할 수 있는 모듈 캐싱의 문제들을 예시코드로 다뤄봤습니다.
+
+실제 프로젝트에서도 모듈 캐싱 동작에 대한 이해를 바탕으로 안정성 있는 코드를 작성할 수 있을 것입니다.
+
+제가 작성한 내용이 도움이 되었으면 좋겠습니다. 만약 잘못된 정보가 있다면, 부담 없이 댓글로 알려주세요 😀
+
+부족한 글 읽어주셔서 감사합니다.
