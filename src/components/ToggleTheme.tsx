@@ -5,7 +5,7 @@ import SunIcon from './icons/SunIcon';
 import { useIsMounted } from '@/hooks/useIsMounted';
 
 const ToggleTheme = () => {
-  const isMounted = useIsMounted();
+  const { isMounted } = useIsMounted();
   const { isThemeDark, toggleTheme } = useToggleTheme();
   return (
     <button
@@ -13,7 +13,7 @@ const ToggleTheme = () => {
       className="p-1 text-yellow-400"
       onClick={toggleTheme}
     >
-      {isMounted() && isThemeDark ? <MoonIcon /> : <SunIcon />}
+      {isMounted && isThemeDark ? <MoonIcon /> : <SunIcon />}
     </button>
   );
 };

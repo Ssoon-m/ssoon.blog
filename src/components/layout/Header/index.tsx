@@ -3,18 +3,19 @@ import MenuButton from '@/components/common/MenuButton';
 import { headerNavLinks } from '@/constants/header-menu';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ToggleTheme from '../../ToggleTheme';
 import DesktopHeaderMenu from './DesktopMenu';
 import MobileMenu from './MobileMenu';
 import Image from 'next/image';
 import { useGetCurrentTheme } from '@/hooks/useGetCurrentTheme';
 import { useIsMounted } from '@/hooks/useIsMounted';
+import useToggleTheme from '@/hooks/useToggleTheme';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const theme = useGetCurrentTheme();
-  const isMounted = useIsMounted();
+  const { isMounted } = useIsMounted();
   const pathname = usePathname();
   const onClickMenuButton = () => {
     if (isOpen) {
@@ -40,12 +41,12 @@ const Header = () => {
   };
   return (
     <>
-      <header className="w-full h-[61px] px-4 py-3 fixed top-0 z-10 bg-white/80 backdrop-blur-sm backdrop-saturate-200 dark:bg-black/50 border-b border-gray-100 dark:border-gray-700">
+      <header className="w-full h-[61px] px-4 py-3 bg-white/80 backdrop-blur-sm backdrop-saturate-200 dark:bg-black/50 border-b border-gray-100 dark:border-gray-700">
         <div className="relative max-w-6xl mx-auto flex items-center justify-between">
           <div>
             <Link href="/" onClick={onClickGoHome}>
-              <div className="absolute left-0 top-1/2 -translate-y-1/2">
-                {isMounted() && theme === 'dark' ? (
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[80px]">
+                {isMounted && theme === 'dark' ? (
                   <Image
                     src="/logo/white-logo.png"
                     width={80}

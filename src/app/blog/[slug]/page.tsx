@@ -13,6 +13,7 @@ import Giscus from '@/components/Giscus';
 import ScrollTopButton from '@/components/ScrollTopButton';
 import { articleSEO } from '@/lib/seo';
 import ArticleJsonLd from '@/components/ArticleJsonLd';
+import ScrollProcessLayout from '@/components/layout/ScrollProcessLayout';
 
 export const generateStaticParams = async () =>
   getAllPosts().map((post) => ({
@@ -42,7 +43,7 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
   const nextPost = getNextPost(postIndex);
 
   return (
-    <>
+    <ScrollProcessLayout>
       <ArticleJsonLd
         headline={post.title}
         datePublished={post.date}
@@ -68,7 +69,7 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
         <Giscus />
       </div>
       <ScrollTopButton />
-    </>
+    </ScrollProcessLayout>
   );
 };
 

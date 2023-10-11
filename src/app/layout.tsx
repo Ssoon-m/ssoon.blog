@@ -5,6 +5,7 @@ import { defaultSEO } from '@/lib/seo';
 import type { Metadata } from 'next';
 import '../styles/globals.css';
 import AppProviders from './AppProviders';
+import BasicLayout from '@/components/layout/BasicLayout';
 
 export default function RootLayout({
   children,
@@ -14,15 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={pretendard.className} suppressHydrationWarning>
       <body className="bg-white dark:bg-zinc-950 transition-[background]">
-        <AppProviders>
-          <section className="pt-[61px] w-full h-full flex flex-col min-h-screen">
-            <Header />
-            <div className="flex-1 flex flex-col w-full mx-auto max-w-3xl lg:max-w-6xl min-h-full px-5">
-              <main className="flex-1 flex flex-col h-full">{children}</main>
-            </div>
-            <Footer />
-          </section>
-        </AppProviders>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );

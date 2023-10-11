@@ -1,3 +1,4 @@
+import BasicLayout from '@/components/layout/BasicLayout';
 import { getTagsOfPosts } from '@/datasets/post';
 import { siteSEO } from '@/lib/seo';
 import type { Metadata } from 'next';

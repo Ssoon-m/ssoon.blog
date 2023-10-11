@@ -2,17 +2,20 @@ import { getAllPosts } from '@/datasets/post';
 import { siteSEO } from '@/lib/seo';
 import type { Metadata } from 'next';
 import SearchBoxList from './components/SearchBoxList';
+import BasicLayout from '@/components/layout/BasicLayout';
 
 const BlogPage = () => {
   const posts = getAllPosts();
   return (
-    <div className="pt-6">
-      <h1 className="text-4xl font-bold">Blog</h1>
-      <div className="py-2 text-gray-700 dark:text-gray-300">
-        학습한 내용들을 공유합니다.
+    <BasicLayout>
+      <div className="pt-6">
+        <h1 className="text-4xl font-bold">Blog</h1>
+        <div className="py-2 text-gray-700 dark:text-gray-300">
+          학습한 내용들을 공유합니다.
+        </div>
+        <SearchBoxList posts={posts} />
       </div>
-      <SearchBoxList posts={posts} />
-    </div>
+    </BasicLayout>
   );
 };
 
