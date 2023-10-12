@@ -14,6 +14,8 @@ import ScrollTopButton from '@/components/ScrollTopButton';
 import { articleSEO } from '@/lib/seo';
 import ArticleJsonLd from '@/components/ArticleJsonLd';
 import ScrollProcessLayout from '@/components/layout/ScrollProcessLayout';
+import Image from 'next/image';
+import PostTag from '@/components/post/PostTag';
 
 export const generateStaticParams = async () =>
   getAllPosts().map((post) => ({
@@ -57,11 +59,28 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
           date={post.date}
           readingTime={post.readingTime}
         />
-        <div className="flex-1 p-4 pb-8">
+        {post.thumbnailUrl && (
+          <div className="flex justify-center items-center my-10 relative w-full h-auto">
+            <Image
+              className="w-auto max-w-[600px] !relative !h-auto object-contain"
+              src={post.thumbnailUrl}
+              alt="post thumbnail image"
+              fill
+            />
+          </div>
+        )}
+        <div className="flex-1 pb-8 border-b border-gray-100 dark:border-gray-700">
           <PostContent
             postBodyCode={post.body.code}
             postBodyRaw={post.body.raw}
           />
+          <div className="pt-6 flex flex-start items-center flex-wrap gap-2">
+            {post.tags.map((tag, i) => (
+              <PostTag key={i} tag={tag} size="large">
+                {tag}
+              </PostTag>
+            ))}
+          </div>
         </div>
         <div className="py-4">
           <PostFooter prevPost={prevPost} nextPost={nextPost} />

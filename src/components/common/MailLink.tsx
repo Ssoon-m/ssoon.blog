@@ -2,7 +2,12 @@ import { siteData } from '@/constants/my-site';
 import Link from 'next/link';
 import EmailIcon from '../icons/EmailIcon';
 
-const MailLink = () => {
+interface MailLinkProps {
+  width?: number;
+  height?: number;
+}
+
+const MailLink = ({ width = 24, height = 24 }: MailLinkProps) => {
   return (
     <span className="text-gray-400 hover:text-gray-500 transform">
       <span className="sr-only">e-Mail</span>
@@ -11,7 +16,7 @@ const MailLink = () => {
         target="_blank"
         aria-label="email"
       >
-        <EmailIcon />
+        <EmailIcon width={width} height={height} />
       </Link>
     </span>
   );

@@ -1,7 +1,7 @@
 export const siteData = {
   title: 'Ian Blog',
   locale: 'ko-KR',
-  url: 'https://ssoon-blog.vercel.app',
+  url: 'https://ianlog.me',
   since: 2023,
   description: '학습한 내용들을 기록하고 공유합니다. 📚',
   notePageDescription: '개발 관련 기록 공간 ✍️',

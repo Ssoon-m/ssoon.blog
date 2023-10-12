@@ -9,6 +9,17 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      keyframes: {
+        shake: {
+          '0%,50%,100%': { transform: 'rotate(0deg)' },
+          '10%,30%': { transform: 'rotate(-10deg)' },
+          '20%': { transform: 'rotate(12deg)' },
+          '40%': { transform: 'rotate(9deg)' },
+        },
+      },
+      animation: {
+        shake: 'shake 2.5s infinite',
+      },
       typography: (theme: any) => ({
         DEFAULT: {
           css: {

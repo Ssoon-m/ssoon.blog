@@ -15,8 +15,12 @@ export default function Home() {
           <div className="order-2 sm:order-1 text-center sm:text-start mt-2 sm:mt-0">
             <h1 className="text-2xl font-bold">{siteData.auhtor.name}</h1>
             <h3 className="text-lg text-gray-400">프론트엔드 개발자</h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              좋은 사용자 경험을 위해 학습하고 기록합니다.😄
+            <p className="text-lg text-gray-600 dark:text-gray-300">
+              안녕하세요
+              <span className="inline-block animate-shake">👋</span>
+              &nbsp;주니어 프론트엔드 개발자입니다.
+              <br />
+              좋은 사용자 경험을 위해 학습하고 기록합니다.
             </p>
           </div>
           <div className="relative order-1 sm:order-2">

@@ -50,7 +50,7 @@ export const getTagsOfPosts = () => {
   );
 };
 
-export const getPostByTag = (tag: string) => {
+export const getPostsByTag = (tag: string) => {
   return allPosts.filter((post) => post.tags.some((_tag) => _tag === tag));
 };
 

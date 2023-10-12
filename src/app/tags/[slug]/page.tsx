@@ -1,6 +1,6 @@
 import React from 'react';
 import PostCard from '@/components/post/PostCard';
-import { getAllTags, getPostByTag } from '@/datasets/post';
+import { getAllTags, getPostsByTag } from '@/datasets/post';
 import { siteSEO } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 
@@ -9,7 +9,7 @@ export const generateStaticParams = async () =>
 
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
   const tag = decodeURIComponent(params.slug);
-  const note = getPostByTag(tag);
+  const note = getPostsByTag(tag);
   if (!note) notFound();
 
   return siteSEO({
@@ -20,7 +20,7 @@ export const generateMetadata = ({ params }: { params: { slug: string } }) => {
 
 const TagsPage = ({ params }: { params: { slug: string } }) => {
   const tag = decodeURIComponent(params.slug);
-  const posts = getPostByTag(tag);
+  const posts = getPostsByTag(tag);
   return (
     <div className="pt-6">
       <h1 className="text-4xl font-bold"># {tag}</h1>

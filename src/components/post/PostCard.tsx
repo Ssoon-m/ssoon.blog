@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Post } from '@/datasets/post';
 import { dateFormatter } from '@/lib/utils/date';
+import PostTag from './PostTag';
 
 interface Props {
   post: Post;
@@ -21,13 +22,9 @@ const PostCard = ({ post }: Props) => {
         <div className="flex flex-col sm:flex-row justify-start sm:justify-between items-start sm:items-center flex-wrap gap-2">
           <div className="flex flex-start items-center flex-wrap gap-2">
             {post.tags.map((tag, i) => (
-              <Link
-                href={`/tags/${tag}`}
-                className="rounded-lg px-2 py-[2px] bg-gray-100 dark:bg-gray-800 dark:text-indigo-400 text-sm text-indigo-500 shrink-0 hover:bg-gray-200 dark:hover:bg-gray-700"
-                key={i}
-              >
+              <PostTag key={i} tag={tag}>
                 {tag}
-              </Link>
+              </PostTag>
             ))}
           </div>
           <p className="text-xs text-gray-400">
