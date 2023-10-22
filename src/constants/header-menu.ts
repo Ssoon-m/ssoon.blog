@@ -1,5 +1,9 @@
 export const headerNavLinks = [
-  { path: '/blog', title: 'Blog' },
-  { path: '/tags', title: 'Tags' },
-  { path: '/note/javascript/arrow-function-this', title: 'Note' },
+  { link: '/blog', path: '/blog', title: 'Blog' },
+  { link: '/tags', path: '/tags', title: 'Tags' },
+  {
+    link: '/note/javascript/arrow-function-this',
+    path: '/note',
+    title: 'Note',
+  },
 ];

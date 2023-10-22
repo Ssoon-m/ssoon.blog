@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 interface MobileMenuProps {
   onClickLink: (closeMenu: boolean) => void;
-  menuList: Array<{ path: string; title: string }>;
+  menuList: Array<{ path: string; title: string; link: string }>;
   currentPathName: string;
 }
 
@@ -19,14 +19,13 @@ const MobileMenu = ({
     return currentPathName.startsWith(path);
   };
   return (
-    <nav className="z-50 w-full h-full fixed top-[61px] left-0 right-0 bottom-0 bg-white dark:bg-zinc-950">
-      <div className="p-4">
-        <div className="flex flex-col gap-2" onClick={handleLinkClick}>
-          {menuList.map((menu) => (
+    <nav className="p-4 z-50 w-full h-full fixed top-[61px] left-0 right-0 bottom-0 bg-white dark:bg-zinc-950">
+      <ul onClick={handleLinkClick}>
+        {menuList.map((menu) => (
+          <li key={menu.title}>
             <Link
-              key={menu.title}
-              href={menu.path}
-              className={`w-full text-xl rounded-lg px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 transition select-none ${
+              href={menu.link}
+              className={`flex text-xl rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-slate-800 transition select-none ${
                 isActiveMenu(menu.path)
                   ? 'text-indigo-500'
                   : 'text-gray-500 dark:text-gray-300'
@@ -34,9 +33,9 @@ const MobileMenu = ({
             >
               {menu.title}
             </Link>
-          ))}
-        </div>
-      </div>
+          </li>
+        ))}
+      </ul>
     </nav>
   );
 };
