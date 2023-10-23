@@ -1,25 +1,18 @@
 'use client';
-
-import { useEffect, useState } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
 
 const ScrollProgressBar = () => {
-  const [width, setWidth] = useState(0);
-
-  const calcScrollHeight = () => {
-    const scrolled = window.scrollY;
-    const windowHeight = window.innerHeight;
-    const fullHeight = document.body.clientHeight;
-    const progress = (scrolled / (fullHeight - windowHeight)) * 100;
-    setWidth(progress);
-  };
-
-  useEffect(() => {
-    calcScrollHeight();
-    window.addEventListener('scroll', calcScrollHeight);
-    return () => window.removeEventListener('scroll', calcScrollHeight);
-  }, []);
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
   return (
-    <div className="bg-indigo-500 h-full" style={{ width: `${width}%` }}></div>
+    <motion.div
+      className="origin-[0%] h-full bg-indigo-500"
+      style={{ scaleX }}
+    ></motion.div>
   );
 };
 

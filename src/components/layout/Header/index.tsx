@@ -1,5 +1,5 @@
 'use client';
-import MenuButton from '@/components/common/MenuButton';
+import MenuToggleButton from '@/components/common/MenuToggleButton';
 import { headerNavLinks } from '@/constants/header-menu';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -21,7 +21,7 @@ const Header = ({ isScrollProgressBar = false }: HeaderProps) => {
   const theme = useGetCurrentTheme();
   const { isMounted } = useIsMounted();
   const pathname = usePathname();
-  const onClickMenuButton = () => {
+  const onClickMenuToggleButton = () => {
     if (isOpen) {
       setIsOpen(false);
       document.body.classList.remove('overflow-hidden', 'md:overflow-auto');
@@ -86,7 +86,10 @@ const Header = ({ isScrollProgressBar = false }: HeaderProps) => {
               />
             </div>
             <div className="block md:hidden">
-              <MenuButton isOpen={isOpen} onClickMenu={onClickMenuButton} />
+              <MenuToggleButton
+                isOpen={isOpen}
+                onClickMenu={onClickMenuToggleButton}
+              />
             </div>
             <ToggleTheme />
           </div>
