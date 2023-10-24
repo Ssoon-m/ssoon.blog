@@ -15,12 +15,23 @@ export const springStagger: Variants = {
 
 export const springFadeInSlideUp: Variants = {
   hidden: {
+    y: 45,
     opacity: 0,
-    y: 30,
+  },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: 'spring', stiffness: 300, damping: 40 },
+  },
+};
+export const springFadeInSlideRight: Variants = {
+  hidden: {
+    opacity: 0,
+    x: -45,
   },
   visible: {
     opacity: 1,
-    y: 0,
+    x: 0,
     transition: { type: 'spring', stiffness: 300, damping: 40 },
   },
 };

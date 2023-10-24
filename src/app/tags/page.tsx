@@ -1,9 +1,7 @@
-import BasicLayout from '@/components/layout/BasicLayout';
-import PostTag from '@/components/post/PostTag';
 import { getTagsOfPosts } from '@/datasets/post';
 import { siteSEO } from '@/lib/seo';
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import PostTagList from './components/PostTagList';
 
 const TagsPage = () => {
   const tags = getTagsOfPosts();
@@ -15,15 +13,7 @@ const TagsPage = () => {
       <div className="py-2 text-gray-700 dark:text-gray-300">
         게시글에 사용된 태그들을 모아서 보여줍니다.
       </div>
-
-      <div className="py-4 flex gap-2 flex-wrap">
-        {tags.map(([key, value]) => (
-          <PostTag key={key} tag={key} size="large">
-            <span>{key}&nbsp;</span>
-            <span>({value})</span>
-          </PostTag>
-        ))}
-      </div>
+      <PostTagList tags={tags} />
     </div>
   );
 };
