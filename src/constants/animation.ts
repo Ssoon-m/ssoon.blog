@@ -13,6 +13,30 @@ export const springStagger: Variants = {
   hidden: {},
 };
 
+export const fullSlideIn: Variants = {
+  closed: {
+    transform: 'translate(0%, -100%)',
+    willChange: 'transform',
+  },
+  open: {
+    transform: 'translate(0%,0%)',
+    transition: { ease: [0.08, 0.65, 0.53, 0.96], duration: 0.35 },
+    willChange: 'transform',
+  },
+};
+
+export const fadeInSlideUpDelay: Variants = {
+  closed: {
+    y: 60,
+    opacity: 0,
+  },
+  open: {
+    y: 0,
+    opacity: 1,
+    transition: { delay: 0.35, ease: [0.08, 0.65, 0.53, 0.96] },
+  },
+};
+
 export const springFadeInSlideUp: Variants = {
   hidden: {
     y: 45,

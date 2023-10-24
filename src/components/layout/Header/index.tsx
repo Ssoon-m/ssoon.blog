@@ -54,7 +54,7 @@ const Header = ({ isScrollProgressBar = false }: HeaderProps) => {
         </div>
       )}
       <header
-        className={`fixed ${isScrollProgressBarClasses} z-10 w-full h-[61px] px-4 py-3 bg-white/80 backdrop-blur-sm backdrop-saturate-200 dark:bg-black/50 border-b border-gray-100 dark:border-gray-700`}
+        className={`fixed ${isScrollProgressBarClasses} z-50 w-full h-[61px] px-4 py-3 bg-white/80 backdrop-blur-sm backdrop-saturate-200 dark:bg-black/50 border-b border-gray-100 dark:border-gray-700`}
       >
         <div className="relative max-w-6xl mx-auto flex items-center justify-between">
           <div>
@@ -95,15 +95,14 @@ const Header = ({ isScrollProgressBar = false }: HeaderProps) => {
           </div>
         </div>
       </header>
-      {isOpen && (
-        <div className="block md:hidden">
-          <MobileMenu
-            menuList={headerNavLinks}
-            onClickLink={onClickLink}
-            currentPathName={pathname}
-          />
-        </div>
-      )}
+      <div className="block md:hidden">
+        <MobileMenu
+          isOpen={isOpen}
+          menuList={headerNavLinks}
+          onClickLink={onClickLink}
+          currentPathName={pathname}
+        />
+      </div>
     </>
   );
 };
