@@ -2,11 +2,14 @@
 
 import PostCard from '@/components/post/PostCard';
 import { springStagger, springFadeInSlideUp } from '@/constants/animation';
-import { getMainPosts } from '@/datasets/post';
+import { type Post } from '@/datasets/post';
 import { motion } from 'framer-motion';
 
-const PostCardList = () => {
-  const posts = getMainPosts();
+interface PostCardListProps {
+  posts: Array<Post>;
+}
+
+const PostCardList = ({ posts }: PostCardListProps) => {
   return (
     <motion.div
       className="flex flex-col gap-6 mb-7"

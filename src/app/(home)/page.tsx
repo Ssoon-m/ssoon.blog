@@ -2,8 +2,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { siteData } from '@/constants/my-site';
 import BasicLayout from '@/components/layout/BasicLayout';
-import PostCardList from './components/PostCardList';
+import PostCardList from '@/components/post/PostCardList';
+import { getMainPosts } from '@/datasets/post';
 export default function Home() {
+  const posts = getMainPosts();
   return (
     <BasicLayout>
       <div className="pt-6">
@@ -34,7 +36,7 @@ export default function Home() {
           <h1 className="text-3xl fong-bold">Latest Posts</h1>
         </div>
         <div className="h-[30px]" />
-        <PostCardList />
+        <PostCardList posts={posts} />
         <div className="w-full flex justify-end hover:-translate-y-[1.5px] transform duration-200 mb-5">
           <Link
             href="/blog"
