@@ -4,6 +4,8 @@ import React from 'react';
 import usePostsSearch from '../hooks/usePostsSearch';
 import PostCard from '@/components/post/PostCard';
 import { Post } from '@/datasets/post';
+import { motion } from 'framer-motion';
+import { springFadeInSlideUp, springStagger } from '@/constants/animation';
 
 interface SearchProps {
   posts: Post[];
@@ -19,13 +21,18 @@ const SearchBoxList = ({ posts }: SearchProps) => {
           onChange={(e) => handleSearch(e.currentTarget.value)}
         />
       </div>
-      <div className="flex flex-col gap-6 mb-7">
+      <motion.div
+        className="flex flex-col gap-6 mb-7"
+        initial="hidden"
+        animate="visible"
+        variants={springStagger}
+      >
         {searchResults.map((post, idx) => (
-          <div key={idx}>
+          <motion.div key={idx} variants={springFadeInSlideUp}>
             <PostCard post={post} />
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </>
   );
 };

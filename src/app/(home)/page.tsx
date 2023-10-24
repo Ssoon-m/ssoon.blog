@@ -1,13 +1,9 @@
 import Link from 'next/link';
-import { getMainPosts } from '@/datasets/post';
 import Image from 'next/image';
-import PostCard from '@/components/post/PostCard';
 import { siteData } from '@/constants/my-site';
 import BasicLayout from '@/components/layout/BasicLayout';
-
+import PostCardList from './components/PostCardList';
 export default function Home() {
-  const posts = getMainPosts();
-
   return (
     <BasicLayout>
       <div className="pt-6">
@@ -38,13 +34,7 @@ export default function Home() {
           <h1 className="text-3xl fong-bold">Latest Posts</h1>
         </div>
         <div className="h-[30px]" />
-        <div className="flex flex-col gap-6 mb-7">
-          {posts.map((post, idx) => (
-            <div key={idx}>
-              <PostCard post={post} />
-            </div>
-          ))}
-        </div>
+        <PostCardList />
         <div className="w-full flex justify-end hover:-translate-y-[1.5px] transform duration-200 mb-5">
           <Link
             href="/blog"
