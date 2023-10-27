@@ -10,10 +10,10 @@ const ToggleTheme = () => {
   return (
     <button
       aria-label="toggle theme button"
-      className="p-1 text-yellow-400"
+      className="p-1 text-yellow-400 w-8 h-8"
       onClick={toggleTheme}
     >
-      {isMounted && isThemeDark ? <MoonIcon /> : <SunIcon />}
+      {!isMounted ? null : isThemeDark ? <MoonIcon /> : <SunIcon />}
     </button>
   );
 };

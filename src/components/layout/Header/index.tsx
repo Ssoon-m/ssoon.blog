@@ -49,7 +49,7 @@ const Header = ({ isScrollProgressBar = false }: HeaderProps) => {
   return (
     <>
       {isScrollProgressBar && (
-        <div className="fixed top-0 z-10 h-1 w-full">
+        <div className="fixed top-0 z-50 h-1 w-full">
           <ScrollProgressBar />
         </div>
       )}
