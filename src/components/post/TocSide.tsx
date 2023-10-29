@@ -41,10 +41,27 @@ const TocSide = ({ tableOfContents }: TocSideProps) => {
       });
       setHeadingTops(headingTops);
     };
+
+    const trackScrollHeight = () => {
+      let prevScrollHeight = document.body.scrollHeight;
+      let timeoutId: ReturnType<typeof setTimeout> | null = null;
+      const settingScroll = () => {
+        const scrollHeight = document.body.scrollHeight;
+        if (prevScrollHeight !== scrollHeight) {
+          settingHeadingTops();
+        }
+        prevScrollHeight = scrollHeight;
+        timeoutId = setTimeout(settingScroll, 250);
+      };
+      timeoutId = setTimeout(settingScroll, 250);
+      return timeoutId;
+    };
+
     settingHeadingTops();
-    window.addEventListener('resize', settingHeadingTops);
+    const timeoutId = trackScrollHeight();
+
     return () => {
-      window.removeEventListener('resize', settingHeadingTops);
+      clearTimeout(timeoutId);
     };
   }, [tableOfContents]);
 
