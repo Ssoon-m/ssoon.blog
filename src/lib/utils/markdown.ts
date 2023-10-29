@@ -2,22 +2,26 @@ import { type Toc } from '../types/toc-type';
 import GithubSlugger from 'github-slugger';
 
 export const parseHeadersForTOC = (raw: string) => {
+  const calculateHeaderLevels = (arr: Array<number>) => {
+    const sorted = [...arr].sort((a, b) => a - b);
+    const min = sorted[0];
+    const adjusted = arr.map((value) => value - min + 1);
+    return adjusted;
+  };
+
   const regex = /\n(?<flag>#{1,3})\s+(?<text>.+)/g;
+  const headerMatches = Array.from(raw.matchAll(regex));
+
+  const headerLevels = calculateHeaderLevels(
+    headerMatches.map((match) => match.groups?.flag.length!),
+  ) as Array<1 | 2 | 3>;
+
   const slugger = new GithubSlugger();
-  return Array.from(raw.matchAll(regex)).reduce<Toc[]>((acc, matchItem) => {
-    const groups = matchItem.groups;
-    if (groups) {
-      acc.push({
-        level:
-          groups.flag.length === 2
-            ? 'two'
-            : groups.flag.length === 3
-            ? 'three'
-            : 'one',
-        text: groups.text,
-        slug: slugger.slug(groups.text),
-      });
-    }
-    return acc;
-  }, []);
+
+  const headers: Toc[] = headerMatches.map((header, i) => {
+    const { text } = header.groups || { text: '' };
+    const slug = slugger.slug(text);
+    return { level: headerLevels[i], text, slug };
+  });
+  return headers;
 };

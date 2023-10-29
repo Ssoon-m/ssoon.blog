@@ -1,5 +1,5 @@
 export interface Toc {
-  level: 'one' | 'two' | 'three';
+  level: 1 | 2 | 3;
   text: string;
   slug: string;
 }

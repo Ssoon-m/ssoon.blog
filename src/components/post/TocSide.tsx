@@ -3,6 +3,12 @@ import { type Toc } from '@/lib/types/toc-type';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+const numberToStringMap = {
+  1: 'one',
+  2: 'two',
+  3: 'three',
+};
+
 const getScrollTop = () => {
   if (!document.body) return 0;
   if (document.documentElement && 'scrollTop' in document.documentElement) {
@@ -73,7 +79,7 @@ const TocSide = ({ tableOfContents }: TocSideProps) => {
           </div>
           {tableOfContents.map((toc, i) => (
             <li
-              data-level={toc.level}
+              data-level={numberToStringMap[toc.level]}
               key={i}
               className={`first-of-type:pt-2 py-1 data-[level=two]:pl-3 data-[level=three]:pl-5 text-gray-400 text-sm hover:text-gray-800 dark:hover:text-gray-200 transition-all ${
                 activeToc === toc.slug
