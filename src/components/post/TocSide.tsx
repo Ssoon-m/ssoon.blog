@@ -72,7 +72,7 @@ const TocSide = ({ tableOfContents }: TocSideProps) => {
       const currentHeading = headingTops
         .slice()
         .reverse()
-        .find((headingTop) => scrollTop >= headingTop.top - 2);
+        .find((headingTop) => scrollTop >= headingTop.top - 4);
 
       if (currentHeading) {
         setActiveToc(currentHeading.slug);
