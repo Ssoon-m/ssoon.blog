@@ -9,7 +9,6 @@ import NoteContent from './components/NoteContent';
 import NoteHeader from './components/NoteHeader';
 import TopNavCategory from './components/TopNavCategory';
 import { createTreeView } from './util/createNoteTree';
-import BasicLayout from '@/components/layout/BasicLayout';
 
 export const generateStaticParams = async () =>
   getAllNotes().map((note) => ({
@@ -42,7 +41,7 @@ const NotePage = ({ params }: { params: { slug: string[] } }) => {
   const notes = getAllNotes('asc');
   const treeView = createTreeView(notes, 'note');
   return (
-    <BasicLayout>
+    <>
       <ArticleJsonLd
         headline={note.title}
         datePublished={note.date}
@@ -71,7 +70,7 @@ const NotePage = ({ params }: { params: { slug: string[] } }) => {
         </div>
       </div>
       <ScrollTopButton />
-    </BasicLayout>
+    </>
   );
 };
 

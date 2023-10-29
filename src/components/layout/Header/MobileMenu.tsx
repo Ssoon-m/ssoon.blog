@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { fullSlideIn, fadeInSlideUpDelay } from '@/constants/animation';
+import { fullSlideInMenu, fadeInSlideUpDelay } from '@/constants/animation';
 
 interface MobileMenuProps {
   onClickLink: (closeMenu: boolean) => void;
@@ -28,9 +28,13 @@ const MobileMenu = ({
       className="p-4 z-40 w-full h-full fixed top-[61px] left-0 right-0 bottom-0 bg-white dark:bg-zinc-950"
       initial={false}
       animate={isOpen ? 'open' : 'closed'}
-      variants={fullSlideIn}
+      variants={fullSlideInMenu}
     >
-      <motion.ul onClick={handleLinkClick} variants={fadeInSlideUpDelay}>
+      <motion.ul
+        className="pt-14"
+        onClick={handleLinkClick}
+        variants={fadeInSlideUpDelay}
+      >
         {menuList.map((menu) => (
           <li key={menu.title}>
             <Link

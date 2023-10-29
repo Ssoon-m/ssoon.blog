@@ -13,9 +13,9 @@ import Giscus from '@/components/Giscus';
 import ScrollTopButton from '@/components/ScrollTopButton';
 import { articleSEO } from '@/lib/seo';
 import ArticleJsonLd from '@/components/ArticleJsonLd';
-import ScrollProcessLayout from '@/components/layout/ScrollProcessLayout';
 import Image from 'next/image';
 import PostTag from '@/components/post/PostTag';
+import ScrollProgressBar from '@/components/ScrollProgressBar';
 
 export const generateStaticParams = async () =>
   getAllPosts().map((post) => ({
@@ -45,7 +45,7 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
   const nextPost = getNextPost(postIndex);
 
   return (
-    <ScrollProcessLayout>
+    <>
       <ArticleJsonLd
         headline={post.title}
         datePublished={post.date}
@@ -53,6 +53,9 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
         pathname={post.postUrl}
         image={post.thumbnailUrl}
       />
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 w-full">
+        <ScrollProgressBar />
+      </div>
       <div className="flex-1 flex flex-col py-8">
         <PostHeader
           title={post.title}
@@ -88,7 +91,7 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
         <Giscus />
       </div>
       <ScrollTopButton />
-    </ScrollProcessLayout>
+    </>
   );
 };
 

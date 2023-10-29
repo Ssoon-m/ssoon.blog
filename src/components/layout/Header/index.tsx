@@ -10,17 +10,18 @@ import MobileMenu from './MobileMenu';
 import Image from 'next/image';
 import { useGetCurrentTheme } from '@/hooks/useGetCurrentTheme';
 import { useIsMounted } from '@/hooks/useIsMounted';
-import ScrollProgressBar from '@/components/ScrollProgressBar';
+import useScrollDirection from '@/hooks/useScrollDirection';
+import { motion } from 'framer-motion';
+import { fullSlideInHeader } from '@/constants/animation';
 
-interface HeaderProps {
-  isScrollProgressBar?: boolean;
-}
-
-const Header = ({ isScrollProgressBar = false }: HeaderProps) => {
+const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const scrollDirection = useScrollDirection();
   const theme = useGetCurrentTheme();
   const { isMounted } = useIsMounted();
   const pathname = usePathname();
+  const isBlogDetailPage = /^\/blog(\/[\w\d-]+)$/.test(pathname);
+
   const onClickMenuToggleButton = () => {
     if (isOpen) {
       setIsOpen(false);
@@ -43,18 +44,19 @@ const Header = ({ isScrollProgressBar = false }: HeaderProps) => {
     setIsOpen(closeMenu);
     document.body.classList.remove('overflow-hidden', 'md:overflow-auto');
   };
-
-  const isScrollProgressBarClasses = isScrollProgressBar ? 'top-1' : 'top-0';
-
   return (
     <>
-      {isScrollProgressBar && (
-        <div className="fixed top-0 z-50 h-1 w-full">
-          <ScrollProgressBar />
-        </div>
-      )}
-      <header
-        className={`fixed ${isScrollProgressBarClasses} z-50 w-full h-[61px] px-4 py-3 bg-white/80 backdrop-blur-sm backdrop-saturate-200 dark:bg-black/50 border-b border-gray-100 dark:border-gray-700`}
+      <motion.header
+        className={`fixed z-50 w-full h-[61px] px-4 py-3 bg-white/80 backdrop-blur-sm backdrop-saturate-200 dark:bg-black/50 border-b border-gray-100 dark:border-gray-700`}
+        initial={false}
+        animate={
+          isBlogDetailPage
+            ? scrollDirection === 'up'
+              ? 'open'
+              : 'closed'
+            : 'open'
+        }
+        variants={fullSlideInHeader}
       >
         <div className="relative max-w-6xl mx-auto flex items-center justify-between">
           <div>
@@ -94,7 +96,7 @@ const Header = ({ isScrollProgressBar = false }: HeaderProps) => {
             <ToggleTheme />
           </div>
         </div>
-      </header>
+      </motion.header>
       <div className="block md:hidden">
         <MobileMenu
           isOpen={isOpen}

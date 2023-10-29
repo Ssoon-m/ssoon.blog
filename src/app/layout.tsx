@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import '../styles/globals.css';
 import AppProviders from './AppProviders';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+import BasicLayout from '@/components/layout/BasicLayout';
 
 export default function RootLayout({
   children,
@@ -24,7 +25,9 @@ export default function RootLayout({
       </head>
       <body className="bg-white dark:bg-zinc-950 transition-[background]">
         <GoogleAnalytics />
-        <AppProviders>{children}</AppProviders>
+        <AppProviders>
+          <BasicLayout>{children}</BasicLayout>
+        </AppProviders>
       </body>
     </html>
   );

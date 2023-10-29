@@ -13,13 +13,29 @@ export const springStagger: Variants = {
   hidden: {},
 };
 
-export const fullSlideIn: Variants = {
+export const fullSlideInMenu: Variants = {
   closed: {
     transform: 'translate(0%, -100%)',
+    top: 0,
     willChange: 'transform',
   },
   open: {
     transform: 'translate(0%,0%)',
+    top: 0,
+    transition: { ease: [0.08, 0.65, 0.53, 0.96], duration: 0.35 },
+    willChange: 'transform',
+  },
+};
+
+export const fullSlideInHeader: Variants = {
+  closed: {
+    transform: 'translate(0%, -100%)',
+    top: 0,
+    willChange: 'transform',
+  },
+  open: {
+    transform: 'translate(0%,0%)',
+    top: 0,
     transition: { ease: [0.08, 0.65, 0.53, 0.96], duration: 0.35 },
     willChange: 'transform',
   },
