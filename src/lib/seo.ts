@@ -19,7 +19,7 @@ export const defaultOpenGraph = {
   type: 'website',
   title: siteData.title,
   description: siteData.description,
-  // url: siteData.url,
+  url: siteData.url,
   siteName: siteData.title,
   locale: siteData.locale,
   images: [siteData.siteImage],
