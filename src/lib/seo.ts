@@ -71,7 +71,7 @@ export const defaultSEO = (): SEO => {
         type: 'image/png',
       },
     },
-    manifest: '/favicons/manifest.json',
+    manifest: '/manifest.json',
     robots: {
       index: true,
       follow: true,

@@ -1,0 +1,28 @@
+{
+  "short_name": "Ian Blog",
+  "name": "Ian 기술 블로그",
+  "description": "학습한 내용들을 기록하고 공유합니다. 📚",
+  "start_url": "/",
+  "id": "/",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "lang": "ko-KR",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/favicons/favicon_32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicons/favicon_192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicons/favicon_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
