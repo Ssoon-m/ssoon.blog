@@ -96,7 +96,7 @@ export const siteSEO = ({
   const openGraph = generateOpenGraph('website');
   const _title = title ? `${title} | ${siteData.title}` : siteData.title;
   return {
-    alternates: { canonical: siteData.url },
+    alternates: { canonical: `${siteData.url}/${pathname}` },
     title: _title,
     description: description,
     authors: { name: siteData.auhtor.name },
@@ -120,6 +120,7 @@ export const articleSEO = ({
 }: seoProps & OpenGraphProps = {}): SEO => {
   const openGraph = generateOpenGraph('article');
   return {
+    alternates: { canonical: `${siteData.url}/${pathname}` },
     title: title,
     description: description,
     openGraph: openGraph({

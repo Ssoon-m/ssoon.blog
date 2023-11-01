@@ -23,5 +23,5 @@ export default TagsPage;
 export const metadata: Metadata = siteSEO({
   title: 'Tag',
   description: '게시글에 사용된 태그들을 모아서 보여줍니다.',
-  pathname: 'tag',
+  pathname: 'tags',
 });
