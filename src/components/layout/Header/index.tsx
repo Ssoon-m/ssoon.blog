@@ -4,7 +4,7 @@ import { headerNavLinks } from '@/constants/header-menu';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import ToggleTheme from '../../ToggleTheme';
+import ToggleTheme from '@/components/ToggleTheme';
 import DesktopHeaderMenu from './DesktopMenu';
 import MobileMenu from './MobileMenu';
 import Image from 'next/image';
@@ -67,6 +67,7 @@ const Header = () => {
                     src="/logo/white-logo.png"
                     width={80}
                     height={40}
+                    priority
                     alt="site logo"
                   />
                 ) : (
@@ -74,6 +75,7 @@ const Header = () => {
                     src="/logo/black-logo.png"
                     width={80}
                     height={40}
+                    priority
                     alt="site logo"
                   />
                 )}

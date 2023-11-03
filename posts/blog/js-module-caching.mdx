@@ -2,7 +2,7 @@
 title: 'js 모듈 캐싱에 대해 알고 계신가요?'
 date: 2023-08-20 21:05:20
 description: 예시 코드와 함께 이해하는 js 모듈 캐싱
-thumbnailUrl: https://velog.velcdn.com/images/ssoon-m/post/52d5fdd6-519f-4d19-8ef7-4b84aef3b7e4/image.png
+thumbnailUrl: /posts/blog/js-module-caching/module-caching-thumbnail.png
 tags:
   - JavaScript
   - JavaScript Module
@@ -137,7 +137,7 @@ export default App;
 2. `1번 Counter` 컴포넌트 실행 후 `2번 Counter` 컴포넌트가 실행이 됩니다. 이때 이미 로드된 `Counter` 컴포넌트의 모듈은 실행되지 않습니다.
 3. `1번 Counter` 컴포넌트에서 count 변수를 5까지 올린 후 `2번 Counter` 컴포넌트에서 `handleCountIncrease` 함수를 실행 시키면 이미 메모리에 올라가있는 count 변수에 1이 더해져서 6이 출력이 됩니다.
 
-![](https://velog.velcdn.com/images/ssoon-m/post/3e3094c3-fd68-405f-b95d-11de01fb53b2/image.png)
+![](/posts/blog/js-module-caching/counter-example-1.png)
 
 > [함수형 컴포넌트 외부 변수 예시](https://codesandbox.io/p/sandbox/sad-kilby-x32tgv?file=%2Fsrc%2FApp.tsx%3A13%2C1)에서 상세 코드 확인이 가능합니다.
 
@@ -147,7 +147,7 @@ export default App;
 ### 컴포넌트 언마운트시 모듈 캐싱 동작
 
 리액트에서 컴포넌트가 언마운트되면 해당 컴포넌트와 관련된 리소스 및 상태 등이 정리됩니다. 하지만, 모듈의 캐싱은 모듈 시스템 자체의 동작 방식에 의해 처리되므로, 컴포넌트의 언마운트와 직접적인 연관이 없습니다.
-![](https://velog.velcdn.com/images/ssoon-m/post/a5088465-fc4c-461e-96d1-52e2a1d5fa5f/image.png)
+![](/posts/blog/js-module-caching/counter-example-2.png)
 
 >[컴포넌트 언마운트 예시](https://codesandbox.io/p/sandbox/outer-let-forked-8gsg4x?file=/src/App.tsx:10,26)에서 상세 코드 확인이 가능합니다.
 
@@ -241,7 +241,7 @@ export default App;
 
 `timeoutId` 변수를 공유하기 때문에 `type A` 컴포넌트의 입력이 `type B` 컴포넌트의 입력에 영향을 줄 수 있습니다. 즉, `type A` 입력에서의 디바운싱(delay) 동작이 `type B` 입력에 영향을 미칠 수 있게 되는 것입니다.
 
-![](https://velog.velcdn.com/images/ssoon-m/post/87f52290-2aee-4077-bdd3-b3e4ba713f96/image.png)
+![](/posts/blog/js-module-caching/debounce-example-1.png)
 
 > [util IIFE deboune](https://codesandbox.io/p/sandbox/react-debounce-util-r2ttrs) 에서 상세 코드 확인이 가능합니다.
 > 
@@ -286,7 +286,7 @@ export const useDebounce = <T extends unknown[]>(
 
 ```
 
-![](https://velog.velcdn.com/images/ssoon-m/post/e3239d20-29db-4888-bb12-468a7c284d13/image.png)
+![](/posts/blog/js-module-caching/debounce-example-2.png)
 
 > 
 [debounce hooks](https://codesandbox.io/p/sandbox/react-debounce-hooks-vxyr28) 에서 상세 코드 확인이 가능합니다.

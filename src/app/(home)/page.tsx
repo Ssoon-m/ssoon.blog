@@ -25,6 +25,7 @@ export default function Home() {
             alt="profile"
             width={120}
             height={120}
+            priority
             className="rounded"
           />
         </div>
