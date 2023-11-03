@@ -1957,6 +1957,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cloudinary-core@npm:^2.13.0":
+  version: 2.13.0
+  resolution: "cloudinary-core@npm:2.13.0"
+  peerDependencies:
+    lodash: ">=4.0"
+  checksum: 5485fbc094b0722f6d4c6becfde431d3042c3c926a69c4bc2f6b373ac059b9b798703845c6cbf4a55ee2eb1c7718f5ec5130772117419755015b04dabd369be5
+  languageName: node
+  linkType: hard
+
+"cloudinary@npm:^1.41.0":
+  version: 1.41.0
+  resolution: "cloudinary@npm:1.41.0"
+  dependencies:
+    cloudinary-core: ^2.13.0
+    core-js: ^3.30.1
+    lodash: ^4.17.21
+    q: ^1.5.1
+  checksum: e404311911484322afce251f74cc2d9252d30cde4bbfa2559dc2068a81df62703f57015b2a98218b9d62d5281e1c0966e9f7a570f4ab325f75277740c3d0a4e7
+  languageName: node
+  linkType: hard
+
 "color-convert@npm:^2.0.1":
   version: 2.0.1
   resolution: "color-convert@npm:2.0.1"
@@ -2050,6 +2071,13 @@ __metadata:
   bin:
     contentlayer: ./bin/cli.cjs
   checksum: 7a7165d3b935ec0879d5fbdb0e5bcdecb4ba8b80fb2c1c8b899624f2bbd1e28d100ca68fc6a8318ccd0e483e7ea916a53cdd3ff8cf109f606ededb69dbcb925f
+  languageName: node
+  linkType: hard
+
+"core-js@npm:^3.30.1":
+  version: 3.33.2
+  resolution: "core-js@npm:3.33.2"
+  checksum: 71de081acbd060ff985afdcdf2552de4a00ab3ac4695c77f3535b72ddf4526920dcd0cb73e72e57c2ae16e384838a6d55790e138f0a19d60afcf851f89d0064d
   languageName: node
   linkType: hard
 
@@ -2249,6 +2277,13 @@ __metadata:
   dependencies:
     esutils: ^2.0.2
   checksum: fd7673ca77fe26cd5cba38d816bc72d641f500f1f9b25b83e8ce28827fe2da7ad583a8da26ab6af85f834138cf8dae9f69b0cd6ab925f52ddab1754db44d99ce
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^16.3.1":
+  version: 16.3.1
+  resolution: "dotenv@npm:16.3.1"
+  checksum: 15d75e7279018f4bafd0ee9706593dd14455ddb71b3bcba9c52574460b7ccaf67d5cf8b2c08a5af1a9da6db36c956a04a1192b101ee102a3e0cf8817bbcf3dfd
   languageName: node
   linkType: hard
 
@@ -3671,6 +3706,46 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ianlog.me@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "ianlog.me@workspace:."
+  dependencies:
+    "@tailwindcss/typography": ^0.5.10
+    "@types/node": ^20.6.1
+    "@types/react": ^18.2.21
+    "@types/react-dom": ^18.2.7
+    autoprefixer: ^10.4.15
+    cloudinary: ^1.41.0
+    contentlayer: ^0.3.4
+    dayjs: ^1.11.9
+    dotenv: ^16.3.1
+    eslint: ^8.49.0
+    eslint-config-next: ^13.4.19
+    framer-motion: ^10.16.4
+    github-slugger: ^2.0.0
+    glob: ^10.3.10
+    husky: ^8.0.3
+    lint-staged: ^14.0.1
+    next: 13.4.19
+    next-contentlayer: ^0.3.4
+    next-themes: ^0.2.1
+    postcss: ^8.4.29
+    prettier: ^3.0.3
+    react: 18.2.0
+    react-dom: 18.2.0
+    reading-time: ^1.5.0
+    rehype-autolink-headings: ^7.0.0
+    rehype-prism-plus: ^1.6.3
+    rehype-slug: ^6.0.0
+    remark-breaks: ^3.0.3
+    remark-gfm: ^3.0.1
+    schema-dts: ^1.1.2
+    tailwindcss: ^3.3.3
+    ts-node: ^10.9.1
+    typescript: ^5.2.2
+  languageName: unknown
+  linkType: soft
+
 "iconv-lite@npm:^0.6.2":
   version: 0.6.3
   resolution: "iconv-lite@npm:0.6.3"
@@ -4365,6 +4440,13 @@ __metadata:
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
   checksum: ad580b4bdbb7ca1f7abf7e1bce63a9a0b98e370cf40194b03380a46b4ed799c9573029599caebc1b14e3f24b111aef72b96674a56cfa105e0f5ac70546cdc005
+  languageName: node
+  linkType: hard
+
+"lodash@npm:^4.17.21":
+  version: 4.17.21
+  resolution: "lodash@npm:4.17.21"
+  checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
   languageName: node
   linkType: hard
 
@@ -5380,44 +5462,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"my-app@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "my-app@workspace:."
-  dependencies:
-    "@tailwindcss/typography": ^0.5.10
-    "@types/node": ^20.6.1
-    "@types/react": ^18.2.21
-    "@types/react-dom": ^18.2.7
-    autoprefixer: ^10.4.15
-    contentlayer: ^0.3.4
-    dayjs: ^1.11.9
-    eslint: ^8.49.0
-    eslint-config-next: ^13.4.19
-    framer-motion: ^10.16.4
-    github-slugger: ^2.0.0
-    glob: ^10.3.10
-    husky: ^8.0.3
-    lint-staged: ^14.0.1
-    next: 13.4.19
-    next-contentlayer: ^0.3.4
-    next-themes: ^0.2.1
-    postcss: ^8.4.29
-    prettier: ^3.0.3
-    react: 18.2.0
-    react-dom: 18.2.0
-    reading-time: ^1.5.0
-    rehype-autolink-headings: ^7.0.0
-    rehype-prism-plus: ^1.6.3
-    rehype-slug: ^6.0.0
-    remark-breaks: ^3.0.3
-    remark-gfm: ^3.0.1
-    schema-dts: ^1.1.2
-    tailwindcss: ^3.3.3
-    ts-node: ^10.9.1
-    typescript: ^5.2.2
-  languageName: unknown
-  linkType: soft
-
 "mz@npm:^2.7.0":
   version: 2.7.0
   resolution: "mz@npm:2.7.0"
@@ -6125,6 +6169,13 @@ __metadata:
   version: 2.3.0
   resolution: "punycode@npm:2.3.0"
   checksum: 39f760e09a2a3bbfe8f5287cf733ecdad69d6af2fe6f97ca95f24b8921858b91e9ea3c9eeec6e08cede96181b3bb33f95c6ffd8c77e63986508aa2e8159fa200
+  languageName: node
+  linkType: hard
+
+"q@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "q@npm:1.5.1"
+  checksum: 147baa93c805bc1200ed698bdf9c72e9e42c05f96d007e33a558b5fdfd63e5ea130e99313f28efc1783e90e6bdb4e48b67a36fcc026b7b09202437ae88a1fb12
   languageName: node
   linkType: hard
 

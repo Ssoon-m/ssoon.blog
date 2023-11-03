@@ -65,10 +65,12 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
         {post.thumbnailUrl && (
           <div className="flex justify-center items-center my-10 relative w-full h-auto">
             <Image
-              className="w-auto max-w-[600px] !relative !h-auto object-contain"
+              className="object-contain"
               src={post.thumbnailUrl}
               alt="post thumbnail image"
-              fill
+              width={550}
+              height={550}
+              priority
             />
           </div>
         )}

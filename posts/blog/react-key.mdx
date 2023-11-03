@@ -2,7 +2,7 @@
 title: '[react] key 제대로 다루기'
 date: 2023-04-21 21:03:16
 description: 리액트 애플리케이션에서의 `key`를 올바르게 잘 사용하는 방법을 알아보고자 합니다!
-thumbnailUrl: https://velog.velcdn.com/images/ssoon-m/post/113c3d72-75cc-4d51-91bd-9cfc03bcf16a/image.png
+thumbnailUrl: /posts/blog/react-key/react-key-thumbnail.png
 tags:
   - react
   - typescript
@@ -138,12 +138,12 @@ export default function App() {
 
 요소 삽입 버튼 클릭시 배열의 맨 앞에 리스트를 추가하는 상황이다.
 
-그리고 input값은 각각 다음과 같다.![input-value.png](https://velog.velcdn.com/images/ssoon-m/post/b6454d1e-0bc7-45c0-8e2d-d5f57b7ce74e/image.png)
+그리고 input값은 각각 다음과 같다.![input-value.png](/posts/blog/react-key/react-key-example-1.png)
 
 위 상황에서 요소 삽입 버튼을 누른다면 eee를 `placeholder`로 보여주는 `input` 창이 맨 앞에 나오고 aaa입니다. bbb입니다. 순으로 화면에 보여지는게 기대하는 자연스러운 동작일 것이다.
 
 하지만, 기대와 다르게 요소 삽입 버튼을 누르면 다음과 같이 컴포넌트가 랜더링이 된다.
-![input-value.png](https://velog.velcdn.com/images/ssoon-m/post/2a65132f-b790-4af7-8172-eba0febbaf0d/image.png)
+![input-value.png](/posts/blog/react-key/react-key-example-2.png)
 
 eee를 0번 째 `index` 에 삽입을 했으니 eee를 기존의 `key` 값이 0이였던 컴포넌트로 인식을 해서 상태가 그대로 유지가 된 상황이다.
 
@@ -171,7 +171,7 @@ const handleListInsertClick = () => {
 //...
 ```
 
-![input-value.png](https://velog.velcdn.com/images/ssoon-m/post/28896b80-3a85-41f6-bd69-555702f8a291/image.png)
+![input-value.png](/posts/blog/react-key/react-key-example-3.png)
 
 eee를 삽입시 새로운 항목이 추가됐다고 올바르게 인식을 하고 추가가 정상적으로 잘 됐다.
 
