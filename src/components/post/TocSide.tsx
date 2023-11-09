@@ -42,9 +42,10 @@ const TocSide = ({ tableOfContents }: TocSideProps) => {
       setHeadingTops(headingTops);
     };
 
+    let prevScrollHeight = document.body.scrollHeight;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
     const trackScrollHeight = () => {
-      let prevScrollHeight = document.body.scrollHeight;
-      let timeoutId: ReturnType<typeof setTimeout> | null = null;
       const settingScroll = () => {
         const scrollHeight = document.body.scrollHeight;
         if (prevScrollHeight !== scrollHeight) {
@@ -58,10 +59,10 @@ const TocSide = ({ tableOfContents }: TocSideProps) => {
     };
 
     settingHeadingTops();
-    const timeoutId = trackScrollHeight();
+    timeoutId = trackScrollHeight();
 
     return () => {
-      clearTimeout(timeoutId);
+      timeoutId && clearTimeout(timeoutId);
     };
   }, [tableOfContents]);
 
