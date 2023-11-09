@@ -1,7 +1,7 @@
 'use client';
 import { type Toc } from '@/lib/types/toc-type';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const numberToStringMap = {
   1: 'one',
@@ -31,40 +31,37 @@ const TocSide = ({ tableOfContents }: TocSideProps) => {
   const [activeToc, setActiveToc] = useState('');
   const [headingTops, setHeadingTops] = useState<null | IHeadingTops[]>([]);
 
-  useEffect(() => {
-    const settingHeadingTops = () => {
-      const scrollTop = getScrollTop();
-      const headingTops = tableOfContents.map(({ slug }) => {
-        const el = document.getElementById(slug);
-        const top = el ? el.getBoundingClientRect().top + scrollTop : 0;
-        return { slug, top };
-      });
-      setHeadingTops(headingTops);
-    };
+  const settingHeadingTops = useCallback(() => {
+    const scrollTop = getScrollTop();
+    const headingTops = tableOfContents.map(({ slug }) => {
+      const el = document.getElementById(slug);
+      const top = el ? el.getBoundingClientRect().top + scrollTop : 0;
+      return { slug, top };
+    });
+    setHeadingTops(headingTops);
+  }, [tableOfContents]);
 
+  useEffect(() => {
+    settingHeadingTops();
     let prevScrollHeight = document.body.scrollHeight;
+
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
     const trackScrollHeight = () => {
-      const settingScroll = () => {
-        const scrollHeight = document.body.scrollHeight;
-        if (prevScrollHeight !== scrollHeight) {
-          settingHeadingTops();
-        }
-        prevScrollHeight = scrollHeight;
-        timeoutId = setTimeout(settingScroll, 250);
-      };
-      timeoutId = setTimeout(settingScroll, 250);
-      return timeoutId;
+      const scrollHeight = document.body.scrollHeight;
+      if (prevScrollHeight !== scrollHeight) {
+        settingHeadingTops();
+      }
+      prevScrollHeight = scrollHeight;
+      timeoutId = setTimeout(trackScrollHeight, 250);
     };
 
-    settingHeadingTops();
-    timeoutId = trackScrollHeight();
+    timeoutId = setTimeout(trackScrollHeight, 250);
 
     return () => {
       timeoutId && clearTimeout(timeoutId);
     };
-  }, [tableOfContents]);
+  }, [settingHeadingTops]);
 
   useEffect(() => {
     const onScroll = () => {
