@@ -47,7 +47,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["next", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:13.4.19"],\
             ["next-contentlayer", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:0.3.4"],\
             ["next-themes", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:0.2.1"],\
-            ["postcss", "npm:8.4.29"],\
+            ["postcss", "npm:8.4.31"],\
             ["prettier", "npm:3.0.3"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:18.2.0"],\
@@ -2304,7 +2304,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["fraction.js", "npm:4.3.6"],\
             ["normalize-range", "npm:0.1.2"],\
             ["picocolors", "npm:1.0.0"],\
-            ["postcss", "npm:8.4.29"],\
+            ["postcss", "npm:8.4.31"],\
             ["postcss-value-parser", "npm:4.2.0"]\
           ],\
           "packagePeers": [\
@@ -4744,7 +4744,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["next", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:13.4.19"],\
             ["next-contentlayer", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:0.3.4"],\
             ["next-themes", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:0.2.1"],\
-            ["postcss", "npm:8.4.29"],\
+            ["postcss", "npm:8.4.31"],\
             ["prettier", "npm:3.0.3"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:18.2.0"],\
@@ -7341,6 +7341,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/postcss-npm-8.4.29-2319a64d31-dd6daa25e7.zip/node_modules/postcss/",\
           "packageDependencies": [\
             ["postcss", "npm:8.4.29"],\
+            ["nanoid", "npm:3.3.6"],\
+            ["picocolors", "npm:1.0.0"],\
+            ["source-map-js", "npm:1.0.2"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:8.4.31", {\
+          "packageLocation": "./.yarn/cache/postcss-npm-8.4.31-385051a82b-1d8611341b.zip/node_modules/postcss/",\
+          "packageDependencies": [\
+            ["postcss", "npm:8.4.31"],\
             ["nanoid", "npm:3.3.6"],\
             ["picocolors", "npm:1.0.0"],\
             ["source-map-js", "npm:1.0.2"]\
