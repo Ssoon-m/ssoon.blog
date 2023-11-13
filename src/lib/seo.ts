@@ -41,6 +41,7 @@ export const openGraphTwitter = {
 export const defaultSEO = (): SEO => {
   return {
     alternates: { canonical: siteData.url },
+    metadataBase: new URL(siteData.url),
     title: siteData.title,
     authors: { name: siteData.auhtor.name },
     description: siteData.description,

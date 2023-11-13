@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 export type SEO = Pick<
   Metadata,
   | 'title'
+  | 'metadataBase'
   | 'alternates'
   | 'authors'
   | 'description'
