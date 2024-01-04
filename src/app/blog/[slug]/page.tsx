@@ -16,6 +16,7 @@ import ArticleJsonLd from '@/components/ArticleJsonLd';
 import Image from 'next/image';
 import PostTag from '@/components/post/PostTag';
 import ScrollProgressBar from '@/components/ScrollProgressBar';
+import { siteData } from '@/constants/my-site';
 
 export const generateStaticParams = async () =>
   getAllPosts().map((post) => ({
@@ -32,7 +33,7 @@ export const generateMetadata = ({ params }: { params: { slug: string } }) => {
     description: post.description,
     pathname: post.postUrl,
     publishedTime: post.date,
-    images: [post.thumbnailUrl],
+    images: [post.thumbnailUrl ?? siteData.siteImage],
     tags: post.tags,
   });
 };
