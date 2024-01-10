@@ -32,7 +32,7 @@ export default function Home() {
       </div>
       <div className="h-[50px]" />
       <div className="mb-3">
-        <h1 className="text-3xl fong-bold">Latest Posts</h1>
+        <h2 className="text-3xl fong-bold">Latest Posts</h2>
       </div>
       <div className="h-[30px]" />
       <PostCardList posts={posts} />
