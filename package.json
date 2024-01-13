@@ -1,13 +1,14 @@
 {
   "name": "ianlog.me",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
+    "postinstall": "husky install",
     "dev": "next dev",
     "build": "yarn upload-cloudinary && next build && yarn generate-sitemap",
     "generate-sitemap": "ts-node --project tsconfig.node.json ./scripts/generate-sitemap.ts",
     "upload-cloudinary": "ts-node --project tsconfig.node.json ./scripts/upload-cloudinary.ts",
     "start": "npx serve@latest out",
-    "prepare": "husky install",
     "lint-fix:prettier": "prettier --write \"./**/*.{js,ts,tsx}\" --ignore-path .gitignore --ignore-path .prettierignore ",
     "lint-fix": "next lint --fix",
     "ts-check": "tsc --noEmit",
