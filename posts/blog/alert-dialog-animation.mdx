@@ -1,0 +1,308 @@
+---
+title: 'setTimeout없이 애니메이션이 끝날 때 컴포넌트 언마운트 시키기 (feat. FSM, animation event)'
+date: 2024-02-07 21:22:05
+description: setTimeout을 사용하지 않고 애니메이션의 시작과 종료에 의존해서 모달의 언마운트를 깔끔하게 처리하는 방법에 대해 공유합니다.
+thumbnailUrl: 
+tags: 
+  - React
+---
+
+
+
+## 시작하며
+
+`setTimeout`을 이용해서 애니메이션이 끝나는 시간에 맞춰서 하드코딩으로 사라지는 애니메이션이 보여주고 DOM에서 지우게끔 구현하는 코드를 종종 보는거 같습니다.
+`setTimeout`으로 구현을 할 경우 모든 사용자의 환경에서 애니메이션이 예상대로 완료되지 않을 수 있습니다. 네트워크 속도, 장치 성능 등에 따라 애니메이션이 예상보다 더 길거나 짧게 실행될 수 있습니다. **사용자 경험이 일관되지 않을 수 있습니다.**
+
+따라서, **애니메이션**을 이용할 경우엔 **애니메이션** 시작과 종료에 의존해서 상태가 변경되어야 **일관된 사용자 경험을 제공**할 수 있습니다.
+Modal을 예시로 어떻게 해야 애니메이션을 잘 다룰 수 있을지 알아보겠습니다.
+
+
+
+## 설계하기
+
+어떻게 해야 애니메이션에 의존해서 상태를 변경할 수 있을까요?
+매우 간단합니다. 애니메이션의 시작과 종료 이벤트를 받아서 상태를 변경하면 됩니다.
+
+애니메이션이 필요한 컴포넌트마다 애니메이션이 실행되는 node에 애니메이션 이벤트를 달아서 상태를 변경하면 깔끔하게 구현할 수 있을거 같습니다.
+
+그런데 위 방법은 ux개선은 되겠지만, dx는 매우 최악입니다.
+애니메이션으로 상태를 다룰 때 마다 비슷한 코드를 계속 작성해야할 것입니다.
+어떻게 개선하면 좋을까요?
+
+아래와 같이 `Presence`라는 컴포넌트에 `modal`의 mount,unmount관련 boolean state를 내려주고, Modal의 애니메이션이 끝날 때까지 Modal컴포넌트의 unmount를 지연해주면 선언적으로 모달의 mount,unmount를 관리할 수 있으므로 dx가 매우 좋아질 것입니다.
+
+```tsx
+return (
+  <Presence present={modalState}>
+    <Modal/>
+  </Presence>)
+```
+
+## Presence 컴포넌트 구현
+
+자식 요소와 `present` 를 props로 받아서 `usePresence`에 상태를 전달후 반환받은 `isPresent`의 값을 통해 DOM에 자식 컴포넌트의 mount와 unmount를 결정하는 역할을 해주는 컴포넌트입니다.
+
+``` tsx
+interface PresenceProps {
+  children: React.ReactElement;
+  present: boolean;
+}
+
+const Presence: React.FC<PresenceProps> = (props) => {
+  const { present, children } = props;
+  const presence = usePresence(present);
+  const child = React.Children.only(children);
+  return presence.isPresent ? child : null;
+};
+
+Presence.displayName = 'Presence';
+```
+
+## usePresence훅 구현
+
+`Presence` 컴포넌트의 핵심인 코드입니다.
+먼저, DOM에서 모달의 mount와 unmount를 결정짓는 상태먼저 정의를 해야합니다.
+
+예를들어 모달을 열기 위한 버튼을 눌렀을 경우 unmount상태였던 모달이 mount로 변경이 되면서 DOM에 모달요소가 올라가고 애니메이션이 진행이 됩니다. 
+이후 모달을 종료했을 경우 애니메이션이 진행되다가 DOM에서 요소가 unmount가 됩니다.
+
+이러한 행동은 세가지로 나눌 수 있습니다.
+1. mount
+- DOM에 요소가 올라간 상태
+- `UNMOUNT` 이벤트를 받았을 경우 unmount상태로 전환
+- `ANIMATION_OUT` 이벤트를 받았을 경우 unmountSuspended상태로 전환
+
+2. unmountSuspended
+- 요소의 애니메이션이 진행중인 상태
+- `MOUNT` 이벤트를 받았을 경우 mount상태로 전환
+- `ANIMATION_END` 이벤트를 받았을 경우 unmount 상태로 전환
+
+3. unmount
+- DOM에 요소가 없는 상태
+- `MOUNT` 이벤트를 받았을 경우 mount 상태로 전환
+
+3가지 상태와 전이 조건을 그래프로 정리하면 다음과 같습니다.
+![fsm-graph](/posts/blog/alert-dialog-animation/fsm-graph.png)
+
+상태를 기준으로 다음에 어떤 동작을 수행해야 하는지 결정하고 단 하나의 상태만 존재해야 하기 때문에 **FSM(유한 상태 기계)를** 이용하면 깔끔하게 구현이 가능합니다.
+
+아래와 같이 구현을 해줍니다.
+
+```js
+function useStateMachine(initialState, machine) {
+  return React.useReducer((state, event){
+    const nextState = (machine[state])[event];
+    return nextState ?? state;
+  }, initialState);
+}
+
+const [state, send] = useStateMachine(initialState, {
+    mounted: {
+      UNMOUNT: 'unmounted',
+      ANIMATION_OUT: 'unmountSuspended',
+    },
+    unmountSuspended: {
+      MOUNT: 'mounted',
+      ANIMATION_END: 'unmounted',
+    },
+    unmounted: {
+      MOUNT: 'mounted',
+    },
+});
+```
+
+
+기능들을 구현하기 전에 사용할 상태들 먼저 정의하고 각 역할을 알아보겠습니다.
+
+`present` : 외부에서 mount와 unmount를 위해 넘기는 상태
+`node` : 이벤트 리스너를 달기위한 node
+`stylesRef` : 애니메이션 이름을 가져오기 위해서 node의 style을 저장
+`prevAnimationNameRef` : 애니메이션의 이름을 저장 (이전 애니메이션과 현재 애니메이션 동작을 비교하기 위해)
+`initialState` : 요소가 DOM에 존재하는지에 대한 초기 상태
+`state` : FSM을 위한 상태
+
+```ts
+                          
+function usePresence(present: boolean) {
+  const [node, setNode] = React.useState<HTMLElement>();
+  const stylesRef = React.useRef<CSSStyleDeclaration>({} as any);
+  const prevAnimationNameRef = React.useRef<string>('none');
+  const initialState = present ? 'mounted' : 'unmounted';
+
+  const [state, send] = useStateMachine(initialState, {
+    mounted: {
+      UNMOUNT: 'unmounted',
+      ANIMATION_OUT: 'unmountSuspended',
+    },
+    unmountSuspended: {
+      MOUNT: 'mounted',
+      ANIMATION_END: 'unmounted',
+    },
+    unmounted: {
+      MOUNT: 'mounted',
+    },
+  });
+}
+
+```
+
+필요한 상태들 정의를 했으므로 isPresent와 ref를 담은 객체를 return 해주는 코드를 작성하겠습니다.
+`isPresent` : DOM에 요소가 있어야 하는지 알려주기 위한 값 입니다.
+`ref` : `callback ref`를 이용해서 `<Presence/>`컴포넌트 하위 요소의 node를 얻어올 함수입니다. 전달한 callback을 통해 `stylesRef` 와 `node`를 세팅해줍니다.
+
+
+```ts
+
+function usePresence(present: boolean) {
+  //...
+  
+  return {
+    isPresent: ['mounted', 'unmountSuspended'].includes(state),
+    ref: React.useCallback((node: HTMLElement) => {
+      if (node) stylesRef.current = getComputedStyle(node);
+      setNode(node);
+    }, []),
+  };
+}
+
+```
+
+`usePresence`에서 ref를 return해주므로 `Presence` 컴포넌트를 살짝 수정을 해줘야 합니다.
+자식 컴포넌트에 `callback ref`를 전달하고, 만약 자식 컴포넌트에서 ref가 넘어오는 경우도 대비하여 node를 같이 주입을 해줍니다.
+
+``` tsx
+const Presence: React.FC<PresenceProps> = (props) => {
+  const { present, children } = props;
+  const presence = usePresence(present);
+  const child = React.Children.only(children);
+  const composeRef = (node: HTMLElement) => {
+    presence.ref(node);
+    if ((child as any).ref) {
+      (child as any).ref.current = node;
+    }
+  };
+  return presence.isPresent ? React.cloneElement(children, { ref: composeRef }) : null;
+};
+```
+
+이제 기능을 구현해보겠습니다.
+위에서 말했듯이 present는 외부에서 모달을 mount,unmount 시키기위해 전달하는 상태입니다.
+present가 변경이 될 때마다 내부적으로 상태 전이 조건을 설정하고 상태를 변경해줍니다.
+
+아래 코드에서 각 조건문 별로 어떤 동작을 담당하는지 알아보겠습니다.
+
+1. present가 true일 경우엔 요소가 unmounted에서 mount상태로 변하게 됩니다.
+2. present가 false일 경우 현재 애니메이션이 있는지 판단을 해주고 mount에서 unmounted상태로 변경을 해줍니다.
+3. present가 false이고 현재 애니메이션이 진행중인 경우 unmountSuspended상태로 변경을 해주고 애니메이션이 진행중이 아니라면 unmount상태로 변경해줍니다.
+
+만약 이상태로 구현을 끝낸다면, `<Presence/>`의 자식요소에 애니메이션이 없을 경우 모달 mount,unmount는 정상적으로 동작합니다
+
+```ts
+function usePresence(present: boolean) {
+  //...
+React.useLayoutEffect(() => {
+    const styles = stylesRef.current;
+    const prevAnimationName = prevAnimationNameRef.current;
+    const currentAnimationName = getAnimationName(styles);
+
+    if (present) {
+      send('MOUNT');
+      // 애니메이션이 없을 경우
+    } else if (currentAnimationName === 'none' || styles?.display === 'none') {
+      send('UNMOUNT');
+    } else {
+      const isAnimating = prevAnimationName !== currentAnimationName;
+
+      if (isAnimating) {
+        send('ANIMATION_OUT');
+      } else {
+        send('UNMOUNT');
+      }
+    }
+  }, [present, send]); 
+  //...
+}
+```
+
+마지막으로 node의 애니메이션 이벤트 리스너를 달아주고 상태를 변경하는 코드를 작성해주겠습니다.
+
+`handleAnimationStart`와 `handleAnimationEnd` 메서드를 만들어서 이벤트리스너에 부착을 해줍니다.
+각 메서드의 동작 과정입니다.
+`handleAnimationStart` : 애니메이션이 시작할 경우 현재 동작하고 있는 애니메이션의 이름을 `prevAnimationNameRef`에 할당
+
+`handleAnimationEnd` : 애니메이션이 끝날 경우 unmountSuspended상태를 unmounted상태로 변경. 
+
+> **handleAnimationEnd 메서드에서 핵심**은 외부에서 모달을 열때 present의 값이 true로 변경이 될 때도 모달이 열리는 애니메이션이 실행이 되면서 animationend이벤트가 동작을 한다는 것입니다. 하지만, mount상태에선 `ANIMATION_END` 를 통해 상태를 바꾸지 못하므로 state는 변경되지 않습니다.
+그리고 리액트 18 동시성을 사용할 경우, flushSync가 있어야 합니다. 상태 업데이트는 애니메이션이 끝난 후 한 프레임 뒤에 적용됩니다. (깜빡임을 제거해줍니다.)
+
+
+``` ts
+function usePresence(present: boolean){
+  // ...
+  const handleAnimationStart = React.useCallback(
+    (event: AnimationEvent) => {
+      if (event.target === node) {
+        prevAnimationNameRef.current = getAnimationName(stylesRef.current);
+      }
+    },
+    [node],
+  );
+
+  const handleAnimationEnd = React.useCallback(
+    (event: AnimationEvent) => {
+      const currentAnimationName = getAnimationName(stylesRef.current);
+      const isCurrentAnimation = currentAnimationName.includes(event.animationName);
+      if (event.target === node && isCurrentAnimation) {
+        ReactDOM.flushSync(() => send('ANIMATION_END'));
+      }
+    },
+    [node, send],
+  );
+
+  React.useLayoutEffect(() => {
+    if (!node) return;
+    node.addEventListener('animationstart', handleAnimationStart);
+    node.addEventListener('animationcancel', handleAnimationEnd);
+    node.addEventListener('animationend', handleAnimationEnd);
+    return () => {
+      node.removeEventListener('animationstart', handleAnimationStart);
+      node.removeEventListener('animationcancel', handleAnimationEnd);
+      node.removeEventListener('animationend', handleAnimationEnd);
+    };
+  }, [handleAnimationEnd, handleAnimationStart, node, send]);
+  // ...
+}
+
+```
+
+
+## 전체 코드
+![whole-code](/posts/blog/alert-dialog-animation/whole-code.png)
+
+
+
+## Presence 컴포넌트 사용 코드
+[이전 글에서 작성한 AlertDialog](https://ianlog.me/blog/alert-dialog-atoz)에 `Presence` 컴포넌트를 적용한 모습입니다.
+![use-presence](/posts/blog/alert-dialog-animation/use-presence.png)
+
+코드베이스에서 분기문 하나 없이 선언적으로 애니메이션이 끝날때 까지 요소의 mount해제를 지연하다가 요소를 제거하는 동작이 완료됐습니다.
+
+
+## 실제 동작 확인
+
+실제로 어떻게 동작하는지 확인을 해보겠습니다.
+![animation-example](/posts/blog/alert-dialog-animation/animation-example.gif)
+의도한대로 애니메이션이 끝날때까지 요소가 DOM에 남아있다가 사라집니다.
+
+
+## 마치며
+
+FSM을 통해 렌더링에 대한 상태를 효율적으로 관리하고 자식 컴포넌트의 mount,unmount를 결정해주는 `Presence` 컴포넌트를 통해 선언적으로 처리를 하는 방법에 대해 알아봤습니다.
+구현하는게 귀찮을수도 있지만, ux와 dx모두 개선할 수 있어서 한 번쯤 구현해보는걸 추천드립니다.
+
+
+
+참고 문헌
+- https://dodobug.tistory.com/16
+- https://github.com/radix-ui/primitives
