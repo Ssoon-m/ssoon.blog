@@ -355,24 +355,32 @@ const FocusTrap = React.forwardRef<HTMLDivElement, FocusTrapProps>((props, forwa
 저번 글에서 다룬 Presence컴포넌트와 마찬가지로 FocusTrap도 한 번 구현해두면 좋은 사용자 경험도 줄 수 있고, 매우 간편하게 사용이 가능해서 직접 구현 해보시는걸 추천드립니다.
 끝까지 읽어주셔서 감사합니다.
 
-
 ## 번외
+이전글들에서 다룬 [AlertDialog](https://ianlog.me/blog/alert-dialog-atoz)와 [애니메이션](https://ianlog.me/blog/alert-dialog-animation)적용까지 마치셨다면, FocusTrap을 적용하는 방법에 대해 설명하겠습니다.
 
-AlertDialog에 FocusTrap을 제대로 적용시키려면 ContentImpl컴포넌트에 다음과 같이 콜백 함수를 만들어주면 됩니다. 
+AlertDialog에 FocusTrap을 제대로 적용시키려면 다음과 같이 콜백 함수를 만들어주면 됩니다. 
+onOpenChange는 기존에 있던 함수여서 별도로 만들 필요는 없지만, triggerRef는 새로 만들어줘야 합니다.
 useAlertDialogContext에서 triggerRef를 가져오기 위해 몇가지 작업해야할 내용이 있습니다.
 ```tsx
 const { open, onOpenChange, triggerRef } = useAlertDialogContext();
 
-<FocusTrap
-	onEscapeFocusTrap={() => {
+const ContentImpl = () => {
+  //...
+  <FocusTrap
+	  onEscapeFocusTrap={() => {
   	  onOpenChange(false);
-	  triggerRef.current?.focus();
-	}}
+	    triggerRef.current?.focus();
+	  }}
   >
+  //...
+}
+
  ```
 AlertDialogContext에 triggerRef를 주입해줍니다.
 ```tsx
 //AlertDialogContext
+
+//...
 const triggerRef = useRef<HTMLButtonElement>(null);
 const alertDialogContextValue = React.useMemo(
     () => ({
@@ -382,17 +390,20 @@ const alertDialogContextValue = React.useMemo(
     }),
     [open],
   );
-  return (
-    <AlertDialogContext.Provider value={alertDialogContextValue}>
-      {children}
-    </AlertDialogContext.Provider>
-  );
+return (
+  <AlertDialogContext.Provider value={alertDialogContextValue}>
+    {children}
+  </AlertDialogContext.Provider>
+);
+//...
 ```
 
 Trigger컴포넌트에서 사용하기 위해 위에서 만들었던 것 처럼 ref 합성을 위한 함수 하나를 만들어 줍니다.
 
 
 ```tsx
+//Trigger
+//...
 const composeRef = (
     triggerRef: React.RefObject<HTMLButtonElement>,
     forwardRef?: React.ForwardedRef<HTMLButtonElement>,
@@ -425,4 +436,4 @@ const Compo = React.cloneElement(children, {
 //...
 
 ```
-위와 같은 과정을 다 마쳤다면 FocusTrap컴포넌트를 AlertDialog에서 정상적으로 사용이 가능합니다.
+위 과정을 다 마쳤다면 FocusTrap컴포넌트를 AlertDialog에서 정상적으로 사용이 가능합니다.
