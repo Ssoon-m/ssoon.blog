@@ -1,0 +1,428 @@
+---
+title: '모달 접근성을 위한 포커스트랩 컴포넌트 만들기'
+date: 2024-02-28 17:26:18
+description: 포커스트랩 기능을 구현하고 리액트 컴포넌트로 깔끔하게 만드는 방법
+thumbnailUrl: 
+tags: 
+  - React
+  - focus trap
+---
+
+
+
+## 포커스 트랩에 대하여
+
+포커스 트랩은 **특정 컨테이너 내에서 사용자 포커스를 관리**하는 방법입니다.
+
+사용자가 모달을 열고 탭 키를 사용하여 키보드를 통해 탐색을 시작하면 모달 뒤에 있는 항목이 포커스를 받게 되는 순간이 있습니다.
+이러한 동작은 사용자 경험을 매우 좋지 않게 만듭니다.
+
+모달 컴포넌트가 열린 상태에서 키보드 포커스가 모달 외부(모달 컴포넌트가 아닌 모달 뒤의 요소들)로 빠져나가지 못하도록 가두는 것을 **포커스 트랩**이라고 부릅니다.
+
+
+## 구현할 기능
+
+
+사용자가 키보드를 이용하여 모달을 사용할 때 기대하는 동작 시나리오를 생각해보겠습니다. 
+
+> 1. tab을 이용하여 모달을 열기 위한 버튼쪽으로 포커스를 이동시키고 enter를 누른다.
+> 2. 모달이 열리게 되고 tab을 아무리 눌러도 모달 밖으로 포커스가 이동하지 않는다.
+> 3. 모달을 종료하고 싶을 때 esc를 눌러서 모달을 종료시키고 모달을 트리거한 버튼으로 포커스를 이동시킨다.
+
+구현할 기능을 요약하자면 다음과 같습니다.
+
+1. 포커스 트랩 밖으로 포커스가 빠져나갈 수 없다.
+2. "Escape"키를 누르면 포커스 트랩이 사라지게 되고 포커스 트랩을 트리거한 요소에 포커스가 반환이 된다.
+
+이러한 포커스 트랩 기능을 리액트 컴포넌트로 어떻게 해야 깔끔하게 구현을 할 수 알아보겠습니다.
+
+
+## 포커스트랩 컴포넌트 구현
+
+아래와 같은 형태로 사용할 수 있도록 구현을 해보겠습니다.
+
+```tsx
+const Modal = () => {
+  return (
+   	<FocusTrap>
+      <div>
+        <div>모달입니다.</div>
+        <button>취소<button>
+        <button>확인<button>
+      </div>
+	</FocusTrap>
+  )
+}
+
+```
+
+FocusTrap의 자식 컴포넌트를 그대로 렌더링 해주면서 `tabIndex: -1`을 붙여주기 위해 cloneElement를 사용할 것입니다.
+
+```tsx
+// FocusTrap.tsx
+interface FocusTrapProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactElement;
+}
+
+const FocusTrap = (props: FocusTrapProps) => {
+  const { children, ...others } = props;
+  const child = React.Children.only(children);
+
+  const Compo = React.cloneElement(child, {
+    ...{ ...others, ...child?.props },
+    tabIndex: -1,
+  });
+
+  return <>{Compo}</>;
+});
+
+export default FocusTrap;
+```
+
+### focus가능한 모든 요소 찾기
+
+tab키를 누를때 포커스가 가능한 요소들에만 포커스를 주기 위해 FocusTrap의 자식요소중에서 포커스가 가능한 모든 요소를 찾아야합니다.
+
+모달 컨테이너의 요소를 얻기 위해 리액트의 `useRef` 를 사용해줘서 요소를 얻어옵니다.
+
+```tsx
+// FocusTrap.tsx
+
+//...
+const focusTrapRef = useRef<HTMLDivElement>(null);
+
+const Compo = React.cloneElement(children, {
+  ...{ ...others, ...children?.props },
+  tabIndex: -1,
+  ref: focusTrapRef,
+});
+//...
+```
+
+`getFocusableElements`라는 함수를 만들어서 `focusTrapRef.current`아래에 존재하는 모든 요소를 재귀적으로 순회하면서 포커스 가능한 모든 요소를 찾아서 배열로 반환을 해줍니다.
+
+> 포커스가 가능한 요소일 경우 tabIndex가 0보다 크므로 `childElement.tabIndex >= 0` 조건을 사용했습니다.
+
+```tsx
+// FocusTrap.tsx
+
+const getFocusableElements = (
+  element: HTMLElement | ChildNode | null,
+  result: HTMLElement[] = [],
+) => {
+  if (!element || !element.childNodes) return result;
+
+  for (const childNode of element.childNodes) {
+    const childElement = childNode as HTMLElement;
+    if (childElement.tabIndex >= 0) {
+      result.push(childElement);
+    }
+    getFocusableElements(childElement, result);
+  }
+
+  return result;
+};
+
+const FocusTrap = (props: FocusTrapProps) => {
+  const focusTrapRef = useRef<HTMLDivElement>(null);
+  const focusableElements = useRef<(HTMLElement | null)[]>([]);
+  focusableElements.current = getFocusableElements(focusTrapRef.current);
+  //...
+}
+```
+
+### FocusTrap컴포넌트 내부로 포커스 가두기
+
+포커스가 가능한 요소들을 담은 리스트가 있으므로 제일 처음과 마지막 요소를 변수에 담아줍니다.
+```ts
+//...
+const firstElement = focusableElements.current[0];
+const lastElement = focusableElements.current.at(-1);
+//...
+```
+
+사용자가 tab을 누를때 focus될 요소의 index를 저장하는 useRef를 만들어줍니다.
+처음 FocusTrap이 생성됐을 때는 focus된 요소가 없으므로 -1을 초기값으로 지정해줬습니다.
+```ts
+//...
+const currentFocusIndex = useRef(-1);
+//...
+```
+
+사용자가 tab키를 누를때 선택될 요소에 focus를 해주는 함수입니다.
+로직은 간단합니다. currentFocusIndex의 다음 index로 focusableElements에서 focus가능한 요소를 꺼내옵니다.
+만약 element가 존재하지 않는다면, focusableElements의 마지막 요소를 벗어났다는 뜻이므로 아까 위에서 구해둔 firstElement에 focus를 주고  currentFocusIndex을 0으로 초기화를 해줍니다.
+element가 존재할 경우엔 해당 element에 그대로 focus를 주고 currentFocusIndex를 하나 올려줍니다. 
+
+```tsx
+//...
+const focusNextElement = () => {
+  const element = focusableElements.current[currentFocusIndex.current + 1];
+  if (!element) {
+    currentFocusIndex.current = 0;
+    firstElement?.focus();
+    return;
+  }
+  element.focus();
+  currentFocusIndex.current++;
+};
+//...
+```
+
+사용자가 shift + tab키를 누를때도 고려를 해야 하므로 선택될 이전 요소를 판단하는 함수도 위와 비슷하게 만들어주면 됩니다.
+
+```tsx
+//...
+const focusPrevElement = () => {
+  const element = focusableElements.current[currentFocusIndex.current - 1];
+  if (!element) {
+    currentFocusIndex.current = focusableElements.current.length - 1;
+    lastElement?.focus();
+    return;
+  }
+  element.focus();
+  currentFocusIndex.current--;
+}
+//...
+```
+
+document에 `keydown`이벤트를 달아줍니다. 그리고 `tab`과 `shift+tab` 이벤트를 받기 위한 함수를 만들어줍니다. tab동작시 브라우저의 기본 동작을 막고 아까 만들어둔 focusNextElement과 focusPrevElement함수를 호출하면 끝입니다.
+
+```tsx
+//...
+const handleTabKeyDown = (event: KeyboardEvent) => {
+  const isTabKeyDown = !event.shiftKey && event.key === 'Tab';
+  if (!isTabKeyDown) return;
+  
+  event.preventDefault();
+  focusNextElement();
+};
+
+const handleShiftTabKeyDown = (event: KeyboardEvent) => {
+  const isShiftTabKeyDown = event.shiftKey && event.key === 'Tab';
+  if (!isShiftTabKeyDown) return;
+
+  event.preventDefault();
+  focusPrevElement();
+};
+
+useEffect(() => {
+  const handleKeyPress = (event: KeyboardEvent) => {
+    handleTabKeyDown(event);
+    handleShiftTabKeyDown(event);    
+  };
+  document.addEventListener('keydown', handleKeyPress);
+  return () => document.removeEventListener('keydown', handleKeyPress);
+}, []);
+//...
+```
+
+### FocusTrap에서 Escape시 focus반환시키기
+
+이 부분은 FocusTrap컴포넌트 내부에서 처리할 수는 없고, FocusTrap을 사용하는 곳에서 컨트롤을 해줘야 합니다.
+FocusTrap에서 구현해야할 부분은 esc를 눌렀을 경우 callback함수를 실행시키는것 말고는 없습니다.
+
+```tsx
+interface FocusTrapProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactElement;
+  onEscapeFocusTrap: () => void;
+}
+const FocusTrap = (props : FocusTrapProps) => {
+  const { children, onEscapeFocusTrap } = props;
+  //...
+  const handleEscapeKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onEscapeFocusTrap();
+      }
+  };
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      //...
+      handleEscapeKeyDown(event);
+      //...
+    };
+    //....
+  }, []);
+//...
+
+}
+```
+
+
+다음과 같은 느낌으로 사용자가 esc를 누를 경우 FocusTrap컴포넌트를 트리거한 요소로 포커스를 이동시키고 FocusTrap컴포넌트를 unmount시킵니다.
+
+```tsx
+// 트리거 버튼
+<button ref={triggerRef}>모달 열기<button>
+{
+  isOpen && <FocusTrap
+  onEscapeFocusTrap={() => {
+    setIsOpen(false);
+    triggerRef.current?.focus();
+  }}
+>
+  <div>
+    모달입니다
+  </div>
+</FocusTrap>
+
+}
+```
+
+## ref 관련 문제해결
+이상태로 FocusTrap 컴포넌트의 구현을 끝내면 ref를 사용할 때 문제가 됩니다.
+
+[이전 글에서 작성한 AlertDialog](https://ianlog.me/blog/alert-dialog-atoz)와 Presence컴포넌트를 적용한 `ContentImpl` 컴포넌트에 `FocusTrap` 컴포넌트를 사용하는 예시로 설명을 하겠습니다.
+
+1. FocusTrap의 자식(div)에 ref가 존재한다면 해당 ref는 사라지게 됩니다.
+2. FousTrap상위 컴포넌트(Presence)에서 하위 컴포넌트에 ref를 전달할 경우 문제가 생깁니다.
+
+```tsx
+const ContentImpl = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  (props, ref) => {
+    const { className, ...others } = props;
+    const { open } = useAlertDialogContext();
+    return (
+      <Presence present={open}>
+        <FocusTrap>
+          <div
+            ref={ref}
+            data-state={getState(open)}
+            className={cn(
+              'fixed left-1/2 top-1/2 z-50 grid w-full max-w-[335px] -translate-x-1/2 -translate-y-1/2 gap-8 rounded-lg border bg-white px-4 py-5 shadow-lg',
+              'data-[state=closed]:animate-modal-zoom-out data-[state=open]:animate-modal-zoom-in',
+              className,
+            )}
+            {...others}
+          />
+        </FocusTrap>
+      </Presence>
+    );
+  },
+);
+
+ContentImpl.displayName = 'ContentImpl';
+```
+어떻게 해결해야 할까요?
+상위 컴포넌트(Presence)에서 전달받은 ref, 자식 컴포넌트(div)의 ref, FocusTrap 내부에서 자식 컴포넌트에 부착하기 위해 생성한 ref를 합성시켜주면 됩니다.
+
+```ts
+const composeRef = <T extends HTMLDivElement>(
+  forwardRef: React.ForwardedRef<T>,
+  focusTrapRef: React.MutableRefObject<T>,
+  childRef?: React.MutableRefObject<T>,
+) => {
+  return (node: T) => {
+    if (!forwardRef) return;
+    if (typeof forwardRef === 'function') {
+      forwardRef(node);
+    } else {
+      forwardRef.current = node;
+    }
+    focusTrapRef.current = node;
+    if (!childRef) return;
+    childRef.current = node;
+  };
+};
+```
+composeRef함수를 ref에 전달해주면 정상적으로 동작을 하게 됩니다.
+
+
+```tsx
+const FocusTrap = React.forwardRef<HTMLDivElement, FocusTrapProps>((props, forwardedRef) => {
+  //...
+  const Compo = React.cloneElement(children, {
+    ...{ ...others, ...children?.props },
+    tabIndex: -1,
+    ref: composeRef(forwardedRef, focusTrapRef as React.MutableRefObject<HTMLDivElement>, (child as any).ref),
+  //...
+});
+```
+
+
+## 동작 예시
+
+### 적용 전
+![no-focus-trap](/posts/blog/alert-dialog-focus-trap/no-focus-trap.gif)
+
+
+### 적용 후
+![focus-trap](/posts/blog/alert-dialog-focus-trap/focus-trap.gif)
+
+
+## 마치며
+
+저번 글에서 다룬 Presence컴포넌트와 마찬가지로 FocusTrap도 한 번 구현해두면 좋은 사용자 경험도 줄 수 있고, 매우 간편하게 사용이 가능해서 직접 구현 해보시는걸 추천드립니다.
+끝까지 읽어주셔서 감사합니다.
+
+
+## 번외
+
+AlertDialog에 FocusTrap을 제대로 적용시키려면 ContentImpl컴포넌트에 다음과 같이 콜백 함수를 만들어주면 됩니다. 
+useAlertDialogContext에서 triggerRef를 가져오기 위해 몇가지 작업해야할 내용이 있습니다.
+```tsx
+const { open, onOpenChange, triggerRef } = useAlertDialogContext();
+
+<FocusTrap
+	onEscapeFocusTrap={() => {
+  	  onOpenChange(false);
+	  triggerRef.current?.focus();
+	}}
+  >
+ ```
+AlertDialogContext에 triggerRef를 주입해줍니다.
+```tsx
+//AlertDialogContext
+const triggerRef = useRef<HTMLButtonElement>(null);
+const alertDialogContextValue = React.useMemo(
+    () => ({
+	  //...
+      triggerRef,
+      //...
+    }),
+    [open],
+  );
+  return (
+    <AlertDialogContext.Provider value={alertDialogContextValue}>
+      {children}
+    </AlertDialogContext.Provider>
+  );
+```
+
+Trigger컴포넌트에서 사용하기 위해 위에서 만들었던 것 처럼 ref 합성을 위한 함수 하나를 만들어 줍니다.
+
+
+```tsx
+const composeRef = (
+    triggerRef: React.RefObject<HTMLButtonElement>,
+    forwardRef?: React.ForwardedRef<HTMLButtonElement>,
+  ) => {
+    return (node: HTMLButtonElement) => {
+      if (typeof forwardRef === 'function') {
+        forwardRef(node);
+      } else if (forwardRef) {
+        forwardRef.current = node;
+      }
+      (triggerRef as React.MutableRefObject<HTMLButtonElement>).current = node;
+    };
+  };
+
+//...
+<button
+  //...
+  ref={composeRef(triggerRef, forwardRef)}
+  //...
+  >
+  {children}
+</button>
+
+//...
+const Compo = React.cloneElement(children, {
+  //...
+  ref: composeRef(triggerRef, forwardRef),
+  //...
+});
+//...
+
+```
+위와 같은 과정을 다 마쳤다면 FocusTrap컴포넌트를 AleryDialog에서 정상적으로 사용이 가능합니다.
