@@ -1,0 +1,323 @@
+---
+title: 'Vanilla JS로 함수형 리액트 만들기 - 1'
+date: 2024-03-06
+description: JSX와 VirtualDOM에 대해 알아보고 실제 DOM에 반영시키는 방법에 대해 알아보겠습니다
+thumbnailUrl: 
+tags: 
+  - JavaScript
+  - React
+---
+
+직접 코드를 구성하면서 리액트의 구현과 비슷하게 만들어보는 시리즈입니다. 
+(물론 실제 리액트의 내부 동작과는 많이 다르지만, 리액트의 컨셉을 이해하기 위한 글입니다.)
+해당 시리즈를 실제로 구현을 해보면, 단순히 이론으로 아는것이 아닌 아래 내용에 대한 명확한 이해가 가능하다고 생각합니다.
+
+1. JSX문법과 Virtual DOM에 대해
+2. Virtual DOM이 실제 DOM에 어떻게 반영이 되는 것인지
+3. setState가 비동기적으로 동작하는 이유
+4. 리액트의 훅에 조건문이 없어야 하는 이유
+
+
+이번 글에서는 JSX와 VirtualDOM에 대해 알아보고 실제 DOM에 반영시키는 방법에 대해 알아보겠습니다.
+
+## JSX란?
+
+JavaScript 파일에서 HTML과 유사한 마크업을 작성할 수 있게 해주는 JavaScript용 구문 확장입니다.
+
+```tsx
+const myApp = () => {
+	return <div>Hello World!!!</div>  
+}  
+```
+
+위의 코드는 바벨과 같은 트랜스파일러에 의해 아래와 같은 자바스크립트 코드로 변환이 됩니다. (createElement함수는 Virtual DOM을 만들어줍니다.)
+
+```tsx
+const myApp = () => {
+	return React.createElement('div',null,'Hello World!!!')
+}  
+```
+
+## Virtual DOM이란?
+
+HTML을 파싱해서 생기는 실제 DOM이 아닌, 실제 DOM과 같은 내용을 담고 있는 복사본입니다.
+특별한 무언가가 아니라 그저 간단한 Javascript 객체로 이루어져 있습니다.
+```ts
+{
+  type: "div",
+  props: null,
+  children: ["Hello World!!!"]
+}
+```
+
+
+## 개발 환경 세팅
+
+실습을 위해 vite를 이용하여 프로젝트 세팅을 하겠습니다.
+
+```shell
+npm create vite@latest my-vanilla-ts-app --template vanilla-ts
+```
+
+프로젝트 내의 JSX문법을 파싱하기 위해선 vite에서 esbuild관련 설정을 해줘야합니다.
+```ts
+//vite.config.ts
+import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+
+export default defineConfig({
+  plugins: [tsconfigPaths()],
+  esbuild: {
+    jsx: "transform",
+    jsxInject: `import { h } from '@/lib/jsx/jsx-runtime'`,
+    jsxFactory: "h",
+  },
+});
+```
+각 속성에 대해 알아보겠습니다.
+**jsx: "transform"** : jsx요소마다 `jsxFactory`에 정의된 함수를 호출하는 방식으로 변환이 됩니다.
+**jsxInject: "import ~~~"** : esbuild로 변환된 모든 파일에 대해 import 구문을 자동으로 삽입을 해줍니다.
+**jsxFactory: "h"**: 사용할 JSX 팩토리 함수(`h(type,props,...children)` 형태의 함수)를 지정해줍니다. 
+
+plugins의 tsconfigPaths는 typescript alias path를 위하여 설정을 해줬습니다.
+
+
+
+tsx파일에서 타입 추론을 위해 tsconfig설정도 해줍니다.
+https://www.typescriptlang.org/tsconfig#jsxImportSource
+
+```json
+//tsconfig.json
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "./src/lib/jsx",
+      //...
+  }
+}
+```
+
+https://www.typescriptlang.org/docs/handbook/jsx.html#type-checking
+```ts
+//global.d.ts
+declare namespace JSX {
+  interface IntrinsicElements {
+    [elemName: string]: any;
+  }
+}
+```
+
+## jsx 팩토리함수 만들기
+
+>jsx팩토리 함수는 `src/lib/jsx`아래에 만들어주겠습니다.
+`jsx-runtime.ts` 에 함수를 작성해줘야 typescript에러가 나지 않습니다.
+
+아래 코드를 살펴보기전에 Virtual DOM으로 변환되는 시나리오를 떠올려보겠습니다.
+`<div>Hello World</div>` 형태의 jsx문법이 트랜스파일러를 통해 `h('div',null,['Hello World'])`형태로 변환이 되고 `h` 함수가 실행이 되면서 Virtual DOM이 만들어집니다.
+
+```ts
+// src/lib/jsx/jsx-runtime.ts
+
+export type VNode = string | number | VDOM | null | undefined;
+export type VDOM = {
+  type: string;
+  props: Record<string, any> | null;
+  children: VNode[];
+};
+
+type Component = (props?: Record<string, any>) => VDOM;
+
+export const h = (
+  component: string | Component,
+  props: Record<string, any> | null,
+  ...children: VNode[]
+) => {
+
+  return {
+      tag: component,
+      props,
+      children: children.flat(),
+  }
+};
+```
+
+h함수의 스펙을 jsx팩토리 함수에 맞게 작성을 해줍니다. 
+component와 props는 그대로 value에 넘겨주고 children의 경우는 일관된 형태의 자식 요소를 위해서 평탄화 작업을 해줍니다.
+
+아직 추가할 코드가 남았는데, 위 jsx팩토리 함수 코드는 컴포넌트에 대한 대응이 되지 않는 코드입니다.
+```tsx
+const MyComponent = ({ className }: { className: string }) => {
+  return <div className={className}>Hello World!!!</div>;
+};
+const App = () => {
+  return (
+    <div>
+      <MyComponent className="myClass" />
+    </div>
+  );
+};
+
+export default App;
+```
+
+App컴포넌트를 Virtual DOM으로 변환 후 children의 type부분을 보면 function 형태로 되어있는걸 확인할 수 있습니다.
+```ts
+{
+  type: "div",
+  props: null,
+  children: [{
+    type: ({className}) => h("div", { className }, "Hello World!!!");
+    props: {className: 'myClass'},
+    children: []
+  }]
+}
+```
+
+component파라미터가 function일때에 대한 분기문을 추가해주면 간단하게 해결할 수 있습니다.
+```ts
+//...
+if (typeof component === "function") {
+  return component({ ...props, children });
+}
+//...
+```
+
+변경 후 변환된 Virtual DOM 모습
+```ts
+{
+  type: "div",
+    props: null,
+      children: [
+        {
+          type: "div",
+          props: {
+            className: "myClass"
+          },
+          children: [
+            "Hello World!!!"
+          ]
+        }
+      ]
+}
+```
+
+## Virtual DOM을 DOM에 올리기
+
+잘 만들어진 Virtual DOM을 가지고 실제 돔에 올리기 위해서 createElement를 구현해줘야 합니다.
+
+Virtual DOM에 대한 타입채킹을 하고 그에 맞는 element를 생성을 해주는 코드를 작성해줍니다.
+```ts
+import { VNode } from "@/lib/jsx/jsx-runtime";
+
+const createElement = (node: VNode) => {
+  //1. null이나 undefined의 경우 fragment 생성  
+  if (node === null || node === undefined) {
+    return document.createDocumentFragment();
+  }
+  //2. 기본형 타입의 경우 text노드를 생성
+  if (typeof node === "string" || typeof node === "number") {
+    return document.createTextNode(String(node));
+  }
+
+  //3. node.type을 기반으로 실제 dom에 element생성
+  const element = document.createElement(node.type);
+  
+  //....
+};
+
+export { createElement }
+
+```
+
+그 후에 VirtualDOM의 props를 DOM에 반영시키는 과정을 거쳐줍니다.
+
+```ts
+Object.entries(node.props || {}).forEach(([attr, value]) => {
+    if (attr.startsWith("data-")) {
+      element.dataset[attr.slice(5)] = value;
+    } else {
+      (element as any)[attr] = value;
+    }
+  });
+```
+
+VirtualDOM의 type과 props에 대한 구현이 끝났으므로 children을 다루는 코드를 작성해줍니다.
+children의 경우엔 재귀적으로 createElement를 호출하면서 부모 요소인 element에 appendChild로 부착을 해줍니다.
+```ts
+node.children.forEach((child) => element.appendChild(createElement(child)));
+```
+
+완성된 createElement 코드입니다.
+요약하자면 4가지 과정을 거치게 됩니다.
+1. Virtual DOM에 대한 타입 체킹을 하면서 null,undefined이거나 기본형 타입일 경우 그에 맞는 node를 생성후 반환
+2. Virtual DOM의 type에 맞는 실제 돔을 생성
+3. Virtual DOM의 props를 실제 돔에 반영
+4. Virtual DOM의 children을 재귀적으로 순회하면서 부모요소에 appendChild를 이용하여 부착
+```ts
+import { VNode } from "@/lib/jsx/jsx-runtime";
+
+const createElement = (node: VNode) => {
+  //1.
+  if (node === null || node === undefined) {
+    return document.createDocumentFragment();
+  }
+
+  if (typeof node === "string" || typeof node === "number") {
+    return document.createTextNode(String(node));
+  }
+  //2.
+  const element = document.createElement(node.type);
+  //3.
+  Object.entries(node.props || {}).forEach(([attr, value]) => {
+    if (attr.startsWith("data-")) {
+      element.dataset[attr.slice(5)] = value;
+    } else {
+      (element as any)[attr] = value;
+    }
+  });
+  //4.
+  node.children.forEach((child) => element.appendChild(createElement(child)));
+
+  return element;
+};
+
+export { createElement };
+
+```
+
+## 브라우저에서 APP 컴포넌트 확인
+
+```tsx
+// App.tsx
+const MyComponent = ({ className }: { className: string }) => {
+  return <div className={className}>Hello World!!!</div>;
+};
+
+const App = () => {
+  return (
+    <div>
+      <div>안녕?</div>
+      <MyComponent className="111" />
+    </div>
+  );
+};
+
+export default App;
+
+// main.tsx
+import App from "./app";
+import { createElement } from "./lib/dom/client";
+
+const app = document.getElementById("app") as HTMLElement;
+app.appendChild(createElement(<App />));
+```
+위와 같이 코드를 구성후 브라우저에서 확인을 해보면, 정상적으로 Virtual DOM이 DOM에 반영된걸 확인할 수 있습니다.
+![no-focus-trap](/posts/blog/fc-vanilla-js-1/dom.png)
+
+
+## 마치며
+여기까지 JSX라는 강력한 문법을 통해 Virtual DOM을 쉽게 만드는 방법과 Virtual DOM을 실제 DOM에 반영하는 방법에 대해 알아봤습니다.
+다음 글에서는 SPA구현에 필수인 router와 virtual dom 변경시 변경점만을 찾아서 dom에 반영하는 방법에 대해 알아보겠습니다.
+
+## 참고문헌
+- [Vanilla Javascript로 가상돔(VirtualDOM) 만들기](https://junilhwang.github.io/TIL/Javascript/Design/Vanilla-JS-Virtual-DOM/#_2-diff-%E1%84%8B%E1%85%A1%E1%86%AF%E1%84%80%E1%85%A9%E1%84%85%E1%85%B5%E1%84%8C%E1%85%B3%E1%86%B7-%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC)
