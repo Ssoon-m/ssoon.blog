@@ -33,7 +33,7 @@ export const generateMetadata = ({ params }: { params: { slug: string } }) => {
     description: post.description,
     pathname: post.postUrl,
     publishedTime: post.date,
-    images: [post.thumbnailUrl ?? siteData.siteImage],
+    images: [post.thumbnailUrl || siteData.siteImage],
     tags: post.tags,
   });
 };
