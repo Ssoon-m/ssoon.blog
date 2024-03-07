@@ -182,11 +182,11 @@ const matchUrlToRoute = (routes: Route[], path: string) => {
 
 ### router 함수 구현
 
-router 함수의 동작과정입니다.
+router 함수에서 구현해야할 기능입니다.
 1. router 함수를 실행 시킬때 routerInfo에 root와 routes정보를 바인딩해줍니다.
 2. 현재 url에 매핑되는 컴포넌트를 보여줍니다.
-3. `data-link`태그가 붙은 a태그에 기본 브라우저의 동작을 막기 위한customizeAnchorBehavior 함수를 실행시켜 줍니다.(이벤트 위임 이용)
-4.window에 `popstae`이벤트를 달아줍니다. (브라우저에서 뒤로가기나 앞으로가기를 했을 경우 현재 url에 맞는 컴포넌트를 보여주기 위함)
+3. `data-link`태그가 붙은 a태그에 기본 브라우저의 동작을 막기 위한 customizeAnchorBehavior 함수를 구현해줍니다.(이벤트 위임 이용)
+4. window에 `popstate`이벤트를 달아줍니다. (브라우저에서 뒤로가기나 앞으로가기를 했을 경우 현재 url에 맞는 컴포넌트를 보여주기 위함)
 
 >아직 구현하지 않은 `history.currentPath`함수는 바로 아래에서 구현할 예정입니다.
 
@@ -327,7 +327,7 @@ export default PostPage;
 ![spa-router-example-1](/posts/blog/fc-vanilla-js-2/spa-example-1.gif)
 
 그런데, 위의 SPA설명에서 **변경사항이 일어나는 부분**만 변경해서 페이지를 갱신한다는 말이 있는데, 실제 동작을 확인해보면 페이지 변경시마다 전체 DOM을 다시 그리고 있습니다.
-개선을 하려면 어떻게 해야할까요?
+개선을 하려면 어떻게 해야할까요? 현재 Virtual DOM과 변경될 Virtual DOM을 비교해서 변경이 필요한 부분만 찾아서 DOM에 반영해주는 과정이 필요합니다.
 
 ## Virtual DOM diffing구현
 
