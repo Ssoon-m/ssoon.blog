@@ -348,14 +348,16 @@ import { VNode } from "../jsx/jsx-runtime/type";
 import { createElement } from "./client";
 
 const diffTextVDOM = (newVDOM: VNode, currentVDOM: VNode) => {
-  if (typeof newVDOM !== "string" && typeof currentVDOM === "string")
+  if (typeof newVDOM === "number" && typeof currentVDOM === "string")
     return true;
-  if (typeof newVDOM === "string" && typeof currentVDOM !== "string")
+  if (typeof newVDOM === "string" && typeof currentVDOM === "number")
+    return true;
+  if (typeof newVDOM === "number" && typeof currentVDOM === "number")
     return true;
   if (typeof newVDOM === "string" && typeof currentVDOM === "string") {
-    if (newVDOM === currentVDOM) return false;
     return true;
   }
+  if (newVDOM === currentVDOM) return false;
 
   return false;
 };
@@ -388,9 +390,9 @@ const updateElement = (
     return;
   }
 
+  if (typeof newVDOM === "number" || typeof newVDOM === "string") return;
+  if (typeof currentVDOM === "number" || typeof currentVDOM === "string") return;
   if (!newVDOM || !currentVDOM) return;
-  if (typeof newVDOM === "string" || typeof currentVDOM === "string") return;
-  if (typeof newVDOM === "number" || typeof currentVDOM === "number") return;
 
   //4.
   if (newVDOM.type !== currentVDOM.type) {
@@ -450,7 +452,7 @@ export { updateElement };
 
 1. childNodes가 존재하고, currentVDOM만 존재하는 경우 currentVDOM에 대한 node를 DOM에서 제거합니다. (변경될 요소가 currentVDOM보다 적다는 뜻이므로 DOM에서 제거를 해야함)
 2. newVDOM만 존재하는 경우 newVDOM을 createElement를 통해 DOM으로 변경 후 parent에 추가를 해줍니다.
-3. diffTextVDOM을 통해 newVDOM이나 currentVDOM이 string type인지 비교를 해서 childNodes를 newVDOM으로 변경해줍니다.
+3. diffTextVDOM을 통해 newVDOM이나 currentVDOM이 단순히 텍스트 노드로 변환될 Virtual DOM인지를 비교해서 currentVDOM을 newVDOM으로 변경해줍니다.
 4. newVDOM과 currentVDOM의 tag type이 다를 경우에도 newVDOM으로 변경을 해줍니다.
 5. newVDOM과 currentVDOM의 props를 비교하여 변경된 부분만 반영해줍니다.
 updateAttributes는 변경될 newProps를 순회하면서 oldProps와 다른 부분이 있을 경우 oldProps를 newProps로 변경해줍니다.
