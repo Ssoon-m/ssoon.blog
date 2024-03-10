@@ -1,0 +1,545 @@
+---
+title: 'Vanilla JS로 함수형 리액트 만들기(react hooks)'
+date: 2024-03-10
+description: vanilla js로 react hooks를 구현해봅시다.
+thumbnailUrl: 
+tags: 
+  - JavaScript
+  - React
+---
+
+
+
+> [Vanilla JS로 함수형 리액트 만들기 시리즈](https://ianlog.me/blog/fc-vanilla-js-1)에서 구현한 코드를 이용합니다. 본 글에서는 이전 글에서 구현한 내용을 다시 설명하지 않습니다.
+
+리액트의 `useState`와 `useEffect`를 구현해서 Vanilla JS로 만드는 함수형 리액트 프로젝트의 완성도를 높여보겠습니다.
+
+
+## useState 구현
+
+시작하기에 앞서 useState에 대해 짚고 넘어가겠습니다.
+
+1. state 변수를 추가할 수 있게 해주는 React훅입니다.
+2. 길이가2인 배열을 반환합니다. 0번째 index엔 현재 state에 대한 값, 1번째 index엔 state를 다른 값으로 업데이트하고 리렌더링을 발생시키는 함수가 들어갑니다.
+3. `set`함수 호출시 리렌더링이 발생하고 useState가 재실행이 되어도 `set`함수에 의해 변환된 state값이 유지됩니다.
+
+리액트 useState의 핵심 기능인 state를 유지시키기 위한 의사코드를 먼저 작성해보겠습니다.
+
+### state를 유지 시키기 위한 의사코드 작성해보기
+
+state변경 후 useState 함수가 다시 실행이 됐는데 변경된 state가 있다면 기존 initialState를 무시하고 변경된 state를 유지시키는 동작을 구현하려면 어떻게 해야할까요?
+
+useState에 대한 의사코드를 작성해봤습니다.
+먼저 어떠한 트리거(`_render`함수)에 의해 App함수가 실행이 된다고 가정을 하고 동작 흐름을 예상해보겠습니다.
+
+1. App함수가 실행이 되면서 useState 함수도 실행이 됩니다. initialState에 0이 들어가고 `[0,setState]`배열을 반환합니다.
+2. `setState(1)`이 실행이 되고 `state`로 정의한 변수의 값이 1로 변경됩니다.
+3. `set`함수가 실행이 됐으므로 다시 App함수를 실행 시켜주는 `_render`라는 함수가 실행이 됩니다. useState함수가 다시 실행이 되고 useState함수는 `initialState`값이 아닌, `set`함수에 의해 변경된 state를 반환하게 됩니다.
+
+> 위 useState함수 코드에서 만약 `setState`에 `_render`라는 어떤 함수가 존재하지 않는다고 생각하겠습니다. `setState`를 해주어도 App함수는 재실행되지 않을 것이고, state는 "**당연히**" 바뀌지 않은 state를 바라보게 됩니다. 내부적으로 useState쪽의 state는 바뀌었지만 `const [state,setState] = useState(0)` 에서 구조 분해 할당으로 얻은 `state`는 그저 상수이기 때문입니다. 변경된 state를 얻고 싶으면 App함수를 재실행을 해야 비로소 변경된 `state`를 바라볼 수 있게 됩니다.
+혹시 setState이후 다음 줄에서 state에 접근할 때 바뀌기 전의 state값이 콘솔에 찍히는 동작을 비동기적인 동작이라고 설명하는 아티클들을 보신 분들이 계신가요? 예시를 완전히 잘못 들었다고 생각합니다. 그 이유에 대해선 다음 글에서 간단하게 설명하겠습니다.
+
+
+```ts
+let state = undefined;
+const useState = (initialState) => {
+  const _state = state || initialState;
+  const setState = (newState) => {
+    state = newState;
+    _render(); // App함수를 재실행 시키는 어떠한 함수..
+  }
+  return [_state,setState]
+}
+
+const App = () => {
+  const [state,setState] = useState(0) ;
+  setState(1);
+}
+```
+
+
+useState가 다시 실행이 됐음에도 위의 useState함수에서 `state`변수의 값 유지가 가능한 이유는 자바스크립트의 클로저를 이용했기 때문입니다.
+
+> 클로저에 대해 간단하게 집고 넘어가겠습니다. 
+어떤 함수A가 있고 A에 선언된 변수 V가 존재할 때 함수A의 내부함수 B에서 함수 A에 선언된 변수 V를 참조하고 내부함수 B를 외부로 전달을 할 경우 함수A의 실행컨텍스트가 종료된 이후에도 변수 V가 메모리에 남아있는 현상입니다.
+
+
+하지만, 위에서 구현한 useState를 아래와 같이 사용할 경우 문제가 생기게 됩니다.
+처음 호출한 useState(1)과 두 번째로 호출한 useState(2) 모두 같은 state를 바라보게 될 것입니다.
+
+
+```ts
+const App = () => {
+  //1
+  const [firstState,setFirstState] = useState(1) ;
+  //2
+  const [secondState,setSecondState] = useState(2);
+  setFirstState(2);
+  setSecondState(4)
+}
+```
+
+useState의 상태를 개별적으로 관리하고 싶다면, **state를 배열에 저장해서 관리**하면 될 거 같습니다.
+첫 번째 useState의 state는 0번 index, 두 번째 useState의 state는 1번 index에서 관리를 해주면 useState를 여러번 호출하더라도 각 index에서 state를 관리하게 되므로 상태를 개별적으로 관리할 수 있게 됩니다.
+
+options라는 객체를 만들어서 index와 state를 관리할 수 있게 만들어줬습니다.
+
+```ts
+const options = {
+	states : [],
+	stateHook : 0,
+}
+const useState = (initialState) => {
+  const {stateHook : index,states} = options;
+  const state = states[index] ?? initialState;
+  const setState = (newState) => {
+    states[index] = newState;
+    _render(); // App함수를 재실행 시키는 어떠한 함수.. App 실행을 마치고 stateHook을 0으로 초기화시킨다.
+  }
+  options.stateHook += 1;
+  return [state,setState]
+}
+```
+
+options를 추가한 후의 useState 동작을 살펴보겠습니다. stateHook이 어떻게 변화하는지에 집중해주시면 좋습니다.
+
+1. 어떤 함수(render)에 의해 `_render`함수가 트리거 되고, App함수가 호출이 됩니다.
+2. 첫 번째 useState가 호출이 됩니다. 이때 states엔 아무런 값이 들어있지 않고, **stateHook은 0인 상태입니다.** setState함수가 선언이 되는 시점에 외부 lexical environment인 `states[0]`을 메모리에 저장합니다.(useState함수 종료후 setState실행시 `states[0]`에 접근해서 값 변경이 가능해집니다.) **stateHook의 값을 1 올리고** `state`(states[0] ?? initialState)와 `set`함수를 반환 후 함수를 종료합니다.
+3. 두 번째 useState가 호출이 됩니다. 이때의 states에도 아무런 값이 들어있지 않고 **stateHook은 1인 상태입니다.** setState함수가 `states[1]`을 메모리에 저장합니다. **stateHook의 값을 1 올리고** `state`(states[1] ?? initialState)와 `set`함수를 반환 후 함수를 종료합니다.
+4. `_render`에서 호출한 **App함수가 종료되면서 현재 값이 2인 stateHook을 0으로 초기화 시킵니다.**
+5. `첫 번째 버튼`을 클릭하면 `setFirstState(2)`가 실행이 되고 console엔 당연히 0이 찍히게 됩니다. `set`함수를 호출했으므로 `_render`함수가 실행이 되고 2번 과정을 거쳐서 저장되어 있는 `states[0]`에 값을 할당합니다. 그리고 `_render`함수에 의해 App함수가 다시 실행이 되고 2번 과정을 거쳐서 변경된 `states[0]` 값을 얻을 수 있습니다.
+6. `두 번째 버튼`을 클릭을 하면 5번과 동일한 과정을 거쳐서 변경된 `states[1]`값을 얻을 수 있습니다.
+
+```tsx
+const App = () => {
+  const [firstCount, setFirstCount] = useState(0);
+  const [secondCount, setSecondCount] = useState(1);
+  const handleFirstClick = () => {
+    setFirstCount(2);
+    console.log(firstCount);
+  };
+  const handleSecondClick = () => {
+    setSecondCount(4);
+    console.log(secondCount);
+  };
+  return (
+    <div>
+      <span>
+        {firstCount}/{secondCount}
+      </span>
+      <button onClick={handleFirstClick}>첫 번째 버튼</button>
+      <button onClick={handleSecondClick}>두 번째 버튼</button>
+    </div>
+  );
+};
+```
+
+위의 과정을 이해한다면 리액트의 훅에 조건문이 없어야 하는 이유에 대해서 알 수 있을 것입니다.
+리액트의 hooks는 호출되는 순서가 매우 중요합니다. 리액트 훅 호출의 순서가 모든 렌더링에서 동일해야 이전 렌더링에서 state를 저장한 index에 동일하게 접근이 가능하고 사이드 이펙트가 없이 동작을 하게 됩니다.
+
+
+### useState 실제 구현
+
+컴포넌트를 실행시키는 함수가 `domRenderer`함수 안에 존재해서 [이전글](https://ianlog.me/blog/fc-vanilla-js-2)에서 구현한 `domRenderer`안에 useState를 구현해줍니다.
+
+> 위에서 어떤 함수라고한 `render`가 무엇인지, 그리고 `set`함수에 선언되어 있는 `_render`는 무엇인지는 [이전글](https://ianlog.me/blog/fc-vanilla-js-2)에서 확인이 가능합니다.
+
+먼저 매우 중요한 options를 어떻게 관리해야 하는지 알아보겠습니다.
+`render`와 `_render`함수에서 options를 리셋해주고 있습니다.
+`render`함수가 동작할때는 `resetOptions`함수를 통해 options를 아예 리셋을 시켜줍니다.
+`_render`함수가 동작할 때는 컴포넌트를 실행 시킨 후 stateHook을 0으로 초기화하는 모습을 볼 수 있습니다.
+
+> `_render` 실행시 컴포넌트 실행(`component()`) 이후 stateHook을 0으로 초기화를 해주는 이유는 리렌더링시 이전 렌더링에서 state를 저장한 index에 동일하게 접근이 가능하기 때문입니다.
+
+```ts
+// src/lib/dom/index.ts
+import { VDOM } from "../jsx/jsx-runtime/type";
+import { updateElement } from "./diff";
+import type { Component } from "./types";
+
+interface IRenderInfo {
+  $root: HTMLElement | null;
+  component: null | Component;
+  currentVDOM: VDOM | null;
+}
+
+interface IOptions {
+  states: any[];
+  stateHook: number;
+}
+
+const domRenderer = () => {
+  const options: IOptions = {
+    states: [],
+    stateHook: 0,
+  };
+  const renderInfo: IRenderInfo = {
+    $root: null,
+    component: null,
+    currentVDOM: null,
+  };
+
+  const resetOptions = () => {
+    options.states = [];
+    options.stateHook = 0;
+  };
+
+  const _render = () => {
+    const { $root, currentVDOM, component } = renderInfo;
+    if (!$root || !component) return;
+
+    const newVDOM = component();
+    updateElement($root, newVDOM, currentVDOM);
+    // stateHook을 0으로 초기화
+    options.stateHook = 0;
+    renderInfo.currentVDOM = newVDOM;
+  };
+
+  const render = (root: HTMLElement, component: Component) => {
+    // options를 전부 리셋
+    resetOptions();
+    renderInfo.$root = root;
+    renderInfo.component = component;
+    _render();
+  };
+
+  const useState = <T>(initialState?: T) => {
+    const { stateHook: index, states } = options;
+    const state = (states[index] ?? initialState) as T;
+    const setState = (newState: T) => {
+      states[index] = newState;
+      _render();
+    };
+    options.stateHook += 1;
+    return [state, setState] as const;
+  };
+
+  return { useState, render };
+};
+
+export const { useState, render } = domRenderer();
+
+```
+
+useState를 domRenderer함수 쪽에 붙이게 되면서 실제 코드에서 활용할 수 있게 됐습니다.
+그런데, 몇가지 더 추가해야할 기능이 있습니다.
+
+1. 이전 state와 변경될 state를 얕은 비교해서 같은 state를 업데이트 하려고 하면 리렌더링이 발생하지 않아야 합니다.
+2. setState는 비동기적으로 동작해야 합니다. App컴포넌트에서 setSate를 호출한다해서 바로 `_render`가 실행이 되는게 아니라 아래에 남은 로직들을 전부 실행한 후에 실행이 되어야 합니다.
+3. setState를 여러번 호출할 경우 한 번에 모아서 처리를 해줍니다.
+
+위 기능을 단계별로 구현을 해보겠습니다.
+
+> 1. 이전 state와 변경될 state를 얕은 비교해서 같은 state를 업데이트 하려고 하면 리렌더링이 발생하지 않아야 합니다.
+
+1번은 리액트에서 실제로 얕은비교에서 사용하는 `shallowEqual`이라는 로직을 이용해서 구현을 해주겠습니다.
+
+```ts
+// src/lib/dom/utils/object.ts
+
+export const shallowEqual = <T>(objA: T, objB: T): boolean => {
+  if (Object.is(objA, objB)) {
+    return true;
+  }
+
+  if (
+    typeof objA !== "object" ||
+    objA === null ||
+    typeof objB !== "object" ||
+    objB === null
+  ) {
+    return false;
+  }
+
+  const keysA = Object.keys(objA) as Array<keyof T>;
+  const keysB = Object.keys(objB) as Array<keyof T>;
+
+  if (keysA.length !== keysB.length) {
+    return false;
+  }
+
+  for (let i = 0; i < keysA.length; i++) {
+    if (
+      !Object.hasOwnProperty.call(objB, keysA[i]) ||
+      !Object.is(objA[keysA[i]], objB[keysA[i]])
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+```
+위 로직을 setState에 분기문으로 넣어주면 끝입니다.
+
+```ts
+const useState = <T>(initialState?: T) => {
+    //...
+    const setState = (newState: T) => {
+      if(shallowEqual(state,newState)) return;
+      states[index] = newState;
+      _render();
+    };
+    //...
+  };
+```
+
+> 2. setState는 비동기적으로 동작해야 합니다. App컴포넌트에서 setSate를 호출한다해서 바로 실행이 되는게 아니라 아래에 남은 로직들을 전부 실행한 후에 실행이 되어야 합니다.
+
+아래 코드에서 현재 useState로직으로 `handleButtonClick`함수를 실행시키면, `setState(1)`이 동작을 하고 `_render` 함수가 동작한 후에 console창에 2가 찍히고 1이 찍히게 됩니다.
+
+```tsx
+const App = () => {
+  const [state,setState] = useState(0);
+  console.log("2")
+  const handleButtonClick = () => {
+    setState(1);
+    console.log("1")
+  }
+  return <button onclick={handleButtonClick}>버튼</button>
+}
+```
+
+2번에 대한 기능도 javascript의 동작원리를 이해하고 있다면 쉽게 구현이 가능합니다.
+setState함수가 실행이 될 때 `_render`를 바로 실행시키지 않고 아래 로직들이 전부 실행이 된 이후에 `_render`를 실행시키는 동작은 `task queue`를 활용하면 쉽게 해결이 가능합니다.
+
+바꿔말하자면 setState실행시에 microtask queue나 macrotask queue에 넣어주면 원하는 대로 동작을 할 것입니다.
+아래코드에서 queueMicrotask함수를 이용하여 `_render`함수를 microtask queue에 넣어주겠습니다.
+
+```ts
+const useState = <T>(initialState?: T) => {
+    //...
+    const setState = (newState: T) => {
+      if(shallowEqual(state,newState)) return;
+      states[index] = newState;
+      queueMicrotask(() => {
+        _render();
+      }
+    };
+    //...
+  };
+```
+
+이제 set함수를 실행 시키면 `_render`가 microtask queue에 들어가게 되고 console창에 1이 먼저 찍히고 2가 찍히게 됩니다. 이 과정은 렌더링동안 다음 실행되어야할 코드가 블로킹되는걸 방지해줍니다.
+
+
+> 3. setState를 한 번에 여러번 호출할 경우 모아서 처리를 해줍니다.
+
+현재 코드는 setState실행시에 렌더링이 무조건 일어납니다. setState를 한 번에 100번 실행시킨다면 100번의 렌더링이 일어날 것입니다. 이는 매우 비효율적인 동작입니다.
+현대 모니터들은 보통 초당 60회 화면 갱신을 합니다. 
+화면 갱신후 다음 갱신까지 16ms(1/60 * 1000)가 걸린다고 해석할 수 있습니다.
+즉, 16ms에 한 번 변경된 상태에 의한 화면을 보여줘도 사용자는 자연스러운 화면 갱신을 느낄 수 있습니다.
+
+> 16ms에 한 번 변경된 상태에 의한 화면을 보여준다는 뜻은 `_render` 함수가 아무리 많이 호출이 된다고 하더라도 16ms에 한 번 실행을 시킨다는 뜻입니다.
+
+모니터의 모든 주사율에 대응을 하려면 requestAnimationFrame을 이용하면 60hz,144hz등의 모니터에 대응이 가능해지므로 requestAnimationFrame을 이용하여 구현을 하겠습니다.
+
+frameRunner라는 함수를 만들어서 `_render` 함수를 frameRunner에 callback으로 넣어줍니다.
+
+```ts
+// src/lib/dom/index.ts
+const frameRunner = (callback: () => void) => {
+  let requestId: ReturnType<typeof requestAnimationFrame>;
+  return () => {
+    requestId && cancelAnimationFrame(requestId);
+    requestId = requestAnimationFrame(callback);
+  };
+};
+
+
+const domRenderer = () => {
+  //...
+    const _render = frameRunner(() => {
+    const { $root, currentVDOM, component } = renderInfo;
+    if (!$root || !component) return;
+
+    const newVDOM = component();
+    updateElement($root, newVDOM, currentVDOM);
+    options.stateHook = 0;
+    renderInfo.currentVDOM = newVDOM;
+  });
+ //...
+}
+
+```
+`requestAnimationFrame`은 macrotask queue에서 동작하므로 이전 setState에서 넣어준 queueMicrotask함수는 필요가 없어집니다.
+
+```ts
+const useState = <T>(initialState?: T) => {
+	//...
+    const setState = (newState: T) => {
+      if (shallowEqual(state, newState)) return;
+      states[index] = newState;
+      _render();
+    };
+	//...
+ };
+```
+
+이제 아래와 같이 setState를 여러번 호출하더라도 사용자 모니터의 주사율에 맞게 `_render` 함수가 한 번만 실행이 됩니다.
+
+```tsx
+const App = () => {
+  const [state,setState] = useState(0);
+  const handleButtonClick = () => {
+    setState(1);
+    setState(2);
+    setState(3);
+  }
+  return <button onclick={handleButtonClick}>버튼</button>
+}
+```
+
+
+## useEffect 구현
+
+useEffect는 다음 두가지 기능을 구현하겠습니다.
+
+1. useEffect는 컴포넌트가 마운트될 때 동작을 해야합니다.
+
+리액트에서 아래의 코드는 console에 1,3,2순으로 찍히게 됩니다.
+
+```tsx
+const App = () => {
+  console.log("1");
+  useEffect(() => {
+    console.log("2");
+  }, []);
+  console.log("3");
+  //...
+}
+```
+2. 두 번째 파라미터인 의존성 배열이 변경되면 첫 번째 파라미터에 넣어준 콜백함수가 재실행 됩니다.
+
+아래 코드는 console에 1,2,1,2가 찍히게 됩니다.
+
+```tsx
+const App = () => {
+  const [state,setState] = useState(1)
+  console.log("1");
+  useEffect(() => {
+    setState(2)
+    console.log("2");
+  }, [state]);
+  //...
+}
+
+```
+
+
+위 기능을 구현하기 위해서 우선 useState와 마찬가지로 컴포넌트 내에서 호출 순서에 따라 배열에 저장을 해주면 됩니다.
+
+options에 몇가지 속성을 추가해줍니다.
+`dependencies`: useEffect의 의존성 배열을 저장합니다.
+`effectHook`: 호출 순서에 따라 effectList와 dependencies의 index에 저장하기 위한 속성입니다.
+`effectList`: useEffect에 넣어준 callback을 저장합니다.
+
+```ts
+// src/lib/dom/index.ts
+interface IOptions {
+  //...
+  dependencies: any[];
+  effectHook: number;
+  effectList: Array<() => void>;
+}
+
+const options: IOptions = {
+    //...
+    dependencies: [],
+    effectHook: 0,
+    effectList: [],
+};
+```
+
+이제 아래와 같이 useEffect코드를 구현하면 완성입니다.
+ 
+```ts
+// src/lib/dom/index.ts
+const useEffect = (callback: () => void, dependencies?: any[]) => {
+    const index = options.effectHook;
+    // 1. effectList에 callback을 저장합니다.
+    options.effectList[index] = () => {
+     // 2. deps가 있는지 판단합니다.
+      const hasNoDeps = !dependencies;
+      // 3. 이전 deps가 있다면 가져옵니다.
+      const prevDeps = options.dependencies[index];
+      // 4. prevDeps가 존재하면 이전 deps와 현재 deps를 얕은 비교를 해서 전부 같으면 false 하나라도 다르면 true를 반환합니다. 그리고 prevDeps가 없어도 true를 반환합니다.
+      const hasChangedDeps = prevDeps
+        ? dependencies?.some((deps, i) => !shallowEqual(deps, prevDeps[i]))
+        : true;
+      // 5. deps가 존재하지 않거나 deps가 변경되었으면 callback을 실행합니다.               
+      if (hasNoDeps || hasChangedDeps) {
+        options.dependencies[index] = dependencies;
+        callback();
+      }
+    };
+    options.effectHook += 1;
+  };
+```
+
+effectList에 담은 콜백들은 `_render` 쪽에서 실행을 시켜주면 됩니다.
+컴포넌트 마운트 이후에 불려야 하므로 `updateElement` 함수가 실행되고 effectList를 forEach로 순회하면서 함수를 실행시켜주면 됩니다.
+또한, useState와 마찬가지로 리렌더링시 호출 순서에 따른 index를 보장해야 하므로 effectHook을 0으로 초기화를 시켜주고 effectList안의 콜백함수가 전부 실행이 되고 나면 effectList를 비워줍니다.
+
+```ts
+  const resetOptions = () => {
+    options.states = [];
+    options.stateHook = 0;
+    options.effectList = [];
+    options.dependencies = [];
+    options.effectHook = 0;
+  };
+
+  const _render = frameRunner(() => {
+    const { $root, currentVDOM, component } = renderInfo;
+    if (!$root || !component) return;
+
+    const newVDOM = component();
+    updateElement($root, newVDOM, currentVDOM);
+    options.stateHook = 0;
+    options.effectHook = 0;
+    renderInfo.currentVDOM = newVDOM;
+
+    options.effectList.forEach((fn) => fn());
+    options.effectList = [];
+  });
+```
+
+
+## useState와 useEffect를 구현후 동작 모습
+
+실제로 useState 사용시 state변경에 따라 리렌더링이 일어나고 state유지도 잘 됩니다.
+useEffect는 컴포넌트가 마운트 되거나 의존성 배열이 변경되면 useEffect의 콜백함수도 제대로 동작하는걸 확인할 수 있습니다.
+
+```tsx
+const App = () => {
+  const [value, setValue] = useState(0);
+  console.log("1");
+  useEffect(() => {
+    setValue(2);
+    console.log("2");
+  }, [value]);
+  return <div>Hello World!</div>;
+};
+```
+
+![hooks-example](/posts/blog/fc-vanilla-js-3/hooks.png)
+
+
+## 마치며
+
+해당 글을 읽고 아래 두가지에 대한 이해가 명확해졌으면 좋겠습니다.
+- setState가 비동기적으로 동작하는 이유
+  - 성능 최적화와 블로킹 방지를 위해 
+- 리액트의 훅에 조건문이 없어야 하는 이유
+  - 이전 렌더링에서 저장해둔 index에 동일하게 접근해야 하기 때문
+
+useState와 useEffect를 Vanilla jS로 어떻게 구현을 해야하는지와 이전 글에서 구현한 domRenderer에 코드를 어떻게 추가해야하는지 알아봤습니다.
+긴 글 읽어주셔서 감사합니다.
+[작성한 코드가 있는 저장소입니다.](https://github.com/Ssoon-m/fc-vanilla-js)
+
+
+
+## 참고문헌
+- [Vanilla Javascript로 React UseState Hook 만들기](https://junilhwang.github.io/TIL/Javascript/Design/Vanilla-JS-Make-useSate-hook)
