@@ -43,7 +43,7 @@ const PostContent = ({ postBodyCode, postBodyRaw }: PostContentProps) => {
   return (
     <article>
       <div className="flex relative">
-        <div className="prose dark:prose-invert w-full max-w-none relative">
+        <div className="prose dark:prose-invert w-full max-w-4xl relative">
           <MDXContent components={{ a: BlankLink, img: NextImg }} />
         </div>
         <div className="pl-12 hidden lg:block min-w-[200px] max-w-[250px]">
