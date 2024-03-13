@@ -9,7 +9,7 @@ const BlankLink = (props: any) => {
   } else {
     return (
       <a
-        className="text-indigo-500 underline hover:text-indigo-400"
+        className="text-indigo-500 underline hover:text-indigo-400 break-words break-keep"
         target="_blank"
         rel="noopener noreferrer"
         {...props}
