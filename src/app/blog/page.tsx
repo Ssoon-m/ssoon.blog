@@ -1,10 +1,10 @@
-import { getAllPosts } from '@/datasets/post';
+import { getAllFilteredPosts } from '@/datasets/post';
 import { siteSEO } from '@/lib/seo';
 import type { Metadata } from 'next';
 import SearchBoxList from './components/SearchBoxList';
 
 const BlogPage = () => {
-  const posts = getAllPosts();
+  const posts = getAllFilteredPosts();
   return (
     <div className="pt-6">
       <h1 className="text-4xl font-bold">Blog</h1>

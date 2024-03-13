@@ -10,7 +10,7 @@ import NoteHeader from './components/NoteHeader';
 import TopNavCategory from './components/TopNavCategory';
 import { createTreeView } from './util/createNoteTree';
 
-export const generateStaticParams = async () =>
+export const generateStaticParams = () =>
   getAllNotes().map((note) => ({
     slug: note._raw.flattenedPath.replace(/note\//i, '').split('/'),
   }));

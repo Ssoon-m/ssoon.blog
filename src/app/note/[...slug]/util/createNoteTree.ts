@@ -1,6 +1,5 @@
 import type { Note } from 'contentlayer/generated';
 import type { TreeView } from '../types/aside-type';
-import { dateCompare } from '@/lib/utils/date';
 
 export const createTreeView = (
   notes: Note[],

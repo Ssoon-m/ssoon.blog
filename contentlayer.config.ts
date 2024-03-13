@@ -53,7 +53,7 @@ const NoteComputedFields: ComputedFields<'Note'> = {
 
 export const Post = defineDocumentType(() => ({
   name: 'Post',
-  filePathPattern: `blog/*.mdx`,
+  filePathPattern: `blog/**/*.mdx`,
   contentType: 'mdx',
   fields: PostFields,
   computedFields: PostComputedFields,

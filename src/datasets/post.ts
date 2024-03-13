@@ -11,28 +11,46 @@ export const getAllPosts = (sort: 'desc' | 'asc' = 'desc') => {
   return allPosts;
 };
 
+export const getAllFilteredPosts = (sort: 'desc' | 'asc' = 'desc') => {
+  const filteredAllPosts = allPosts.filter(
+    (post) => !post._raw.sourceFilePath.endsWith('/index.mdx'),
+  );
+
+  if (sort === 'desc') {
+    return filteredAllPosts.sort((a, b) => dateCompare(b.date, a.date));
+  }
+  if (sort === 'asc') {
+    return filteredAllPosts.sort((a, b) => dateCompare(a.date, b.date));
+  }
+  return filteredAllPosts;
+};
+
 export const getMainPosts = () => {
-  return allPosts.slice(0, 5).sort((a, b) => dateCompare(b.date, a.date));
+  return getAllFilteredPosts()
+    .slice(0, 5)
+    .sort((a, b) => dateCompare(b.date, a.date));
 };
 
 export const getPostBySlug = (slug: string) => {
-  return getAllPosts().find((post) => post._raw.flattenedPath === slug);
+  return getAllFilteredPosts().find((post) => post._raw.flattenedPath === slug);
 };
 
 export const getPostIndexBySlug = (slug: string) => {
-  return getAllPosts().findIndex((post) => post._raw.flattenedPath === slug);
+  return getAllFilteredPosts().findIndex(
+    (post) => post._raw.flattenedPath === slug,
+  );
 };
 
 export const getPrevPost = (index: number): _Post | null => {
-  return getAllPosts()[index + 1] ?? null;
+  return getAllFilteredPosts()[index + 1] ?? null;
 };
 export const getNextPost = (index: number): _Post | null => {
-  return getAllPosts()[index - 1] ?? null;
+  return getAllFilteredPosts()[index - 1] ?? null;
 };
 
 export const getAllTags = () => {
   return Array.from(
-    allPosts.reduce((acc, post) => {
+    getAllFilteredPosts().reduce((acc, post) => {
       post.tags.forEach((tag) => acc.add(tag));
       return acc;
     }, new Set<string>([])),
@@ -41,7 +59,7 @@ export const getAllTags = () => {
 
 export const getTagsOfPosts = () => {
   return Array.from(
-    allPosts.reduce((acc, post) => {
+    getAllFilteredPosts().reduce((acc, post) => {
       post.tags.forEach((tag) =>
         acc.has(tag) ? acc.set(tag, acc.get(tag)! + 1) : acc.set(tag, 1),
       );
@@ -51,7 +69,39 @@ export const getTagsOfPosts = () => {
 };
 
 export const getPostsByTag = (tag: string) => {
-  return allPosts.filter((post) => post.tags.some((_tag) => _tag === tag));
+  return getAllFilteredPosts().filter((post) =>
+    post.tags.some((_tag) => _tag === tag),
+  );
+};
+
+export const getSeriesBySlug = (slug: string) => {
+  const filteredSeries = getAllPosts().filter((post) =>
+    post._raw.sourceFilePath.endsWith('/index.mdx'),
+  );
+  const findSeries = filteredSeries.find((series) =>
+    slug.includes(series._raw.flattenedPath),
+  );
+  if (!findSeries) return;
+
+  const seriesList = getAllPosts('asc').filter(
+    (post) =>
+      !post._raw.sourceFilePath.endsWith('/index.mdx') &&
+      post._raw.flattenedPath.includes(findSeries._raw.flattenedPath),
+  );
+
+  const currentSeriesIndex = seriesList.findIndex(
+    (series) => series._raw.flattenedPath === slug,
+  );
+
+  return { seriesName: findSeries.title, seriesList, currentSeriesIndex };
+};
+
+export const getAllSeries = () => {
+  getAllFilteredPosts().forEach((post) =>
+    console.log(post._raw.sourceFilePath),
+  );
+  // getAllPosts().forEach((post) => console.log(post._raw.flattenedPath));
+  // getAllPosts().console.log('getAllPosts', getAllPosts);
 };
 
 export type Post = _Post;

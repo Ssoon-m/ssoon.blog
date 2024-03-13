@@ -35,6 +35,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react-dom", "npm:18.2.7"],\
             ["autoprefixer", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:10.4.15"],\
             ["cloudinary", "npm:1.41.0"],\
+            ["clsx", "npm:2.1.0"],\
             ["contentlayer", "npm:0.3.4"],\
             ["dayjs", "npm:1.11.9"],\
             ["dotenv", "npm:16.3.1"],\
@@ -60,6 +61,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["remark-gfm", "npm:3.0.1"],\
             ["schema-dts", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:1.1.2"],\
             ["shiki", "npm:0.14.3"],\
+            ["tailwind-merge", "npm:2.2.1"],\
             ["tailwindcss", "npm:3.3.3"],\
             ["ts-node", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:10.9.1"],\
             ["typescript", "patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"]\
@@ -90,6 +92,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@babel-runtime-npm-7.22.15-b21c55a700-793296df1e.zip/node_modules/@babel/runtime/",\
           "packageDependencies": [\
             ["@babel/runtime", "npm:7.22.15"],\
+            ["regenerator-runtime", "npm:0.14.0"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:7.24.0", {\
+          "packageLocation": "./.yarn/cache/@babel-runtime-npm-7.24.0-7eb1dd11a2-7a6a5d40fb.zip/node_modules/@babel/runtime/",\
+          "packageDependencies": [\
+            ["@babel/runtime", "npm:7.24.0"],\
             ["regenerator-runtime", "npm:0.14.0"]\
           ],\
           "linkType": "HARD"\
@@ -2714,6 +2724,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["clsx", [\
+        ["npm:2.1.0", {\
+          "packageLocation": "./.yarn/cache/clsx-npm-2.1.0-29d286e1de-43fefc29b6.zip/node_modules/clsx/",\
+          "packageDependencies": [\
+            ["clsx", "npm:2.1.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["color-convert", [\
         ["npm:2.0.1", {\
           "packageLocation": "./.yarn/cache/color-convert-npm-2.0.1-79730e935b-79e6bdb9fd.zip/node_modules/color-convert/",\
@@ -4746,6 +4765,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react-dom", "npm:18.2.7"],\
             ["autoprefixer", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:10.4.15"],\
             ["cloudinary", "npm:1.41.0"],\
+            ["clsx", "npm:2.1.0"],\
             ["contentlayer", "npm:0.3.4"],\
             ["dayjs", "npm:1.11.9"],\
             ["dotenv", "npm:16.3.1"],\
@@ -4771,6 +4791,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["remark-gfm", "npm:3.0.1"],\
             ["schema-dts", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:1.1.2"],\
             ["shiki", "npm:0.14.3"],\
+            ["tailwind-merge", "npm:2.2.1"],\
             ["tailwindcss", "npm:3.3.3"],\
             ["ts-node", "virtual:9c982b113e8de64235a30c653cc0f60eb5d7f32d1ddf9ba070d58fad562c342892bdc96f6dc7cd53d0b6133058d1199b3acbab179acd180ea87f920ae8fa02e2#npm:10.9.1"],\
             ["typescript", "patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"]\
@@ -8568,6 +8589,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/supports-preserve-symlinks-flag-npm-1.0.0-f17c4d0028-53b1e247e6.zip/node_modules/supports-preserve-symlinks-flag/",\
           "packageDependencies": [\
             ["supports-preserve-symlinks-flag", "npm:1.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["tailwind-merge", [\
+        ["npm:2.2.1", {\
+          "packageLocation": "./.yarn/cache/tailwind-merge-npm-2.2.1-8dc1f0b72b-fd149409b1.zip/node_modules/tailwind-merge/",\
+          "packageDependencies": [\
+            ["tailwind-merge", "npm:2.2.1"],\
+            ["@babel/runtime", "npm:7.24.0"]\
           ],\
           "linkType": "HARD"\
         }]\
