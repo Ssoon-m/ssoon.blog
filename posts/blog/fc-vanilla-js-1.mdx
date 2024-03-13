@@ -60,8 +60,7 @@ npm create vite@latest my-vanilla-ts-app --template vanilla-ts
 ```
 
 프로젝트 내의 JSX문법을 파싱하기 위해선 vite에서 esbuild관련 설정을 해줘야합니다.
-```ts
-//vite.config.ts
+```ts title="vite.config.ts" showLineNumbers
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
@@ -86,8 +85,7 @@ plugins의 tsconfigPaths는 typescript alias path를 위하여 설정을 해줬�
 tsx파일에서 타입 추론을 위해 tsconfig설정도 해줍니다.
 https://www.typescriptlang.org/tsconfig#jsxImportSource
 
-```json
-//tsconfig.json
+```json title="tsconfig.json" showLineNumbers
 {
   "compilerOptions": {
     "jsx": "react-jsx",
@@ -98,8 +96,7 @@ https://www.typescriptlang.org/tsconfig#jsxImportSource
 ```
 
 https://www.typescriptlang.org/docs/handbook/jsx.html#type-checking
-```ts
-//global.d.ts
+```ts title="global.d.ts" showLineNumbers
 declare namespace JSX {
   interface IntrinsicElements {
     [elemName: string]: any;
@@ -115,9 +112,7 @@ declare namespace JSX {
 아래 코드를 살펴보기전에 Virtual DOM으로 변환되는 시나리오를 떠올려보겠습니다.
 `<div>Hello World</div>` 형태의 jsx문법이 트랜스파일러를 통해 `h('div',null,['Hello World'])`형태로 변환이 되고 `h` 함수가 실행이 되면서 Virtual DOM이 만들어집니다.
 
-```ts
-// src/lib/jsx/jsx-runtime.ts
-
+```ts title="src/lib/jsx/jsx-runtime.ts" showLineNumbers
 export type VNode = string | number | VDOM | null | undefined;
 export type VDOM = {
   type: string;
@@ -174,7 +169,7 @@ App컴포넌트를 Virtual DOM으로 변환 후 children의 type부분을 보면
 ```
 
 component파라미터가 function일때에 대한 분기문을 추가해주면 간단하게 해결할 수 있습니다.
-```ts
+```ts title="src/lib/jsx/jsx-runtime.ts" showLineNumbers
 //...
 if (typeof component === "function") {
   return component({ ...props, children });
@@ -206,7 +201,7 @@ if (typeof component === "function") {
 잘 만들어진 Virtual DOM을 가지고 실제 돔에 올리기 위해서 createElement를 구현해줘야 합니다.
 
 Virtual DOM에 대한 타입채킹을 하고 그에 맞는 element를 생성을 해주는 코드를 작성해줍니다.
-```ts
+```ts title="src/lib/dom/client.ts" showLineNumbers
 import { VNode } from "@/lib/jsx/jsx-runtime";
 
 const createElement = (node: VNode) => {
@@ -229,9 +224,9 @@ export { createElement }
 
 ```
 
-그 후에 VirtualDOM의 props를 DOM에 반영시키는 과정을 거쳐줍니다.
+VirtualDOM의 props를 DOM에 반영시키는 과정도 거쳐줍니다.
 
-```ts
+```ts title="src/lib/dom/client.ts" showLineNumbers
 Object.entries(node.props || {}).forEach(([attr, value]) => {
     if (attr.startsWith("data-")) {
       element.dataset[attr.slice(5)] = value;
@@ -243,7 +238,7 @@ Object.entries(node.props || {}).forEach(([attr, value]) => {
 
 VirtualDOM의 type과 props에 대한 구현이 끝났으므로 children을 다루는 코드를 작성해줍니다.
 children의 경우엔 재귀적으로 createElement를 호출하면서 부모 요소인 element에 appendChild로 부착을 해줍니다.
-```ts
+```ts title="src/lib/dom/client.ts" showLineNumbers
 node.children.forEach((child) => element.appendChild(createElement(child)));
 ```
 
@@ -253,7 +248,7 @@ node.children.forEach((child) => element.appendChild(createElement(child)));
 2. Virtual DOM의 type에 맞는 실제 돔을 생성
 3. Virtual DOM의 props를 실제 돔에 반영
 4. Virtual DOM의 children을 재귀적으로 순회하면서 부모요소에 appendChild를 이용하여 부착
-```ts
+```ts title="src/lib/dom/client.ts" showLineNumbers
 import { VNode } from "@/lib/jsx/jsx-runtime";
 
 const createElement = (node: VNode) => {
@@ -287,8 +282,8 @@ export { createElement };
 
 ## 브라우저에서 APP 컴포넌트 확인
 
-```tsx
-// App.tsx
+```tsx showLineNumbers
+// App.tsx 
 const MyComponent = ({ className }: { className: string }) => {
   return <div className={className}>Hello World!!!</div>;
 };
