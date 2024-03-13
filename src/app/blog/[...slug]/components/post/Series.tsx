@@ -5,16 +5,20 @@ import Link from 'next/link';
 
 interface SeriesProps {
   series: {
-    seriesName: string;
+    currentSeries: Post;
     seriesList: Post[];
     currentSeriesIndex: number;
   };
 }
 const Series = ({ series }: SeriesProps) => {
-  const { seriesName, seriesList, currentSeriesIndex } = series;
+  const { currentSeries, seriesList, currentSeriesIndex } = series;
   return (
     <div className="bg-gray-100 rounded-sm p-4">
-      <h2 className="text-gray-700 font-medium text-xl pb-2">{seriesName}</h2>
+      <h2 className="text-gray-700 font-medium text-xl pb-2 hover:underline hover:text-gray-500">
+        <Link href={`/${currentSeries.postUrl.replace(/^blog/i, 'series')}`}>
+          {currentSeries.title}
+        </Link>
+      </h2>
       <ul>
         {seriesList.map((series, i) => (
           <li key={series._id} className="w-full flex items-center gap-1">

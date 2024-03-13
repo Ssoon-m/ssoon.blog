@@ -73,13 +73,11 @@ const PostPage = ({ params }: { params: { slug: string[] } }) => {
           date={post.date}
           readingTime={post.readingTime}
         />
-
         {series && (
           <div className="mb-6">
             <Series series={series} />
           </div>
         )}
-
         {post.thumbnailUrl && (
           <div className="flex justify-center items-center my-10 relative w-full h-auto">
             <Image
