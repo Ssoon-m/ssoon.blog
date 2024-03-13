@@ -2,25 +2,5 @@
 @tailwind components;
 @tailwind utilities;
 
-@import 'one-dark-theme.css';
-
-.prose .anchor {
-  @apply invisible absolute no-underline;
-  margin-left: -0.7em;
-  padding-right: 0.4em;
-  cursor: pointer;
-}
-
-.prose .anchor:after {
-  @apply text-indigo-500;
-  content: '#';
-}
-
-.prose .anchor:after:hover {
-  @apply underline;
-}
-
-.anchor:hover,
-.prose *:hover > .anchor {
-  @apply visible;
-}
+@import 'blog-contents.css';
+@import 'code-block.css';

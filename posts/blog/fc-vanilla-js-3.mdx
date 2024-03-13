@@ -68,7 +68,7 @@ useState가 다시 실행이 됐음에도 위의 useState함수에서 `state`변
 처음 호출한 useState(1)과 두 번째로 호출한 useState(2) 모두 같은 state를 바라보게 될 것입니다.
 
 
-```ts
+```ts 
 const App = () => {
   //1
   const [firstState,setFirstState] = useState(1) ;
@@ -151,8 +151,7 @@ const App = () => {
 
 > `_render` 실행시 컴포넌트 실행(`component()`) 이후 stateHook을 0으로 초기화를 해주는 이유는 리렌더링시 이전 렌더링에서 state를 저장한 index에 동일하게 접근이 가능하기 때문입니다.
 
-```ts
-// src/lib/dom/index.ts
+```ts {51-63} title="src/lib/dom/index.ts"
 import { VDOM } from "../jsx/jsx-runtime/type";
 import { updateElement } from "./diff";
 import type { Component } from "./types";
@@ -234,9 +233,7 @@ useState를 domRenderer함수 쪽에 붙이게 되면서 실제 코드에서 활
 
 1번은 리액트에서 실제로 얕은비교에서 사용하는 `shallowEqual`이라는 로직을 이용해서 구현을 해주겠습니다.
 
-```ts
-// src/lib/dom/utils/object.ts
-
+```ts title="src/lib/dom/utils/object.ts"
 export const shallowEqual = <T>(objA: T, objB: T): boolean => {
   if (Object.is(objA, objB)) {
     return true;
@@ -273,7 +270,7 @@ export const shallowEqual = <T>(objA: T, objB: T): boolean => {
 ```
 위 로직을 setState에 분기문으로 넣어주면 끝입니다.
 
-```ts
+```ts {4} title="src/lib/dom/index.ts"
 const useState = <T>(initialState?: T) => {
     //...
     const setState = (newState: T) => {
@@ -307,7 +304,7 @@ setState함수가 실행이 될 때 `_render`를 바로 실행시키지 않고 �
 바꿔말하자면 setState실행시에 microtask queue나 macrotask queue에 넣어주면 원하는 대로 동작을 할 것입니다.
 아래코드에서 queueMicrotask함수를 이용하여 `_render`함수를 microtask queue에 넣어주겠습니다.
 
-```ts
+```ts {6,8} title="src/lib/dom/index.ts"
 const useState = <T>(initialState?: T) => {
     //...
     const setState = (newState: T) => {
@@ -337,8 +334,7 @@ const useState = <T>(initialState?: T) => {
 
 frameRunner라는 함수를 만들어서 `_render` 함수를 frameRunner에 callback으로 넣어줍니다.
 
-```ts
-// src/lib/dom/index.ts
+```ts {1-7,12,20} title="src/lib/dom/index.ts"
 const frameRunner = (callback: () => void) => {
   let requestId: ReturnType<typeof requestAnimationFrame>;
   return () => {
@@ -365,7 +361,7 @@ const domRenderer = () => {
 ```
 `requestAnimationFrame`은 macrotask queue에서 동작하므로 이전 setState에서 넣어준 queueMicrotask함수는 필요가 없어집니다.
 
-```ts
+```ts title="src/lib/dom/index.ts"
 const useState = <T>(initialState?: T) => {
 	//...
     const setState = (newState: T) => {
@@ -435,8 +431,7 @@ options에 몇가지 속성을 추가해줍니다.
 `effectHook`: 호출 순서에 따라 effectList와 dependencies의 index에 저장하기 위한 속성입니다.
 `effectList`: useEffect에 넣어준 callback을 저장합니다.
 
-```ts
-// src/lib/dom/index.ts
+```ts title="src/lib/dom/index.ts"
 interface IOptions {
   //...
   dependencies: any[];
@@ -454,8 +449,7 @@ const options: IOptions = {
 
 이제 아래와 같이 useEffect코드를 구현하면 완성입니다.
  
-```ts
-// src/lib/dom/index.ts
+```ts title="src/lib/dom/index.ts"
 const useEffect = (callback: () => void, dependencies?: any[]) => {
     const index = options.effectHook;
     // 1. effectList에 callback을 저장합니다.
@@ -482,7 +476,7 @@ effectList에 담은 콜백들은 `_render` 쪽에서 실행을 시켜주면 됩
 컴포넌트 마운트 이후에 불려야 하므로 `updateElement` 함수가 실행되고 effectList를 forEach로 순회하면서 함수를 실행시켜주면 됩니다.
 또한, useState와 마찬가지로 리렌더링시 호출 순서에 따른 index를 보장해야 하므로 effectHook을 0으로 초기화를 시켜주고 effectList안의 콜백함수가 전부 실행이 되고 나면 effectList를 비워줍니다.
 
-```ts
+```ts {4-6,16,19-20} title="src/lib/dom/index.ts"
   const resetOptions = () => {
     options.states = [];
     options.stateHook = 0;

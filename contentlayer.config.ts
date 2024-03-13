@@ -7,9 +7,12 @@ import {
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypePrismPlus from 'rehype-prism-plus';
 import remarkBreaks from 'remark-breaks';
 import readingTime from 'reading-time';
+import rehypePrettyCode, {
+  type Options as RehypePrettyCodeOptions,
+} from 'rehype-pretty-code';
+import { readFileSync } from 'fs';
 
 const fields: FieldDefs = {
   title: { type: 'string', required: true },
@@ -64,6 +67,15 @@ export const Note = defineDocumentType(() => ({
   computedFields: NoteComputedFields,
 }));
 
+const rehypePrettyCodeOptions: RehypePrettyCodeOptions = {
+  theme: {
+    dark: JSON.parse(readFileSync('./prettycode_theme/one-dark.json', 'utf-8')),
+    light: JSON.parse(
+      readFileSync('./prettycode_theme/one-light.json', 'utf-8'),
+    ),
+  },
+};
+
 export default makeSource({
   contentDirPath: 'posts',
   documentTypes: [Post, Note],
@@ -71,7 +83,6 @@ export default makeSource({
     remarkPlugins: [remarkGfm, remarkBreaks],
     rehypePlugins: [
       rehypeSlug,
-      rehypePrismPlus,
       [
         rehypeAutolinkHeadings,
         {
@@ -80,6 +91,7 @@ export default makeSource({
           },
         },
       ],
+      [rehypePrettyCode, rehypePrettyCodeOptions],
     ],
   },
 });
