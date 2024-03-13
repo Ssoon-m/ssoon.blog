@@ -7,9 +7,10 @@ import { motion } from 'framer-motion';
 
 interface PostCardListProps {
   posts: Array<Post>;
+  displayNumberedList?: boolean;
 }
 
-const PostCardList = ({ posts }: PostCardListProps) => {
+const PostCardList = ({ posts, displayNumberedList }: PostCardListProps) => {
   return (
     <motion.div
       className="flex flex-col gap-6 mb-7"
@@ -19,7 +20,14 @@ const PostCardList = ({ posts }: PostCardListProps) => {
     >
       {posts.map((post, idx) => (
         <motion.div key={idx} variants={springFadeInSlideUp}>
-          <PostCard post={post} />
+          <div className="w-full flex gap-3 items-start">
+            {displayNumberedList && (
+              <div className="pt-[0.45em] text-xl text-gray-600 select-none">
+                {idx + 1}.
+              </div>
+            )}
+            <PostCard post={post} />
+          </div>
         </motion.div>
       ))}
     </motion.div>

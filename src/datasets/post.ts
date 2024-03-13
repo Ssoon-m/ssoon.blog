@@ -93,7 +93,7 @@ export const getSeriesBySlug = (slug: string) => {
     (series) => series._raw.flattenedPath === slug,
   );
 
-  return { seriesName: findSeries.title, seriesList, currentSeriesIndex };
+  return { currentSeries: findSeries, seriesList, currentSeriesIndex };
 };
 
 export const getAllSeries = () => {
