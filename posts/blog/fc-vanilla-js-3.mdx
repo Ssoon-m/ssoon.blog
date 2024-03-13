@@ -40,7 +40,7 @@ useState에 대한 의사코드를 작성해봤습니다.
 혹시 setState이후 다음 줄에서 state에 접근할 때 바뀌기 전의 state값이 콘솔에 찍히는 동작을 비동기적인 동작이라고 설명하는 아티클들을 보신 분들이 계신가요? 예시를 완전히 잘못 들었다고 생각합니다. 그 이유에 대해선 다음 글에서 간단하게 설명하겠습니다.
 
 
-```ts
+```ts showLineNumbers
 let state = undefined;
 const useState = (initialState) => {
   const _state = state || initialState;
@@ -68,7 +68,7 @@ useState가 다시 실행이 됐음에도 위의 useState함수에서 `state`변
 처음 호출한 useState(1)과 두 번째로 호출한 useState(2) 모두 같은 state를 바라보게 될 것입니다.
 
 
-```ts 
+```ts showLineNumbers
 const App = () => {
   //1
   const [firstState,setFirstState] = useState(1) ;
@@ -84,7 +84,7 @@ useState의 상태를 개별적으로 관리하고 싶다면, **state를 배열�
 
 options라는 객체를 만들어서 index와 state를 관리할 수 있게 만들어줬습니다.
 
-```ts
+```ts showLineNumbers
 const options = {
 	states : [],
 	stateHook : 0,
@@ -110,7 +110,7 @@ options를 추가한 후의 useState 동작을 살펴보겠습니다. stateHook�
 5. `첫 번째 버튼`을 클릭하면 `setFirstState(2)`가 실행이 되고 console엔 당연히 0이 찍히게 됩니다. `set`함수를 호출했으므로 `_render`함수가 실행이 되고 2번 과정을 거쳐서 저장되어 있는 `states[0]`에 값을 할당합니다. 그리고 `_render`함수에 의해 App함수가 다시 실행이 되고 2번 과정을 거쳐서 변경된 `states[0]` 값을 얻을 수 있습니다.
 6. `두 번째 버튼`을 클릭을 하면 5번과 동일한 과정을 거쳐서 변경된 `states[1]`값을 얻을 수 있습니다.
 
-```tsx
+```tsx showLineNumbers
 const App = () => {
   const [firstCount, setFirstCount] = useState(0);
   const [secondCount, setSecondCount] = useState(1);
@@ -151,7 +151,7 @@ const App = () => {
 
 > `_render` 실행시 컴포넌트 실행(`component()`) 이후 stateHook을 0으로 초기화를 해주는 이유는 리렌더링시 이전 렌더링에서 state를 저장한 index에 동일하게 접근이 가능하기 때문입니다.
 
-```ts {51-63} title="src/lib/dom/index.ts"
+```ts {51-63} title="src/lib/dom/index.ts" showLineNumbers
 import { VDOM } from "../jsx/jsx-runtime/type";
 import { updateElement } from "./diff";
 import type { Component } from "./types";
@@ -233,7 +233,7 @@ useState를 domRenderer함수 쪽에 붙이게 되면서 실제 코드에서 활
 
 1번은 리액트에서 실제로 얕은비교에서 사용하는 `shallowEqual`이라는 로직을 이용해서 구현을 해주겠습니다.
 
-```ts title="src/lib/dom/utils/object.ts"
+```ts title="src/lib/dom/utils/object.ts" showLineNumbers
 export const shallowEqual = <T>(objA: T, objB: T): boolean => {
   if (Object.is(objA, objB)) {
     return true;
@@ -270,7 +270,7 @@ export const shallowEqual = <T>(objA: T, objB: T): boolean => {
 ```
 위 로직을 setState에 분기문으로 넣어주면 끝입니다.
 
-```ts {4} title="src/lib/dom/index.ts"
+```ts {4} title="src/lib/dom/index.ts" showLineNumbers
 const useState = <T>(initialState?: T) => {
     //...
     const setState = (newState: T) => {
@@ -286,7 +286,7 @@ const useState = <T>(initialState?: T) => {
 
 아래 코드에서 현재 useState로직으로 `handleButtonClick`함수를 실행시키면, `setState(1)`이 동작을 하고 `_render` 함수가 동작한 후에 console창에 2가 찍히고 1이 찍히게 됩니다.
 
-```tsx
+```tsx showLineNumbers
 const App = () => {
   const [state,setState] = useState(0);
   console.log("2")
@@ -304,7 +304,7 @@ setState함수가 실행이 될 때 `_render`를 바로 실행시키지 않고 �
 바꿔말하자면 setState실행시에 microtask queue나 macrotask queue에 넣어주면 원하는 대로 동작을 할 것입니다.
 아래코드에서 queueMicrotask함수를 이용하여 `_render`함수를 microtask queue에 넣어주겠습니다.
 
-```ts {6,8} title="src/lib/dom/index.ts"
+```ts {6,8} title="src/lib/dom/index.ts" showLineNumbers
 const useState = <T>(initialState?: T) => {
     //...
     const setState = (newState: T) => {
@@ -334,7 +334,7 @@ const useState = <T>(initialState?: T) => {
 
 frameRunner라는 함수를 만들어서 `_render` 함수를 frameRunner에 callback으로 넣어줍니다.
 
-```ts {1-7,12,20} title="src/lib/dom/index.ts"
+```ts {1-7,12,20} title="src/lib/dom/index.ts" showLineNumbers
 const frameRunner = (callback: () => void) => {
   let requestId: ReturnType<typeof requestAnimationFrame>;
   return () => {
@@ -361,7 +361,7 @@ const domRenderer = () => {
 ```
 `requestAnimationFrame`은 macrotask queue에서 동작하므로 이전 setState에서 넣어준 queueMicrotask함수는 필요가 없어집니다.
 
-```ts title="src/lib/dom/index.ts"
+```ts title="src/lib/dom/index.ts" showLineNumbers
 const useState = <T>(initialState?: T) => {
 	//...
     const setState = (newState: T) => {
@@ -375,7 +375,7 @@ const useState = <T>(initialState?: T) => {
 
 이제 아래와 같이 setState를 여러번 호출하더라도 사용자 모니터의 주사율에 맞게 `_render` 함수가 한 번만 실행이 됩니다.
 
-```tsx
+```tsx showLineNumbers
 const App = () => {
   const [state,setState] = useState(0);
   const handleButtonClick = () => {
@@ -396,7 +396,7 @@ useEffect는 다음 두가지 기능을 구현하겠습니다.
 
 리액트에서 아래의 코드는 console에 1,3,2순으로 찍히게 됩니다.
 
-```tsx
+```tsx showLineNumbers
 const App = () => {
   console.log("1");
   useEffect(() => {
@@ -410,7 +410,7 @@ const App = () => {
 
 아래 코드는 console에 1,2,1,2가 찍히게 됩니다.
 
-```tsx
+```tsx showLineNumbers
 const App = () => {
   const [state,setState] = useState(1)
   console.log("1");
@@ -431,7 +431,7 @@ options에 몇가지 속성을 추가해줍니다.
 `effectHook`: 호출 순서에 따라 effectList와 dependencies의 index에 저장하기 위한 속성입니다.
 `effectList`: useEffect에 넣어준 callback을 저장합니다.
 
-```ts title="src/lib/dom/index.ts"
+```ts title="src/lib/dom/index.ts" showLineNumbers
 interface IOptions {
   //...
   dependencies: any[];
@@ -449,7 +449,7 @@ const options: IOptions = {
 
 이제 아래와 같이 useEffect코드를 구현하면 완성입니다.
  
-```ts title="src/lib/dom/index.ts"
+```ts title="src/lib/dom/index.ts" showLineNumbers
 const useEffect = (callback: () => void, dependencies?: any[]) => {
     const index = options.effectHook;
     // 1. effectList에 callback을 저장합니다.
@@ -476,7 +476,7 @@ effectList에 담은 콜백들은 `_render` 쪽에서 실행을 시켜주면 됩
 컴포넌트 마운트 이후에 불려야 하므로 `updateElement` 함수가 실행되고 effectList를 forEach로 순회하면서 함수를 실행시켜주면 됩니다.
 또한, useState와 마찬가지로 리렌더링시 호출 순서에 따른 index를 보장해야 하므로 effectHook을 0으로 초기화를 시켜주고 effectList안의 콜백함수가 전부 실행이 되고 나면 effectList를 비워줍니다.
 
-```ts {4-6,16,19-20} title="src/lib/dom/index.ts"
+```ts {4-6,16,19-20} title="src/lib/dom/index.ts" showLineNumbers
   const resetOptions = () => {
     options.states = [];
     options.stateHook = 0;
@@ -506,7 +506,7 @@ effectList에 담은 콜백들은 `_render` 쪽에서 실행을 시켜주면 됩
 실제로 useState 사용시 state변경에 따라 리렌더링이 일어나고 state유지도 잘 됩니다.
 useEffect는 컴포넌트가 마운트 되거나 의존성 배열이 변경되면 useEffect의 콜백함수도 제대로 동작하는걸 확인할 수 있습니다.
 
-```tsx
+```tsx showLineNumbers
 const App = () => {
   const [value, setValue] = useState(0);
   console.log("1");

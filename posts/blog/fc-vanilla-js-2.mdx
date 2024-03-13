@@ -24,8 +24,7 @@ spa router는 아래와 같은 기능을 갖춰야 합니다.
 
 1번 동작을 위해서 어떤 url에 component를 매칭시킬지에 대한 정보를 담은 routes에 대한 설계를 해주겠습니다.(저는 트리구조로 구성을 했습니다.)
 
-```ts
-// src/routes/index.ts
+```ts title="src/routes/index.ts" showLineNumbers
 export const routes = [
   {
     path: "/",
@@ -57,7 +56,7 @@ export const routes = [
 - history : 컴포넌트 단에서 history.push나 back,replace등의 작업을 하기 위한 역할
 - router : main페이지에서 routes 정보를 등록하고 spa를 위한 기능이나 이벤트를 부착해주는 역할
 
-```ts
+```ts title="src/lib/router/index.ts" showLineNumbers
 export type Route = {
   path: string;
   element?: Component;
@@ -65,7 +64,6 @@ export type Route = {
   children?: Route[];
 };
 
-// src/lib/router/index.ts
 const spaRouter = () => {
   const routeInfo: { root: HTMLElement | null; routes: Route[] | null } = {
     root: null,
@@ -94,7 +92,7 @@ router쪽을 구현하기 전에 가장 중요한 함수인 `loadRouteComponent`
 
 그리고 만약 params가 존재한다면 pageParams변수에 정보를 저장합니다.
 
-```ts
+```ts title="src/lib/router/index.ts" showLineNumbers
 const loadRouteComponent = (path: string) => {
     const { Component, params } = matchUrlToRoute(routeInfo.routes ?? [], path);
     if (!Component) {
@@ -116,13 +114,12 @@ const loadRouteComponent = (path: string) => {
 그리고 아래 과정을 거쳐서 매칭된 component를 반환해줍니다.
 
 
-```ts
-// src/lib/router/utils/index.ts
+```ts title="src/lib/router/utils/index.ts" showLineNumbers
 export const pathToRegex = (path: string) => {
   return new RegExp("^" + path.replace(/:\w+/g, "(.+)") + "$");
 };
-
-// src/lib/router/index.ts
+```
+```ts title="src/lib/router/index.ts" showLineNumbers
 const matchUrlToRoute = (routes: Route[], path: string) => {
   //1. "/category/apple" => ['/', 'category', 'apple']` 이런 형태의 segements를 얻는다.
     const segments = path.split("/").map((segment) => {
@@ -190,7 +187,7 @@ router 함수에서 구현해야할 기능입니다.
 
 >아직 구현하지 않은 `history.currentPath`함수는 바로 아래에서 구현할 예정입니다.
 
- ``` ts
+ ``` ts title="src/lib/router/index.ts" showLineNumbers
 const router = (root: HTMLElement, routes: Route[]) => {
     routeInfo.root = root;
     routeInfo.routes = routes;
@@ -230,7 +227,7 @@ history의 경우엔 [브라우저 history](https://developer.mozilla.org/ko/doc
 - back : history back을 해서 popstate를 동작시킵니다.
 - currentPath : 현재의 pathname을 얻어옵니다.
 
-```ts
+```ts title="src/lib/router/index.ts" showLineNumbers
 const history = {
     getPageParams() {
       return pageParams;
@@ -258,8 +255,7 @@ const history = {
 ### router 동작 테스트
 이제 각 페이지별 컴포넌트를 구현하고 동작 테스트를 해보겠습니다.
 
-```tsx
-// src/pages/Blog.tsx
+```tsx title="src/pages/Blog.tsx" showLineNumbers
 const BlogPage = () => {
   return (
     <div>
@@ -276,8 +272,8 @@ const BlogPage = () => {
 };
 
 export default BlogPage;
-
-// src/pages/Home.tsx
+```
+```tsx title="src/pages/Home.tsx" showLineNumbers
 const HomePage = () => {
   return (
     <div>
@@ -294,9 +290,8 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
-
-// srsc/pages/Post.tsx
+```
+```tsx title="src/pages/Post.tsx" showLineNumbers
 import { history } from "@/lib/router";
 
 const PostPage = () => {
@@ -319,7 +314,7 @@ export default PostPage;
 
 ```
 
-위에서 얘기했던 기능이 정상적으로 동작하는걸 확인할 수 있습니다.
+기능이 정상적으로 동작하는걸 확인할 수 있습니다.
 > 1. 현재 url에 맞는 component를 매칭시켜서 보여준다.
 > 2. 페이지 이동시 새로고침없이 이동하고 1번 동작을 실행
 
@@ -341,8 +336,7 @@ updateElement함수의 각 파라미터에 대한 의미입니다.
 - currentVDOM: 현재 Virtual DOM
 - index: 탐색할 parent자식 요소의 index 
 
-```ts
-// src/lib/dom/diff.ts
+```ts title="src/lib/dom/diff.ts" showLineNumbers
 
 import { VNode } from "../jsx/jsx-runtime/type";
 import { createElement } from "./client";
@@ -483,7 +477,7 @@ render함수는 root엘리먼트와 component를 renderInfo에 저장을 해두�
 
 _render함수는 렌더링할 컴포넌트를 실행시켜서 Virtual DOM을 얻어오고 위에서 구현한 updateElement를 통해 currentVDOM과 newVDOM을 비교후 DOM에 렌더링을 합니다.
 
-```ts
+```ts title="src/lib/dom/index.ts" showLineNumbers
 import { VDOM } from "../jsx/jsx-runtime/type";
 import { updateElement } from "./diff";
 // src/lib/dom/types
@@ -532,7 +526,7 @@ loadRouteComponent에서 자식 요소를 전부 지우고 DOM을 새롭게 올�
 이제 
 loadRouteComponent함수가 실행이 될 때마다 바뀌게 될 VDOM과 현재 VDOM을 비교해서 변경된 부분만 DOM에 렌더링이 될 것입니다.
 
-```ts
+```ts {8} title="src/lib/router/index.ts" showLineNumbers
 const loadRouteComponent = (path: string) => {
     const { Component, params } = matchUrlToRoute(routeInfo.routes ?? [], path);
     if (!Component) {
