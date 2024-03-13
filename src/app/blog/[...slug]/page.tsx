@@ -4,7 +4,8 @@ import {
   getPrevPost,
   getPostBySlug,
   getPostIndexBySlug,
-  getAllPosts,
+  getSeriesBySlug,
+  getAllFilteredPosts,
 } from '@/datasets/post';
 import PostContent from './components/post/PostContent';
 import PostHeader from './components/post/PostHeader';
@@ -17,14 +18,19 @@ import Image from 'next/image';
 import PostTag from '@/components/post/PostTag';
 import ScrollProgressBar from '@/components/ScrollProgressBar';
 import { siteData } from '@/constants/my-site';
+import Series from './components/post/Series';
 
-export const generateStaticParams = async () =>
-  getAllPosts().map((post) => ({
-    slug: post._raw.flattenedPath.replace(/blog\//i, ''),
+export const generateStaticParams = () =>
+  getAllFilteredPosts().map((post) => ({
+    slug: post._raw.flattenedPath.replace(/blog\//i, '').split('/'),
   }));
 
-export const generateMetadata = ({ params }: { params: { slug: string } }) => {
-  const post = getPostBySlug(`blog/${params.slug}`);
+export const generateMetadata = ({
+  params,
+}: {
+  params: { slug: string[] };
+}) => {
+  const post = getPostBySlug(`blog/${params.slug.join('/')}`);
   if (!post) {
     notFound();
   }
@@ -38,12 +44,16 @@ export const generateMetadata = ({ params }: { params: { slug: string } }) => {
   });
 };
 
-const PostPage = ({ params }: { params: { slug: string } }) => {
-  const post = getPostBySlug(`blog/${params.slug}`);
+const PostPage = ({ params }: { params: { slug: string[] } }) => {
+  const slugs = `blog/${params.slug.join('/')}`;
+  const post = getPostBySlug(slugs);
   if (!post) notFound();
-  const postIndex = getPostIndexBySlug(`blog/${params.slug}`);
+  const postIndex = getPostIndexBySlug(slugs);
+
   const prevPost = getPrevPost(postIndex);
   const nextPost = getNextPost(postIndex);
+
+  const series = getSeriesBySlug(slugs);
 
   return (
     <>
@@ -63,6 +73,13 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
           date={post.date}
           readingTime={post.readingTime}
         />
+
+        {series && (
+          <div className="mb-6">
+            <Series series={series} />
+          </div>
+        )}
+
         {post.thumbnailUrl && (
           <div className="flex justify-center items-center my-10 relative w-full h-auto">
             <Image
