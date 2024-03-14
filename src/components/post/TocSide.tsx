@@ -1,4 +1,5 @@
 'use client';
+import { cn } from '@/lib/cn';
 import { type Toc } from '@/lib/types/toc-type';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
@@ -88,19 +89,22 @@ const TocSide = ({ tableOfContents }: TocSideProps) => {
   return (
     <>
       {tableOfContents.length ? (
-        <ul className="px-1">
-          <div className="text-lg font-medium border-b border-gray-100 dark:border-gray-700 pb-1">
-            목차
+        <ul className="pl-2 pr-1">
+          <div className="text-lg font-medium dark:border-gray-700 pb-1">
+            In this article
           </div>
           {tableOfContents.map((toc, i) => (
             <li
               data-level={numberToStringMap[toc.level]}
               key={i}
-              className={`first-of-type:pt-2 py-1 data-[level=two]:pl-3 data-[level=three]:pl-5 text-gray-400 text-sm hover:text-gray-800 dark:hover:text-gray-200 transition-all ${
-                activeToc === toc.slug
-                  ? 'scale-105 text-gray-700 dark:text-gray-200'
-                  : 'mt-0 scale-100'
-              }`}
+              className={cn(
+                'pl-2 border-l-2 boder-gray-100 first-of-type:pt-2 py-1 text-gray-400 text-sm hover:text-gray-800 dark:hover:text-gray-200 transition-all',
+                'data-[level=two]:pl-4 data-[level=three]:pl-6',
+                {
+                  'border-indigo-500 text-indigo-500 dark:text-indigo-400 font-bold':
+                    activeToc === toc.slug,
+                },
+              )}
             >
               <Link href={`#${toc.slug}`}>{toc.text}</Link>
             </li>

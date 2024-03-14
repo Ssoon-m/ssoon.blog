@@ -41,15 +41,13 @@ const PostContent = ({ postBodyCode, postBodyRaw }: PostContentProps) => {
   const toc = parseHeadersForTOC(postBodyRaw);
 
   return (
-    <article>
-      <div className="flex relative">
-        <div className="prose dark:prose-invert w-full max-w-4xl relative">
-          <MDXContent components={{ a: BlankLink, img: NextImg }} />
-        </div>
-        <div className="pl-12 hidden lg:block min-w-[200px] max-w-[250px]">
-          <div className="sticky top-[80px] h-fit">
-            <TocSide tableOfContents={toc} />
-          </div>
+    <article className="w-full flex flex-nowrap gap-5">
+      <div className="w-full prose dark:prose-invert max-w-3xl">
+        <MDXContent components={{ a: BlankLink, img: NextImg }} />
+      </div>
+      <div className="hidden lg:block min-w-[200px] max-w-[250px]">
+        <div className="sticky top-[80px] h-fit">
+          <TocSide tableOfContents={toc} />
         </div>
       </div>
     </article>
