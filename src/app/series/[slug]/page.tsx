@@ -11,12 +11,10 @@ const SeriesPage = ({ params }: { params: { slug: string } }) => {
   const { currentSeries, seriesList } = series;
   return (
     <div className="pt-6">
-      <div className="bg-gray-100 dark:bg-zinc-900 rounded-sm p-4 mb-4">
-        <p>
-          <h2 className="text-3xl font-medium">{currentSeries.title}</h2>
-          <br />
-          <span>{currentSeries.description}</span>
-        </p>
+      <div className="bg-gray-100 dark:bg-zinc-800 rounded-sm p-4 mb-4">
+        <h2 className="text-3xl font-medium">{currentSeries.title}</h2>
+        <div className="h-2" />
+        <span>{currentSeries.description}</span>
       </div>
       <PostCardList posts={seriesList} displayNumberedList />
     </div>
