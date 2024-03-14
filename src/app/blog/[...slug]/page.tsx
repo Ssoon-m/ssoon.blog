@@ -43,7 +43,7 @@ const PostPage = ({ params }: { params: { slug: string[] } }) => {
       <div className="fixed top-0 left-0 right-0 z-50 h-1 w-full">
         <ScrollProgressBar />
       </div>
-      <div className="flex-1 flex flex-col py-8">
+      <div className="flex-1 flex flex-col py-8 w-full max-w-5xl mx-auto">
         <PostHeader
           title={post.title}
           date={post.date}
@@ -66,7 +66,7 @@ const PostPage = ({ params }: { params: { slug: string[] } }) => {
             />
           </div>
         )}
-        <div className="flex-1 pb-8 border-b border-gray-100 dark:border-gray-700">
+        <div className="w-full flex-1 pb-8 border-b border-gray-100 dark:border-gray-700">
           <PostContent
             postBodyCode={post.body.code}
             postBodyRaw={post.body.raw}
