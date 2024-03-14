@@ -20,30 +20,6 @@ import ScrollProgressBar from '@/components/ScrollProgressBar';
 import { siteData } from '@/constants/my-site';
 import Series from './components/post/Series';
 
-export const generateStaticParams = () =>
-  getAllFilteredPosts().map((post) => ({
-    slug: post._raw.flattenedPath.replace(/blog\//i, '').split('/'),
-  }));
-
-export const generateMetadata = ({
-  params,
-}: {
-  params: { slug: string[] };
-}) => {
-  const post = getPostBySlug(`blog/${params.slug.join('/')}`);
-  if (!post) {
-    notFound();
-  }
-  return articleSEO({
-    title: post.title,
-    description: post.description,
-    pathname: post.postUrl,
-    publishedTime: post.date,
-    images: [post.thumbnailUrl || siteData.siteImage],
-    tags: post.tags,
-  });
-};
-
 const PostPage = ({ params }: { params: { slug: string[] } }) => {
   const slugs = `blog/${params.slug.join('/')}`;
   const post = getPostBySlug(slugs);
@@ -114,3 +90,27 @@ const PostPage = ({ params }: { params: { slug: string[] } }) => {
 };
 
 export default PostPage;
+
+export const generateStaticParams = () =>
+  getAllFilteredPosts().map((post) => ({
+    slug: post._raw.flattenedPath.replace(/^blog\//i, '').split('/'),
+  }));
+
+export const generateMetadata = ({
+  params,
+}: {
+  params: { slug: string[] };
+}) => {
+  const post = getPostBySlug(`blog/${params.slug.join('/')}`);
+  if (!post) {
+    notFound();
+  }
+  return articleSEO({
+    title: post.title,
+    description: post.description,
+    pathname: post.postUrl,
+    publishedTime: post.date,
+    images: [post.thumbnailUrl || siteData.siteImage],
+    tags: post.tags,
+  });
+};

@@ -10,30 +10,6 @@ import NoteHeader from './components/NoteHeader';
 import TopNavCategory from './components/TopNavCategory';
 import { createTreeView } from './util/createNoteTree';
 
-export const generateStaticParams = () =>
-  getAllNotes().map((note) => ({
-    slug: note._raw.flattenedPath.replace(/note\//i, '').split('/'),
-  }));
-
-export const generateMetadata = ({
-  params,
-}: {
-  params: { slug: string[] };
-}) => {
-  const noteSlug = params.slug.join('/');
-  const note = getNotebySlug(`note/${noteSlug}`);
-  if (!note) notFound();
-
-  return articleSEO({
-    title: note.title,
-    description: siteData.notePageDescription,
-    pathname: note.noteUrl,
-    publishedTime: note.date,
-    images: [siteData.siteImage],
-    tags: [],
-  });
-};
-
 const NotePage = ({ params }: { params: { slug: string[] } }) => {
   const noteSlug = params.slug.join('/');
   const note = getNotebySlug(`note/${noteSlug}`);
@@ -75,3 +51,27 @@ const NotePage = ({ params }: { params: { slug: string[] } }) => {
 };
 
 export default NotePage;
+
+export const generateStaticParams = () =>
+  getAllNotes().map((note) => ({
+    slug: note._raw.flattenedPath.replace(/note\//i, '').split('/'),
+  }));
+
+export const generateMetadata = ({
+  params,
+}: {
+  params: { slug: string[] };
+}) => {
+  const noteSlug = params.slug.join('/');
+  const note = getNotebySlug(`note/${noteSlug}`);
+  if (!note) notFound();
+
+  return articleSEO({
+    title: note.title,
+    description: siteData.notePageDescription,
+    pathname: note.noteUrl,
+    publishedTime: note.date,
+    images: [siteData.siteImage],
+    tags: [],
+  });
+};

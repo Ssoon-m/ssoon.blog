@@ -4,20 +4,6 @@ import { siteSEO } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import PostCardList from '@/components/post/PostCardList';
 
-export const generateStaticParams = async () =>
-  getAllTags().map((tag) => ({ slug: decodeURIComponent(tag) }));
-
-export const generateMetadata = ({ params }: { params: { slug: string } }) => {
-  const tag = decodeURIComponent(params.slug);
-  const note = getPostsByTag(tag);
-  if (!note) notFound();
-
-  return siteSEO({
-    title: `#${tag}`,
-    pathname: `tags/${tag}`,
-  });
-};
-
 const TagsPage = ({ params }: { params: { slug: string } }) => {
   const tag = decodeURIComponent(params.slug);
   const posts = getPostsByTag(tag);
@@ -32,3 +18,17 @@ const TagsPage = ({ params }: { params: { slug: string } }) => {
 };
 
 export default TagsPage;
+
+export const generateStaticParams = async () =>
+  getAllTags().map((tag) => ({ slug: decodeURIComponent(tag) }));
+
+export const generateMetadata = ({ params }: { params: { slug: string } }) => {
+  const tag = decodeURIComponent(params.slug);
+  const note = getPostsByTag(tag);
+  if (!note) notFound();
+
+  return siteSEO({
+    title: `#${tag}`,
+    pathname: `tags/${tag}`,
+  });
+};

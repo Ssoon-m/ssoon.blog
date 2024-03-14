@@ -97,11 +97,15 @@ export const getSeriesBySlug = (slug: string) => {
 };
 
 export const getAllSeries = () => {
-  getAllFilteredPosts().forEach((post) =>
-    console.log(post._raw.sourceFilePath),
+  const filteredSeries = getAllPosts().filter((post) =>
+    post._raw.sourceFilePath.endsWith('/index.mdx'),
   );
-  // getAllPosts().forEach((post) => console.log(post._raw.flattenedPath));
-  // getAllPosts().console.log('getAllPosts', getAllPosts);
+
+  console.log(
+    'filteredSeries',
+    filteredSeries.map((sereis) => sereis._raw.flattenedPath),
+  );
+  return filteredSeries;
 };
 
 export type Post = _Post;
