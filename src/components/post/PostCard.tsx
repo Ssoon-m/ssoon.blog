@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Post } from '@/datasets/post';
-import { dateFormatter } from '@/lib/utils/date';
+import { dateFormatter } from '@/utils/date';
 import PostTag from './PostTag';
 
 interface Props {

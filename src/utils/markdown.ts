@@ -1,4 +1,4 @@
-import { type Toc } from '../types/toc-type';
+import { type Toc } from '../lib/types/toc-type';
 import GithubSlugger from 'github-slugger';
 
 export const parseHeadersForTOC = (raw: string) => {

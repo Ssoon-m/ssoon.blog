@@ -1,5 +1,5 @@
 import { siteData } from '@/constants/my-site';
-import { dateFormatter } from '@/lib/utils/date';
+import { dateFormatter } from '@/utils/date';
 import Image from 'next/image';
 
 interface PostHeaderProps {
