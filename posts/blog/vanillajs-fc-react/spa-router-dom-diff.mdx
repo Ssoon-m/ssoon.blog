@@ -8,7 +8,7 @@ tags:
   - React
 ---
 
-[이전글](https://ianlog.me/blog/fc-vanilla-js-1)에서 구현한 Virtual DOM 그리고 Virtual DOM을 DOM에 올려주는 createElement를 토대로 spa router와 DOM diffing 기능을 만들어보겠습니다.
+[이전글](https://ianlog.me/blog/vanillajs-fc-react/vdom-to-dom)에서 구현한 Virtual DOM 그리고 Virtual DOM을 DOM에 올려주는 createElement를 토대로 spa router와 DOM diffing 기능을 만들어보겠습니다.
 
 ## spa router 구현
 
@@ -551,6 +551,8 @@ const loadRouteComponent = (path: string) => {
 
 spa동작을 위한 기능들을 모두 구현해봤습니다.
 다음 글에서는 리액트의 useState,useEffect훅을 구현해서 좀더 완성도를 높여보겠습니다.
+
+> [Vanilla JS로 함수형 리액트 만들기 시리즈](https://ianlog.me/series/vanillajs-fc-react)에서 [작성한 코드는 모두 이쪽에 있습니다.](https://github.com/Ssoon-m/fc-vanilla-js)
 
 ## 참고문헌
 - [Vanilla Javascript로 가상돔(VirtualDOM) 만들기](https://junilhwang.github.io/TIL/Javascript/Design/Vanilla-JS-Virtual-DOM/#_4-diff-%E1%84%8B%E1%85%A1%E1%86%AF%E1%84%80%E1%85%A9%E1%84%85%E1%85%B5%E1%84%8C%E1%85%B3%E1%86%B7-%E1%84%8C%E1%85%A5%E1%86%A8%E1%84%8B%E1%85%AD%E1%86%BC)
