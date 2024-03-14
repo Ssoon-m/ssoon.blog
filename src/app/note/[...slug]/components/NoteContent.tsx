@@ -1,4 +1,4 @@
-import { parseHeadersForTOC } from '@/lib/utils/markdown';
+import { parseHeadersForTOC } from '@/utils/markdown';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 import TocSide from '@/components/post/TocSide';
 

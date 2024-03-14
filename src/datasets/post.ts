@@ -1,5 +1,5 @@
 import { allPosts, type Post as _Post } from 'contentlayer/generated';
-import { dateCompare } from '@/lib/utils/date';
+import { dateCompare } from '@/utils/date';
 
 export const getAllPosts = (sort: 'desc' | 'asc' = 'desc') => {
   if (sort === 'desc') {
@@ -74,10 +74,15 @@ export const getPostsByTag = (tag: string) => {
   );
 };
 
-export const getSeriesBySlug = (slug: string) => {
+export const getAllSeries = () => {
   const filteredSeries = getAllPosts().filter((post) =>
     post._raw.sourceFilePath.endsWith('/index.mdx'),
   );
+  return filteredSeries;
+};
+
+export const getSeriesBySlug = (slug: string) => {
+  const filteredSeries = getAllSeries();
   const findSeries = filteredSeries.find((series) =>
     slug.includes(series._raw.flattenedPath),
   );
@@ -94,18 +99,6 @@ export const getSeriesBySlug = (slug: string) => {
   );
 
   return { currentSeries: findSeries, seriesList, currentSeriesIndex };
-};
-
-export const getAllSeries = () => {
-  const filteredSeries = getAllPosts().filter((post) =>
-    post._raw.sourceFilePath.endsWith('/index.mdx'),
-  );
-
-  console.log(
-    'filteredSeries',
-    filteredSeries.map((sereis) => sereis._raw.flattenedPath),
-  );
-  return filteredSeries;
 };
 
 export type Post = _Post;

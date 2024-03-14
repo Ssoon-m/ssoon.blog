@@ -1,4 +1,4 @@
-import { dateFormatter } from '@/lib/utils/date';
+import { dateFormatter } from '@/utils/date';
 
 interface NoteHeaderProps {
   title: string;

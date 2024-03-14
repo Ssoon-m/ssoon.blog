@@ -1,4 +1,4 @@
-import { dateCompare } from '@/lib/utils/date';
+import { dateCompare } from '@/utils/date';
 import { allNotes } from 'contentlayer/generated';
 
 export const getAllNotes = (sort: 'desc' | 'asc' = 'desc') => {
