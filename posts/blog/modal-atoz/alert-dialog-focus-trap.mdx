@@ -272,7 +272,7 @@ const FocusTrap = (props : FocusTrapProps) => {
 ## ref 관련 문제해결
 이상태로 FocusTrap 컴포넌트의 구현을 끝내면 ref를 사용할 때 문제가 됩니다.
 
-[이전 글에서 작성한 AlertDialog](https://ianlog.me/blog/alert-dialog-atoz)와 Presence컴포넌트를 적용한 `ContentImpl` 컴포넌트에 `FocusTrap` 컴포넌트를 사용하는 예시로 설명을 하겠습니다.
+[이전 글에서 작성한 AlertDialog](https://ianlog.me/blog/modal-atoz/alert-dialog-atoz)와 Presence컴포넌트를 적용한 `ContentImpl` 컴포넌트에 `FocusTrap` 컴포넌트를 사용하는 예시로 설명을 하겠습니다.
 
 1. FocusTrap의 자식(div)에 ref가 존재한다면 해당 ref는 사라지게 됩니다.
 2. FousTrap상위 컴포넌트(Presence)에서 하위 컴포넌트에 ref를 전달할 경우 문제가 생깁니다.
@@ -356,7 +356,7 @@ const FocusTrap = React.forwardRef<HTMLDivElement, FocusTrapProps>((props, forwa
 끝까지 읽어주셔서 감사합니다.
 
 ## 번외
-이전글들에서 다룬 [AlertDialog](https://ianlog.me/blog/alert-dialog-atoz)와 [애니메이션](https://ianlog.me/blog/alert-dialog-animation)적용까지 마치셨다면, FocusTrap을 적용하는 방법에 대해 설명하겠습니다.
+이전글들에서 다룬 [AlertDialog](https://ianlog.me/blog/modal-atoz/alert-dialog-atoz)와 [애니메이션](https://ianlog.me/blog/modal-atoz/alert-dialog-animation)적용까지 마치셨다면, FocusTrap을 적용하는 방법에 대해 설명하겠습니다.
 
 AlertDialog에 FocusTrap을 제대로 적용시키려면 다음과 같이 콜백 함수를 만들어주면 됩니다. 
 onOpenChange는 기존에 있던 함수여서 별도로 만들 필요는 없지만, triggerRef는 새로 만들어줘야 합니다.
