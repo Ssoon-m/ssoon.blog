@@ -19,8 +19,8 @@ const Series = ({ series }: SeriesProps) => {
   };
 
   return (
-    <div className="bg-gray-100 rounded-sm p-4">
-      <h2 className="text-gray-700 font-medium text-xl pb-2 hover:underline hover:text-gray-500">
+    <div className="bg-gray-100 dark:bg-zinc-900 rounded-sm p-4">
+      <h2 className="text-gray-700 dark:text-gray-100 font-medium text-xl pb-2 hover:underline hover:text-gray-500">
         <Link href={`/${currentSeries.postUrl.replace(/^blog/i, 'series')}`}>
           {currentSeries.title}
         </Link>
