@@ -1,5 +1,5 @@
 ---
-title: 'VanillaJS로 SPA router와 DOM Diff기능 만들기'
+title: 'VanillaJS로 SPA router와 재조정(Reconciliation)기능 만들기'
 date: 2024-03-07
 description: vanilla js로 spa router와 dom diff 기능을 만들어봅니다.
 thumbnailUrl:
@@ -8,7 +8,7 @@ tags:
   - React
 ---
 
-[이전글](https://ianlog.me/blog/vanillajs-fc-react/vdom-to-dom)에서 구현한 Virtual DOM 그리고 Virtual DOM을 DOM에 올려주는 createElement를 토대로 spa router와 DOM diffing 기능을 만들어보겠습니다.
+[이전글](https://ianlog.me/blog/vanillajs-fc-react/vdom-to-dom)에서 구현한 Virtual DOM 그리고 Virtual DOM을 DOM에 올려주는 createElement를 토대로 spa router와 재조정 기능을 만들어보겠습니다.
 
 ## spa router 구현
 
@@ -324,12 +324,12 @@ export default PostPage;
 그런데, 위의 SPA설명에서 **변경사항이 일어나는 부분**만 변경해서 페이지를 갱신한다는 말이 있는데, 실제 동작을 확인해보면 페이지 변경시마다 전체 DOM을 다시 그리고 있습니다.
 개선을 하려면 어떻게 해야할까요? 현재 Virtual DOM과 변경될 Virtual DOM을 비교해서 변경이 필요한 부분만 찾아서 DOM에 반영해주는 과정이 필요합니다.
 
-## Virtual DOM diffing구현
+## 재조정(Reconciliation) 기능 구현
 
 >router 뿐만 아니라 이후에 구현할 `useState`를 위해서 현재 Virtual DOM과 변경될 Virtual DOM을 비교후 변경이 필요한 부분만 찾아서 DOM에 반영하는 과정은 매우 중요합니다.
 만약 변경점만 찾아서 DOM을 업데이트 하지 않는다면, 페이지 이동시 변경되는 요소가 많이 없는 경우에도 처음부터 다시 DOM을 다 그릴것이고, 상태가 변경되어서 숫자 하나만 바뀌어도 DOM이 전부 리렌더링이 될 것입니다.
 
-아래는 Virtual DOM diffing에 대한 코드입니다.
+코드는 다음과 같이 구성을 해주겠습니다.
 updateElement함수의 각 파라미터에 대한 의미입니다.
 - parent: 만들어진 DOM이 부착될 요소
 - newVDOM: 새롭게 만들어진 Virtual DOM
