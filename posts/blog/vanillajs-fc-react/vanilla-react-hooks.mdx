@@ -36,9 +36,6 @@ useState에 대한 의사코드를 작성해봤습니다.
 2. `setState(1)`이 실행이 되고 `state`로 정의한 변수의 값이 1로 변경됩니다.
 3. `set`함수가 실행이 됐으므로 다시 App함수를 실행 시켜주는 `_render`라는 함수가 실행이 됩니다. useState함수가 다시 실행이 되고 useState함수는 `initialState`값이 아닌, `set`함수에 의해 변경된 state를 반환하게 됩니다.
 
-> 위 useState함수 코드에서 만약 `setState`에 `_render`라는 어떤 함수가 존재하지 않는다고 생각하겠습니다. `setState`를 해주어도 App함수는 재실행되지 않을 것이고, state는 "**당연히**" 바뀌지 않은 state를 바라보게 됩니다. 내부적으로 useState쪽의 state는 바뀌었지만 `const [state,setState] = useState(0)` 에서 구조 분해 할당으로 얻은 `state`는 그저 상수이기 때문입니다. 변경된 state를 얻고 싶으면 App함수를 재실행을 해야 비로소 변경된 `state`를 바라볼 수 있게 됩니다.
-혹시 setState이후 다음 줄에서 state에 접근할 때 바뀌기 전의 state값이 콘솔에 찍히는 동작을 비동기적인 동작이라고 설명하는 아티클들을 보신 분들이 계신가요? 예시를 완전히 잘못 들었다고 생각합니다. 그 이유에 대해선 다음 글에서 간단하게 설명하겠습니다.
-
 
 ```ts showLineNumbers
 let state = undefined;
@@ -56,6 +53,9 @@ const App = () => {
   setState(1);
 }
 ```
+
+> 위 useState함수 코드에서 만약 `setState`에 `_render`라는 어떤 함수가 존재하지 않는다고 생각하겠습니다. `setState`를 해주어도 App함수는 재실행되지 않을 것이고, state는 "**당연히**" 바뀌지 않은 state를 바라보게 됩니다. 내부적으로 useState쪽의 state는 바뀌었지만 `const [state,setState] = useState(0)` 에서 구조 분해 할당으로 얻은 `state`는 그저 상수이기 때문입니다. 변경된 state를 얻고 싶으면 App함수를 재실행을 해야 비로소 변경된 `state`를 바라볼 수 있게 됩니다.
+혹시 setState이후 다음 줄에서 state에 접근할 때 바뀌기 전의 state값이 콘솔에 찍히는 동작을 비동기적인 동작이라고 설명하는 아티클들을 보신 분들이 계신가요? 예시를 완전히 잘못 들었다고 생각합니다. 그 이유에 대해선 다음 글에서 간단하게 설명하겠습니다.
 
 
 useState가 다시 실행이 됐음에도 위의 useState함수에서 `state`변수의 값 유지가 가능한 이유는 자바스크립트의 클로저를 이용했기 때문입니다.
