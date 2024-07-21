@@ -180,7 +180,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["ts-pattern", "npm:4.3.0"],\
             ["unified", "npm:10.1.2"],\
             ["yaml", "npm:2.3.2"],\
-            ["zod", "npm:3.22.2"]\
+            ["zod", "npm:3.23.8"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -9449,10 +9449,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["zod", [\
-        ["npm:3.22.2", {\
-          "packageLocation": "./.yarn/cache/zod-npm-3.22.2-1357ce6a0a-231e2180c8.zip/node_modules/zod/",\
+        ["npm:3.23.8", {\
+          "packageLocation": "./.yarn/cache/zod-npm-3.23.8-11c49c85b5-15949ff821.zip/node_modules/zod/",\
           "packageDependencies": [\
-            ["zod", "npm:3.22.2"]\
+            ["zod", "npm:3.23.8"]\
           ],\
           "linkType": "HARD"\
         }]\
