@@ -1,0 +1,246 @@
+---
+title: '서버컴포넌트에서 쿠키 세팅이 될까? (서버 컴포넌트에서 인증 처리 하기)'
+date: 2024-07-28
+description: 'next.js 서버 컴포넌트에서 쿠키 세팅시 오류가 나는 이유와 해결 방법에 대해 설명합니다. ( Error: Cookies can only be modified in a Server Action or Route Handler )'
+thumbnailUrl: ''
+tags: 
+  - React
+  - Next
+  - Server Component
+---
+
+
+사용자가 내 정보 페이지에 진입했을때를 가정해보겠습니다.
+
+Next.js를 사용해 초기 페이지 로드 시점부터 사용자 정보를 즉시 제공하는 것은 중요한 사용자 경험 요소입니다. 예를 들어, 사용자가 내 정보 페이지에 접근했을 때, 내 정보가 바로 보이지 않고 살짝 딜레이 이후 보인다면 사용자 경험이 저하될 수 있습니다.
+
+이를 해결하기 위해 서버 측에서 사용자의 요청 쿠키를 받아 해당 토큰을 기반으로 사용자 정보를 가져오고, SSR(Server Side Rendering)을 통해 처음부터 완전한 정보를 제공하는 방법을 사용할 수 있습니다. 그러나 이 과정에서 발생할 수 있는 몇 가지 문제와 이를 해결하기 위한 방법을 알아보겠습니다.
+
+사용자의 accessToken은 만료상태이고 refreshToken은 만료되지 않은 상황을 가정해보겠습니다. 아래 코드는 정상적으로 동작을 할까요?
+```ts
+import { cookies } from 'next/headers';
+
+const MyPage = async () => {
+  const userData = await getUserData();
+  return <div>{userData.name}</div>;
+};
+
+const getUserData = async () => {
+  const accessToken = cookies().get('accessToken');
+  const refreshToken = cookies().get('refreshToken');
+  try {
+    // 사용자 정보를 가져오는 API 호출
+    const response = await fetch('https://example.com/api/user', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    // 요청이 성공적인 경우
+    if (response.ok) {
+      const userData = await response.json();
+      return userData;
+    } else {
+      // 401 Unauthorized 상태일 경우
+      if (response.status === 401) {
+        // 리프레시 토큰을 이용해 새로운 액세스 토큰 발급
+        const {newAccessToken} = await refreshAccessToken(refreshToken);
+
+        // 새로운 액세스 토큰으로 다시 사용자 정보 요청
+        const newResponse = await fetch('https://example.com/api/user', {
+          headers: {
+            Authorization: `Bearer ${newAccessToken}`,
+          },
+        });
+
+        if (newResponse.ok) {
+          const userData = await newResponse.json();
+          return userData;
+        } else {
+          throw new Error('Failed to fetch user data after refreshing token');
+        }
+      } else {
+        throw new Error('Failed to fetch user data');
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export default MyPage;
+```
+
+서버단에서 토큰 리프래쉬 이후 리프래쉬한 토큰을 기반으로 요청을 하기 때문에 정상적으로 동작을 하게 됩니다.
+
+## 문제 상황: 토큰 갱신후 쿠키 설정
+
+위 코드에서 리프래쉬 이후 브라우저에 토큰을 세팅해주는 부분이 빠져있어서 추가를 해보겠습니다.
+이제 토큰 리프래쉬도 정상적으로 되고 토큰 세팅까지 잘 될 거 같습니다.
+
+```ts
+const {newAccessToken,newRefreshToken} = await refreshAccessToken(refreshToken);
+cookies.set('accessToken',newAccessToken)
+cookies.set('accessToken',newRefreshToken)
+```
+
+그런데 위 로직을 추가하고 보니 아래와 같은 에러가 발생하는걸 확인할 수 있습니다.
+> Error: Cookies can only be modified in a Server Action or Route Handler 
+https://nextjs.org/docs/app/api-reference/functions/cookies#cookiessetname-value-options
+
+왜 에러가 발생을 할까요?
+
+## 서버 컴포넌트의 렌더링 과정 이해
+
+먼저 서버 컴포넌트의 렌더링 과정에 대한 이해가 필요하다고 생각합니다.
+[공식문서](https://nextjs.org/docs/app/building-your-application/rendering/server-components#how-are-server-components-rendered)를 확인해보면 바로 이해가 갈 것입니다.
+
+1. 서버 컴포넌트를 `RSC Payload`라는 데이터 형식으로 렌더링
+2. Next.js는 RSC 페이로드와 클라이언트 컴포넌트를 동작하게 만들 자바스크립트 코드 자바스크립트를 내용을 담아서 서버에서 HTML을 렌더링
+
+여기서 1번에 집중을 하면 됩니다. 서버컴포넌트는 결국 `RSC Payload` 를 만들기 위한 역할을 해줄 뿐 입니다.
+
+### 서버 컴포넌트의 응답은 브라우저가 아니다
+
+서버 컴포넌트가 HTML을 바로 렌더링을 해주는 것이 아니라 `RSC Payload`라는 데이터 형식으로 먼저 렌더링을 한 이후에 HTML을 렌더링하게 됩니다.
+
+서버컴포넌트의 응답은 브라우저가아니라 서버라고 생각하면 됩니다.
+`Set-Cookie`라는 응답 헤더를 통해 서버에서 브라우저에 쿠키를 세팅해주게 되는데 서버컴포넌트의 응답은 브라우저가 아니므로 구조적으로 쿠키 설정이 불가능한 것입니다.
+
+
+## 해결방안
+
+서버 측에서 데이터를 패칭하기 위해선 서버 컴포넌트를 사용해야 하는데, 그렇다고 서버 컴포넌트에서 쿠키를 세팅하려고 하면 에러가 발생을 합니다.
+이를 해결하기 위해선 서버 컴포넌트의 렌더링 이전에 쿠키를 세팅해줘야합니다.
+이때 활용할 수 있는게 Nextjs의 미들웨어 입니다.
+
+미들웨어는 서버 컴포넌트의 렌더링 이전에 동작을 하기 때문에 해당 레이어에서 토큰 리프래쉬 및 쿠키 설정을 미리 하고 서버 컴포넌트에서는 사용자의 요청 쿠키만 받아서 실행하는 방향으로 변경하면 쿠키 설정이 정상적으로 가능하게 됩니다.
+
+### 미들웨어 사용 
+
+특정 path(auth 관련 요청이 필요한 페이지)에서만 token 만료시 refresh 이후 토큰 세팅해주는 로직 작성해줍니다. 
+
+```ts title="middleware.ts" showLineNumbers
+// middleware.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { accessTokenExpiresAt, refreshTokenExpiresAt } from './constants/token';
+
+export async function middleware(request: NextRequest): Promise<NextResponse> {
+  const { pathname } = req.nextUrl;
+  if(pathname.startsWith('/mypage')){
+    const res = await refreshToken(request);
+    return res;
+  }
+  return NextResponse.next();
+}
+
+const refreshToken = async (req: NextRequest) => {
+  const accessToken = req.cookies.get('accessToken')?.value;
+  const refreshToken = req.cookies.get('refreshToken')?.value;
+  
+  const res = NextResponse.next();
+
+  const response = await tokenVerify(accessToken);
+  if (response.status === 401) {
+    // 리프레시 토큰을 이용해 새로운 액세스 토큰 발급
+      const {newAccessToken,newRefreshToken} = await refreshAccessToken(refreshToken);
+      const access_token = {
+        name: 'accessToken',
+        expires: Date.now() + 1 * 60 * 60 * 1000; // 1hour,
+        httpOnly: true,
+        value: newAccessToken,
+      };
+      const refresh_token = {
+        name: 'refreshToken',
+        expires: Date.now() + 7 * 24 * 60 * 60 * 1000; // 7day,
+        httpOnly: true,
+        value: newRefreshToken,
+      };
+      res.cookies.set(access_token);
+      res.cookies.set(refresh_token);
+  }
+  
+  return res;
+};
+
+
+```
+
+
+미들웨어에서 요청 쿠키를 읽고 해당 쿠키를 기반으로 토큰 리프래쉬 및 토큰 세팅을 진행합니다.
+그리고 server component에서 세팅된 헤더의 요청 쿠키를 통해 리프래쉬된 토큰으로 정상적으로 요청을 보낼 수 있게 됩니다.
+토큰 리프래쉬를 하는 주체를 server component가 아닌 middleware로 위임했습니다.
+
+![middleware-cookie](/posts/blog/server-component-cookie/middleware-cookie.png)
+
+그런데 위 그림에서 1번 3번 쪽을 보면 살짝 이상한 부분이 있습니다. 이미 브라우저에서 들어온 요청에 대한 쿠키가 있는데 미들웨어에서 쿠키 세팅을 해준다고 해서 이전 요청 헤더의 쿠키가 변경이 될까요? 위 로직처럼만 작성하면 변경되지 않습니다.
+
+페이지 로드 시 미들웨어와 서버 컴포넌트는 브라우저가 서버에 요청을 보내고, 서버가 해당 요청을 처리한 후 응답하는 **일련의 과정 내에서 동작**을 하게 됩니다.
+
+예를들어 이미 token이 만료된 상태일때 브라우저에서 middleware로 요청 쿠키를 보내게 되고
+middleware에서 쿠키 세팅을 새로 해줘도 **이미 시작된 요청과 응답에 대한 과정에서 요청헤더의 쿠키를 바꿀수는 없습니다.**
+
+그래서 미들웨어단에서 브라우저 요청의 Cookie 헤더 값을 **오버라이드할 수 있도록 해야 합니다.**
+[관련이슈](https://github.com/vercel/next.js/issues/49442#issuecomment-1679807704)에서 처럼 `applySetCookie` 를 이용해서 이미 들어온 요청의 헤더 값을 오버라이드해줘야 아래 코드처럼 서버 컴포넌트단에서 미들웨어에서 설정한 쿠키의 값을 바로 읽을 수 있습니다.
+
+```ts
+// middleware.ts
+export default function middleware(req: NextRequest) {
+  // Set cookies on your response
+  const res = NextResponse.next();
+  res.cookies.set('foo', 'bar');
+
+  // Apply those cookies to the request
+  applySetCookie(req, res);
+
+  return res;
+}
+
+// app/page.tsx
+import { cookies } from 'next/headers';
+export default function MyPage() {
+  console.log(cookies().get('foo')); // logs “bar”
+  // ...
+}
+```
+
+리프래쉬 코드에선 아래 로직만 추가해주면됩니다.
+
+```ts diff
+//...
+res.cookies.set(access_token);
+res.cookies.set(refresh_token);
++ applySetCookie(req,res)
+//...
+
++ function applySetCookie(req: NextRequest, res: NextResponse): void {
++  // parse the outgoing Set-Cookie header
++  const setCookies = new ResponseCookies(res.headers);
++  // Build a new Cookie header for the request by adding the setCookies
++  const newReqHeaders = new Headers(req.headers);
++  const newReqCookies = new RequestCookies(newReqHeaders);
++  setCookies.getAll().forEach((cookie) => newReqCookies.set(cookie));
++  // set “request header overrides” on the outgoing response
++  NextResponse.next({ request: { headers: newReqHeaders },}).headers.forEach((value, key) => {
++    if (key === 'x-middleware-override-headers' || key.startsWith('x-middleware-request-')) {
++      res.headers.set(key, value);
++    }
++  });
++ }
+```
+
+
+
+
+
+## 요약
+
+서버 컴포넌트의 응답은 브라우저가 아니므로 쿠키 세팅이 정상적으로 되지 않습니다.
+결국 서버 컴포넌트의 렌더링 이전에 쿠키를 세팅을 해줘야 하는데, 이때 미들웨어를 활용할 수 있습니다.
+
+
+## 마치며
+
+서버 컴포넌트의 경우에 기존 page 디렉토리에 비해 서버 자원에 유연하게 접근이 가능해서 되게 편하게 사용하고 있었는데, SSR까지의 패러다임이 바뀌어서 살짝 불편한 부분은 있는거 같습니다 :(
+
