@@ -9,9 +9,9 @@ export const parseHeadersForTOC = (raw: string) => {
     return adjusted;
   };
 
-  const regex = /\n(?<flag>#{1,3})\s+(?<text>.+)/g;
+  const regex = /^(?<flag>#{1,3})\s+(?<text>.+)/gm;
   const headerMatches = Array.from(
-    raw.replace(/```[^`]+```/g, '').matchAll(regex),
+    raw.replace(/```[\s\S]+?```/g, '').matchAll(regex),
   );
 
   const headerLevels = calculateHeaderLevels(
