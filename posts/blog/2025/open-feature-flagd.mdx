@@ -1,0 +1,195 @@
+---
+title: 'flagd와 OpenFeature로 구축하는 더 완벽한 Feature Flag'
+date: 2025-04-26
+description: flagd와 OpenFeature에 대해 간단하게 알아보고, 실시간 플래그를 관리하는 방법을 소개합니다.
+thumbnailUrl:
+tags:
+  - OpenFeature
+  - flagd
+  - feature flag
+---
+
+
+## 시작하며
+
+**PostHog, Flagsmith, Unleash** 같은 외부 서비스를 도입하지 않고, **Feature Flag 서버**를 직접 구축하고 싶었습니다.
+
+하지만 개발 리소스가 부족한 상황에서 처음부터 직접 만드는건 비효율적이므로 이미 잘 만들어진 오픈소스가 있는지 찾아보다가 **flagd**를 알게 되었습니다.
+
+그리고 다양한 환경에서 일관된 방식으로 **Feature Flag**를 평가할 수 있도록 돕는 **OpenFeature**라는 표준화된 SDK도 함께 사용하기로 했습니다.
+
+이번 글에서는 **flagd** 환경을 어떻게 구축했는지, 그리고 **OpenFeature**와 어떻게 연동해 **Feature Flag**를 사용하는지 공유하겠습니다.
+
+
+## flagd란?
+
+> https://flagd.dev/
+
+flagd는 오픈소스 기반의 경량 Feature Flag 서버입니다.
+Feature Flag를 관리하고 평가하는 역할만을 수행하는 Pure Evaluation Engine으로, 복잡한 관리 기능 없이 단순하고 빠르게 플래그 결과를 제공할 수 있도록 설계되었습니다.
+
+flagd는 다음과 같은 특징을 가집니다.
+- **경량성**
+별도의 데이터베이스 없이, 설정 파일(JSON)을 기반으로 플래그를 평가합니다.
+덕분에 컨테이너, VM, Kubernetes 환경 등 어디에서나 가볍게 실행할 수 있습니다.
+
+- **다양한 플래그 타입 지원**
+Boolean, String, Number, JSON 형태의 다양한 값을 플래그로 설정할 수 있습니다.
+- **Context 기반 조건 분기(Targeting)**
+사용자 ID, 역할(Role), 지역(Location) 등 다양한 Context에 따라 플래그 결과를 다르게 설정할 수 있습니다.
+- **점진적 릴리스(Fractional Rollout)**
+전체 사용자 중 일부 비율(예: 10%, 50%)에게만 새로운 기능을 제공하는 설정이 가능합니다.
+- **OpenFeature와의 완벽한 호환성**
+OpenFeature의 공식 Provider로, 다양한 클라이언트 SDK(React, Node.js 등)와 쉽게 연동할 수 있습니다.
+
+flagd는 복잡한 기능을 최소화하고, **Feature Flag** 평가라는 핵심 역할에 집중합니다.
+이 덕분에 자체적으로 운영하기에도 부담이 적고, 인프라 환경에 따라 유연하게 적용할 수 있습니다.
+
+> 다음은 flagd의 기본 JSON 설정 파일 예시입니다
+```json
+{
+  "$schema": "https://flagd.dev/schema/v0/flags.json",
+  "flags": {
+    "show-welcome-banner": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "off"
+    },
+    "background-color": {
+      "state": "ENABLED",
+      "variants": {
+        "red": "#CCCCCC",
+        "blue": "#0000FF",
+        "green": "#00FF00",
+        "yellow": "#FFFF00"
+      },
+      "defaultVariant": "red"
+    }
+  }
+}
+```
+
+## flagd 서버 구축: AWS 기반 예시
+
+flagd는 환경에 구애받지 않고 배포할 수 있는 유연성이 강점입니다. 저는 AWS의 S3, ECS, ECR을 활용해 flagd 서버를 구축했습니다.
+
+- **S3:** 플래그 정의 JSON 파일 저장소로 사용.
+- **ECR:** flagd 이미지를 저장.
+- **ECS:** 컨테이너로 flagd 서버 실행.
+
+Kubernetes나 VM 환경등 에서도 쉽게 배포할 수 있어, 인프라 환경에 따라 유연하게 선택할 수 있습니다.
+
+### Dockerfile 설정
+
+flagd의 배포를 위해 아래와 같이 간단한 Dockerfile을 구성했습니다. 8013포트는 flagd 서버용, 8014포트는 헬스 체크용으로 열어두었습니다.
+```Dockerfile
+FROM ghcr.io/open-feature/flagd:latest
+
+ENV FLAGD_URI=s3://flagd-config/demo.flagd.json
+ENV FLAGD_PORT=8013
+ENV FLAGD_POLLING_INTERVAL=10s
+
+EXPOSE 8013 8014
+
+CMD ["start"]
+```
+
+
+## OpenFeature: 표준화된 Feature Flag SDK
+
+> https://openfeature.dev/
+
+OpenFeature는 단순한 SDK를 넘어, Feature Flag 관리의 표준화된 접근 방식을 제공합니다. 주요 특징은 다음과 같습니다.
+
+- **플러그인 기반 Provider:** PostHog, Flagsmith, Unleash, flagd 등 다양한 서비스를 Provider로 연결해 유연한 통합 가능합니다.
+- **flagd와의 완벽한 호환:** flagd는 OpenFeature의 공식 프로젝트로, 자연스럽게 연동해줍니다.
+- **코드 유지보수성:** flagd를 다른 솔루션으로 교체하더라도, 애플리케이션 코드는 변경 없이 Provider만 교체 가능합니다.
+- **웹과 서버 지원:** 웹(예: React)뿐만 아니라 서버 환경(예: Node.js)에서도 일관되게 사용 가능합니다.
+
+## flagd와 OpenFeature 연동: React 예시
+
+React 프로젝트에서 OpenFeature와 flagd를 연동하는 기본 구조는 아래와 같습니다.
+먼저, 배포된 flagd 서버를 OpenFeature의 Provider로 등록합니다.
+
+```ts showLineNumbers
+//...
+import { OpenFeature, OpenFeatureProvider } from '@openfeature/react-sdk'
+import { FlagdWebProvider } from '@openfeature/flagd-web-provider'
+
+
+OpenFeature.setProvider(new FlagdWebProvider({
+  host: 'ssoon-flagd.ianlog.me', // 배포된 호스트
+  tls: true,
+  port: 443,
+  maxRetries: 0,
+}))
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <OpenFeatureProvider>
+      <App />
+    </OpenFeatureProvider>
+  </StrictMode>,
+)
+
+```
+
+플래그를 평가하는 부분은 매우 간단합니다.
+useFlag 훅을 사용해서 처리가 가능합니다.
+
+```ts showLineNumbers
+import { useFlag } from '@openfeature/react-sdk'
+function App() {
+  const newUI = useFlag('background-color', '#DDDDDD');
+  return (
+    <>
+      <div style={{ backgroundColor: newUI.details.value }}>
+        flag 색상
+      </div>
+    </>
+  )
+}
+
+export default App
+
+```
+
+특히 중요한 점은,
+feature flag를 평가하는 코드(useFlag)는 Provider가 무엇이든 변경할 필요가 없다는 것입니다.
+- flagd 서버를 쓰다가 → PostHog, Flagsmith, Unleash 등의 서비스로 Provider를 교체하더라도,
+- App 컴포넌트 내부 코드는 수정하지 않아도 됩니다.
+
+이 덕분에 플래그 평가 코드와 플래그 제공 서버를 완전히 분리할 수 있어,
+운영 중인 애플리케이션을 훨씬 유연하게 관리할 수 있습니다.
+
+![flagd-openfeature](/posts/blog/open-feature-flagd/flagd-openfeature.gif)
+> 왼 : feature flag를 평가하는 프로젝트, 오 : flagd json파일을 다루기 위한 gui 프로젝트
+
+flagd의 플래그 정의가 변경될 경우 브라우저 새로고침 없이 플래그를 평가하는쪽 코드에서 실시간으로 반영이 되는걸 확인할 수 있습니다.
+
+
+## flagd는 ui를 제공하지 않는다
+
+flagd는 플래그 평가에 특화된 서버로, **GUI(관리 화면)** 를 제공하지 않습니다.
+따라서 JSON 파일을 직접 수정하거나 플래그를 쉽게 관리하려면 별도의 GUI를 구축해야 합니다.
+
+> [flagd 이슈글](https://github.com/open-feature/flagd/issues/1383)을 보면 공식 GUI를 개발할 계획이 없습니다.
+
+저는 flagd의 JSON 파일을 쉽게 관리할 수 있도록 간단한 웹 기반 GUI를 제작했습니다.
+현재는 variants 관리 기능만을 제공하며, [데모 프로젝트](https://github.com/Ssoon-m/tf-flagd/tree/main/flagd-gui)에서 확인 가능합니다.
+앞으로 context 기반 조건 분기와 점진적 릴리스(rollout) 기능을 추가해 더 강력한 플래그 관리 도구로 발전시킬 계획입니다.
+
+> 아래 다이어그램은 GUI에서 JSON 파일을 수정하고, flagd가 이를 감지해 클라이언트 UI에 실시간으로 반영되는 흐름입니다.
+![flagd-openfeature-flow-plantuml](/posts/blog/open-feature-flagd/flagd-openfeature-flow-plantuml.png)
+
+
+### 마치며
+
+flagd와 OpenFeature를 활용하면 좋은 기능들이 이미 구현된 Feature Flag 서버를 직접 운영하면서도,
+OpenFeature를 통해 다양한 환경에서 표준화된 방식으로 플래그를 평가할 수 있습니다.
+한 번쯤 사용해보면 좋은 경험이 될 것 같습니다.
+
+> [이번 글에서 소개한 flagd 서버 구축, OpenFeature 연동, 그리고 간단한 GUI는 모두 이 저장소에서 확인하실 수 있습니다.](https://github.com/Ssoon-m/tf-flagd)
