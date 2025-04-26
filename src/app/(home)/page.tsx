@@ -14,7 +14,6 @@ export default function Home() {
           <p className="text-lg text-gray-600 dark:text-gray-300">
             안녕하세요
             <span className="inline-block animate-shake">👋</span>
-            &nbsp;주니어 프론트엔드 개발자입니다.
             <br />
             좋은 사용자 경험을 위해 학습하고 기록합니다.
           </p>
