@@ -6,6 +6,6 @@ const buildEslintCommand = (filenames) =>
     .join(' --file ')}`;
 
 module.exports = {
-  '*.{js,ts,tsx}': [buildEslintCommand, 'yarn lint-fix:prettier'],
-  '*.{ts,tsx}': [() => 'yarn ts-check'],
+  '*.{js,ts,tsx}': [buildEslintCommand, 'pnpm lint-fix:prettier'],
+  '*.{ts,tsx}': [() => 'pnpm ts-check'],
 };
