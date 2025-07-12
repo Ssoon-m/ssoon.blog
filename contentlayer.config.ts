@@ -91,7 +91,7 @@ export default makeSource({
           },
         },
       ],
-      [rehypePrettyCode, rehypePrettyCodeOptions],
+      [rehypePrettyCode as any, rehypePrettyCodeOptions],
     ],
   },
 });
