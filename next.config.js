@@ -3,6 +3,7 @@ const { withContentlayer } = require('next-contentlayer');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['rehype-pretty-code', 'shiki'],
   output: 'export',
   reactStrictMode: true,
   swcMinify: true,
