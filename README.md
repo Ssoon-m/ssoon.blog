@@ -10,6 +10,6 @@
 - **Content:** `ContentLayer, MDX`
 ## Start Project
 ```
-yarn install
-yarn dev
+pnpm install
+pnpm dev
 ```
