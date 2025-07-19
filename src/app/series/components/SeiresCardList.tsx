@@ -2,7 +2,7 @@
 import { Post } from '@/datasets/post';
 import SeriesCard from './SeriesCard';
 import { motion } from 'framer-motion';
-import { springFadeInSlideUp, springStagger } from '@/constants/animation';
+import { glassAppear, springStagger } from '@/constants/animation';
 
 interface SeiresCardListProps {
   seriesList: Post[];
@@ -17,13 +17,7 @@ const SeiresCardList = ({ seriesList }: SeiresCardListProps) => {
       variants={springStagger}
     >
       {seriesList.map((series) => (
-        <motion.div
-          key={series._id}
-          className="h-full"
-          variants={springFadeInSlideUp}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.95 }}
-        >
+        <motion.div key={series._id} className="h-full" variants={glassAppear}>
           <SeriesCard series={series} />
         </motion.div>
       ))}

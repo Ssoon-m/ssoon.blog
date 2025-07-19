@@ -11,12 +11,10 @@ import PostContent from './components/post/PostContent';
 import PostHeader from './components/post/PostHeader';
 import PostFooter from './components/post/PostFooter';
 import Giscus from '@/components/Giscus';
-import ScrollTopButton from '@/components/ScrollTopButton';
 import { articleSEO } from '@/lib/seo';
 import ArticleJsonLd from '@/components/ArticleJsonLd';
 import Image from 'next/image';
 import PostTag from '@/components/post/PostTag';
-import ScrollProgressBar from '@/components/ScrollProgressBar';
 import { siteData } from '@/constants/my-site';
 import Series from './components/post/Series';
 
@@ -40,9 +38,6 @@ const PostPage = ({ params }: { params: { slug: string[] } }) => {
         pathname={post.postUrl}
         image={post.thumbnailUrl}
       />
-      <div className="fixed top-0 left-0 right-0 z-50 h-1 w-full">
-        <ScrollProgressBar />
-      </div>
       <div className="flex-1 flex flex-col py-8 w-full max-w-5xl mx-auto">
         <PostHeader
           title={post.title}
@@ -84,7 +79,6 @@ const PostPage = ({ params }: { params: { slug: string[] } }) => {
         </div>
         <Giscus />
       </div>
-      <ScrollTopButton />
     </>
   );
 };

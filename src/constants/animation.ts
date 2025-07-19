@@ -75,3 +75,77 @@ export const springFadeInSlideRight: Variants = {
     transition: { type: 'spring', stiffness: 300, damping: 40 },
   },
 };
+
+// Glass-specific animations
+export const glassAppear: Variants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.95,
+    y: 20,
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    },
+  },
+};
+
+export const glassHover: Variants = {
+  initial: {
+    scale: 1,
+    y: 0,
+  },
+  hover: {
+    scale: 1.02,
+    y: -4,
+    transition: {
+      duration: 0.2,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    },
+  },
+};
+
+export const glassElevate: Variants = {
+  initial: {
+    y: 0,
+  },
+  elevated: {
+    y: -8,
+    transition: {
+      duration: 0.3,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    },
+  },
+};
+
+export const glassFloat: Variants = {
+  initial: {
+    y: 0,
+  },
+  floating: {
+    y: -2,
+    transition: {
+      duration: 2,
+      ease: 'easeInOut',
+      repeat: Infinity,
+      repeatType: 'reverse',
+    },
+  },
+};
+
+export const glassFocus: Variants = {
+  initial: {
+    scale: 1,
+  },
+  focus: {
+    scale: 1.05,
+    transition: {
+      duration: 0.2,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    },
+  },
+};

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Post } from '@/datasets/post';
 import { dateFormatter } from '@/utils/date';
 import PostTag from './PostTag';
+import { GlassCard } from '@/components/ui';
 
 interface Props {
   post: Post;
@@ -9,10 +10,14 @@ interface Props {
 
 const PostCard = ({ post }: Props) => {
   return (
-    <div className="w-full py-2 flex flex-col sm:flex-row gap-6 justify-start items-center h-full">
+    <GlassCard
+      className="w-full p-6 my-2 hover:shadow-glass-medium transition-all duration-300"
+      elevation="medium"
+      hover={true}
+    >
       <div className="w-full">
         <Link href={`/${post.postUrl}`} className="group">
-          <h2 className="group-hover:underline text-2xl font-medium">
+          <h2 className="group-hover:underline text-2xl font-medium text-gray-900 dark:text-gray-100">
             {post.title}
           </h2>
           <h4 className="text-l mb-2 text-gray-600 dark:text-gray-300">
@@ -27,7 +32,7 @@ const PostCard = ({ post }: Props) => {
               </PostTag>
             ))}
           </div>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 dark:text-gray-500">
             <time dateTime={post.date}>
               {dateFormatter(post.date, 'YYYY-MM-DD')}
             </time>
@@ -35,7 +40,7 @@ const PostCard = ({ post }: Props) => {
           </p>
         </div>
       </div>
-    </div>
+    </GlassCard>
   );
 };
 

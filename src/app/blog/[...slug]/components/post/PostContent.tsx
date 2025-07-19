@@ -1,6 +1,6 @@
 import { parseHeadersForTOC } from '@/utils/markdown';
 import { useMDXComponent } from 'next-contentlayer/hooks';
-import TocSide from '@/components/post/TocSide';
+import FloatingControls from '@/components/post/FloatingControls';
 import cloudinaryLoader from 'my-loader';
 
 const BlankLink = (props: any) => {
@@ -41,16 +41,14 @@ const PostContent = ({ postBodyCode, postBodyRaw }: PostContentProps) => {
   const toc = parseHeadersForTOC(postBodyRaw);
 
   return (
-    <article className="w-full flex flex-nowrap gap-5">
-      <div className="w-full prose dark:prose-invert max-w-3xl">
-        <MDXContent components={{ a: BlankLink, img: NextImg }} />
-      </div>
-      <div className="hidden lg:block min-w-[200px] max-w-[250px]">
-        <div className="sticky top-[80px] h-fit">
-          <TocSide tableOfContents={toc} />
+    <>
+      <article className="w-full">
+        <div className="w-full prose dark:prose-invert max-w-none">
+          <MDXContent components={{ a: BlankLink, img: NextImg }} />
         </div>
-      </div>
-    </article>
+      </article>
+      <FloatingControls tableOfContents={toc} />
+    </>
   );
 };
 

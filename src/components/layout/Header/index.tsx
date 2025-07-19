@@ -47,7 +47,7 @@ const Header = () => {
   return (
     <>
       <motion.header
-        className={`fixed z-50 w-full h-[61px] px-4 py-3 bg-white/80 backdrop-blur-sm backdrop-saturate-200 dark:bg-black/50 border-b border-gray-100 dark:border-gray-700`}
+        className={`fixed z-50 w-full h-[61px] px-4 py-3 glass-light backdrop-blur-xl backdrop-saturate-200 border-b border-glass-light`}
         initial={false}
         animate={
           isBlogDetailPage

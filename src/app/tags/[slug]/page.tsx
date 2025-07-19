@@ -20,7 +20,7 @@ const TagsPage = ({ params }: { params: { slug: string } }) => {
 export default TagsPage;
 
 export const generateStaticParams = async () =>
-  getAllTags().map((tag) => ({ slug: decodeURIComponent(tag) }));
+  getAllTags().map((tag) => ({ slug: encodeURIComponent(tag) }));
 
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
   const tag = decodeURIComponent(params.slug);

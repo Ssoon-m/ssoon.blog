@@ -20,6 +20,30 @@ module.exports = {
       animation: {
         shake: 'shake 2.5s infinite',
       },
+      backdropBlur: {
+        xs: '2px',
+        '4xl': '72px',
+      },
+      backgroundColor: {
+        'glass-light': 'var(--glass-bg-light)',
+        'glass-medium': 'var(--glass-bg-medium)',
+        'glass-heavy': 'var(--glass-bg-heavy)',
+      },
+      borderColor: {
+        'glass-light': 'var(--glass-border-light)',
+        'glass-medium': 'var(--glass-border-medium)',
+        'glass-strong': 'var(--glass-border-strong)',
+      },
+      boxShadow: {
+        'glass-light': 'var(--glass-shadow-light)',
+        'glass-medium': 'var(--glass-shadow-medium)',
+        'glass-heavy': 'var(--glass-shadow-heavy)',
+        'glass-floating': 'var(--glass-shadow-floating)',
+      },
+      backgroundImage: {
+        'glass-gradient-light': 'var(--glass-gradient-light)',
+        'glass-gradient-medium': 'var(--glass-gradient-medium)',
+      },
       typography: (theme: any) => ({
         DEFAULT: {
           css: {

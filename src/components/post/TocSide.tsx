@@ -3,6 +3,7 @@ import { cn } from '@/lib/cn';
 import { type Toc } from '@/lib/types/toc-type';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const numberToStringMap = {
   1: 'one',
@@ -26,11 +27,13 @@ interface IHeadingTops {
 
 interface TocSideProps {
   tableOfContents: Toc[];
+  isFloating?: boolean;
 }
 
-const TocSide = ({ tableOfContents }: TocSideProps) => {
+const TocSide = ({ tableOfContents, isFloating = false }: TocSideProps) => {
   const [activeToc, setActiveToc] = useState('');
   const [headingTops, setHeadingTops] = useState<null | IHeadingTops[]>([]);
+  const [isOpen, setIsOpen] = useState(true);
 
   const settingHeadingTops = useCallback(() => {
     const scrollTop = getScrollTop();
@@ -86,33 +89,119 @@ const TocSide = ({ tableOfContents }: TocSideProps) => {
     };
   }, [headingTops]);
 
-  return (
-    <>
-      {tableOfContents.length ? (
-        <ul className="pl-2 pr-1">
-          <div className="text-lg font-medium dark:border-gray-700 pb-1">
-            In this article
-          </div>
-          {tableOfContents.map((toc, i) => (
-            <li
-              data-level={numberToStringMap[toc.level]}
-              key={i}
-              className={cn(
-                'pl-2 border-l-2 boder-gray-100 first-of-type:pt-2 py-1 text-gray-400 text-sm hover:text-gray-800 dark:hover:text-gray-200 transition-all',
-                'data-[level=two]:pl-4 data-[level=three]:pl-6',
-                {
-                  'border-indigo-500 text-indigo-500 dark:text-indigo-400 font-bold':
-                    activeToc === toc.slug,
-                },
-              )}
-            >
-              <Link href={`#${toc.slug}`}>{toc.text}</Link>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-    </>
+  if (!tableOfContents.length) return null;
+
+  const renderHeader = () => (
+    <div
+      className={cn(
+        'flex items-center mb-4',
+        isFloating ? 'justify-between' : 'gap-2',
+      )}
+    >
+      <div className="flex items-center gap-2">
+        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+          <svg
+            className="w-3 h-3 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </div>
+        <span className="text-base font-semibold text-gray-800 dark:text-gray-200">
+          In this article
+        </span>
+      </div>
+      {isFloating && (
+        <button
+          onClick={() => setIsOpen(false)}
+          className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+        >
+          <svg
+            className="w-4 h-4 text-gray-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      )}
+    </div>
   );
+
+  const renderTocList = () => (
+    <ul className="space-y-1">
+      {tableOfContents.map((toc, i) => (
+        <li
+          data-level={numberToStringMap[toc.level]}
+          key={i}
+          className={cn(
+            'relative group transition-all duration-200 rounded-lg',
+            'hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400',
+            {
+              'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300 font-medium shadow-sm':
+                activeToc === toc.slug,
+              'text-gray-600 dark:text-gray-400': activeToc !== toc.slug,
+            },
+          )}
+        >
+          <Link
+            href={`#${toc.slug}`}
+            className={cn(
+              'block py-2 text-sm transition-all duration-200 relative',
+              'data-[level=one]:pl-3 data-[level=two]:pl-7 data-[level=three]:pl-9',
+              'pr-3',
+            )}
+            data-level={numberToStringMap[toc.level]}
+          >
+            {activeToc === toc.slug && (
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-gradient-to-b from-indigo-500 to-purple-600 rounded-full"></div>
+            )}
+            <span className="block truncate">{toc.text}</span>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+
+  const tocContent = (
+    <div className="glass-light backdrop-blur-md border border-glass-light rounded-xl p-4 shadow-lg">
+      {renderHeader()}
+      {renderTocList()}
+    </div>
+  );
+
+  if (isFloating) {
+    return (
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: 300 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 300 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="fixed top-24 right-4 z-40 max-w-[280px] w-full max-h-[calc(100vh-120px)] overflow-y-auto"
+          >
+            {tocContent}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+  }
+
+  return <div className="sticky top-24">{tocContent}</div>;
 };
 
 export default TocSide;

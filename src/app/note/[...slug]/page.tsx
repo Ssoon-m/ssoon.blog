@@ -1,5 +1,4 @@
 import ArticleJsonLd from '@/components/ArticleJsonLd';
-import ScrollTopButton from '@/components/ScrollTopButton';
 import { siteData } from '@/constants/my-site';
 import { getAllNotes, getNotebySlug } from '@/datasets/note';
 import { articleSEO } from '@/lib/seo';
@@ -45,7 +44,6 @@ const NotePage = ({ params }: { params: { slug: string[] } }) => {
           />
         </div>
       </div>
-      <ScrollTopButton />
     </>
   );
 };

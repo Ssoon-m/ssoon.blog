@@ -8,7 +8,7 @@ const year = dateFormatter(new Date(), 'YYYY');
 
 const Footer = () => {
   return (
-    <footer className="bg-transparent w-full px-8 py-8 flex flex-col items-center gap-1 border-t border-gray-100 dark:border-gray-700">
+    <footer className="glass-light backdrop-blur-md w-full px-8 py-8 flex flex-col items-center gap-1 border-t border-glass-light">
       <div className="flex gap-2 items-center">
         <GithubLink />
         <VelogLink />
