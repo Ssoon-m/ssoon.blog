@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { siteData } from '@/constants/my-site';
 import GithubLink from '@/components/common/GithubLink';
 import MailLink from '@/components/common/MailLink';
-import VelogLink from '@/components/common/VelogLink';
 
 interface PostFooterProps {
   prevPost: Post | null;
@@ -31,7 +30,6 @@ const PostFooter = ({ prevPost, nextPost }: PostFooterProps) => {
             <div className="text-gray-400">프론트엔드 개발자 권순민입니다.</div>
             <div className="flex gap-1 items-center">
               <GithubLink />
-              <VelogLink />
               <MailLink width={28} height={28} />
             </div>
           </div>
