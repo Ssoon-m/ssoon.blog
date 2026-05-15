@@ -23,7 +23,7 @@ const Giscus = () => {
     if (!ref.current) return;
     const script = document.createElement('script');
     script.src = 'https://giscus.app/client.js';
-    script.dataset.repo = 'Ssoon-m/ssoon.blog';
+    script.dataset.repo = 'Ssoon-m/ianlog';
     script.dataset.repoId = 'R_kgDOKKGGZg';
     script.dataset.category = 'General';
     script.dataset.categoryId = 'DIC_kwDOKKGGZs4CZgJ3';
@@ -33,7 +33,7 @@ const Giscus = () => {
     script.dataset.emitMetadata = '0';
     script.dataset.inputPosition = 'bottom';
     script.dataset.theme = theme;
-    script.dataset.lang = 'en';
+    script.dataset.lang = 'ko';
     script.crossOrigin = 'anonymous';
     script.async = true;
     ref.current.appendChild(script);
